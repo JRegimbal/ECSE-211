@@ -18,7 +18,7 @@ public class Lab1 {
 
 	private static final int bandCenter = 20;			// Offset from the wall (cm)
 	private static final int bandWidth = 3;				// Width of dead band (cm)
-	private static final int motorLow = 50;			// Speed of slower rotating wheel (deg/sec)
+	private static final int motorLow = 100;			// Speed of slower rotating wheel (deg/sec)
 	private static final int motorHigh = 200;			// Speed of the faster rotating wheel (deg/seec)
 	
 // Static Resources:
@@ -28,8 +28,8 @@ public class Lab1 {
 // Right motor connected to output B
 	
 	private static final Port usPort = LocalEV3.get().getPort("S1");
-	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	
 // Main entry point - instantiate objects used and set up sensor
 	
