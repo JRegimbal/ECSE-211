@@ -14,3 +14,9 @@ OR
 
 - fetch from upstream to make sure you're up to date
 - select import project on the git repo and it should automatically find the project and you'll be good to go
+
+*******************************************************
+HOW TO RUN ROBOT
+*******************************************************
+
+- make sure UltraSonic sensor is pointed all the way to the side.
