@@ -5,9 +5,9 @@ public class BangBangController implements UltrasonicController{
 	private final int bandCenter, bandwidth;
 	private final int motorLow, motorHigh;
 	private int distance;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
 	
-	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
+	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,EV3LargeRegulatedMotor sensorMotor,
 							  int bandCenter, int bandwidth, int motorLow, int motorHigh) {
 		//Default Constructor
 		this.bandCenter = bandCenter;
@@ -16,6 +16,7 @@ public class BangBangController implements UltrasonicController{
 		this.motorHigh = motorHigh;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.sensorMotor = sensorMotor;
 
 		/*this.highDistance = false;
 		this.tl = new TimerListener () 
@@ -54,23 +55,26 @@ public class BangBangController implements UltrasonicController{
 		int errorCM = this.distance - this.bandCenter;	//offset between current position and ideal distance from wall (in cm)
 		if(Math.abs(errorCM) <= this.bandwidth)	//conditions to swerve slight right - straight (in dead band)
 		{
-			this.leftMotor.setSpeed(this.motorHigh + 30);
+			//this.leftMotor.setSpeed(this.motorHigh + 30); //I don't think we need the swerve, but it's here just in case
+			this.leftMotor.setSpeed(this.motorHigh);
 			this.rightMotor.setSpeed(this.motorHigh);
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
 		else if(errorCM < 0) 					//condition to swerve right - too close to wall
 		{	
-			this.leftMotor.setSpeed(this.motorHigh);
+			this.leftMotor.setSpeed(this.motorHigh + 100);	//Make the correction when a wall is detected more drastic
 			this.rightMotor.setSpeed(this.motorLow);
 			this.leftMotor.forward();
-			this.rightMotor.stop();
+			this.rightMotor.forward();
+			//this.rightMotor.stop();
 		}
 		else									//too far from wall - swerve left
 		{
 			this.leftMotor.setSpeed(this.motorLow);
 			this.rightMotor.setSpeed(this.motorHigh);
-			this.leftMotor.stop();
+			//this.leftMotor.stop();
+			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
 	}

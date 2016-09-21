@@ -17,9 +17,9 @@ public class Lab1 {
 // Parameters: adjust these for desired performance
 
 	private static final int bandCenter = 25;			// Offset from the wall (cm)
-	private static final int bandWidth = 3;				// Width of dead band (cm)
-	private static final int motorLow = 100;			// Speed of slower rotating wheel (deg/sec)
-	private static final int motorHigh = 300;			// Speed of the faster rotating wheel (deg/seec)
+	private static final int bandWidth = 5;				// Width of dead band (cm)
+	private static final int motorLow = 120;			// Speed of slower rotating wheel (deg/sec)
+	private static final int motorHigh = 300;			// Speed of the faster rotating wheel (deg/sec)
 	
 // Static Resources:
 //
@@ -30,6 +30,7 @@ public class Lab1 {
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+	private static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 // Main entry point - instantiate objects used and set up sensor
 	
@@ -42,7 +43,7 @@ public class Lab1 {
 		
 		// Setup controller objects
 		
-		BangBangController bangbang = new BangBangController(leftMotor, rightMotor,
+		BangBangController bangbang = new BangBangController(leftMotor, rightMotor, sensorMotor,
 															 bandCenter, bandWidth, motorLow, motorHigh);
 		PController p = new PController(leftMotor, rightMotor, bandCenter, bandWidth);
 		
@@ -83,8 +84,10 @@ public class Lab1 {
 			break;
 		}
 		
-		// Start the poller and printer threads
+		Oscillator osc = new Oscillator(sensorMotor,60,500.0f);
 		
+		// Start the poller and printer threads
+		osc.start();
 		usPoller.start();
 		printer.start();
 		
