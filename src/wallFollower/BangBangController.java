@@ -1,14 +1,12 @@
 package wallFollower;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.*;
-import lejos.utility.TimerListener;
-import lejos.utility.Timer;
 
 public class BangBangController implements UltrasonicController{
 	private final int bandCenter, bandwidth;
 	private final int motorLow, motorHigh;
 	private int distance;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
+	
 	private Timer timer;
 	private TimerListener tl;
 	private boolean highDistance;
@@ -22,6 +20,7 @@ public class BangBangController implements UltrasonicController{
 		this.motorHigh = motorHigh;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+
 		/*this.highDistance = false;
 		this.tl = new TimerListener () 
 				{
@@ -31,6 +30,7 @@ public class BangBangController implements UltrasonicController{
 					}
 				};
 		this.timer = new Timer(4000, this.tl);*/
+
 		leftMotor.setSpeed(motorHigh);				// Start robot moving forward
 		rightMotor.setSpeed(motorHigh);
 		leftMotor.forward();
