@@ -7,10 +7,6 @@ public class BangBangController implements UltrasonicController{
 	private int distance;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	
-	private Timer timer;
-	private TimerListener tl;
-	private boolean highDistance;
-	
 	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 							  int bandCenter, int bandwidth, int motorLow, int motorHigh) {
 		//Default Constructor
