@@ -26,22 +26,22 @@ public class BangBangController implements UltrasonicController{
 	public void processUSData(int distance) {
 		this.distance = distance;
 		// TODO: process a movement based on the us distance passed in (BANG-BANG style)
-		int error = this.distance - this.bandCenter;
-		if(Math.abs(error) <= this.bandwidth)	//conditions to swerve right - straight or too close to wall
+		int errorCM = this.distance - this.bandCenter;	//offset between current position and ideal distance from wall (in cm)
+		if(Math.abs(errorCM) <= this.bandwidth)	//conditions to swerve slight right - straight (in dead band)
 		{
 			this.leftMotor.setSpeed(this.motorHigh + 30);
 			this.rightMotor.setSpeed(this.motorHigh);
 		}
-		else if(error < 0) {
+		else if(errorCM < 0) {					//condition to swerve right - too close to wall
 			this.leftMotor.setSpeed(this.motorHigh);
 			this.rightMotor.setSpeed(this.motorLow);
 		}
-		else	//too far from wall - swerve left
+		else									//too far from wall - swerve left
 		{
 			this.leftMotor.setSpeed(this.motorLow);
 			this.rightMotor.setSpeed(this.motorHigh);
 		}
-		this.leftMotor.forward();
+		this.leftMotor.forward();				//update motor speeds
 		this.rightMotor.forward();
 	}
 
