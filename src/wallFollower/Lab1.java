@@ -43,7 +43,7 @@ public class Lab1 {
 		
 		// Setup controller objects
 		
-		BangBangController bangbang = new BangBangController(leftMotor, rightMotor, sensorMotor,
+		BangBangController bangbang = new BangBangController(leftMotor, rightMotor, 
 															 bandCenter, bandWidth, motorLow, motorHigh);
 		PController p = new PController(leftMotor, rightMotor, bandCenter, bandWidth);
 		

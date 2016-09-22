@@ -5,9 +5,9 @@ public class BangBangController implements UltrasonicController{
 	private final int bandCenter, bandwidth;
 	private final int motorLow, motorHigh;
 	private int distance;
-	private EV3LargeRegulatedMotor leftMotor, rightMotor, sensorMotor;
+	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	
-	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,EV3LargeRegulatedMotor sensorMotor,
+	public BangBangController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 							  int bandCenter, int bandwidth, int motorLow, int motorHigh) {
 		//Default Constructor
 		this.bandCenter = bandCenter;
@@ -16,8 +16,6 @@ public class BangBangController implements UltrasonicController{
 		this.motorHigh = motorHigh;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.sensorMotor = sensorMotor;
-
 		/*this.highDistance = false;
 		this.tl = new TimerListener () 
 				{
@@ -63,8 +61,8 @@ public class BangBangController implements UltrasonicController{
 		}
 		else if(errorCM < 0) 					//condition to swerve right - too close to wall
 		{	
-			this.leftMotor.setSpeed(this.motorHigh + 100);	//Make the correction when a wall is detected more drastic
-			this.rightMotor.setSpeed(this.motorLow);
+			this.leftMotor.setSpeed(this.motorHigh + 200);	//Make the correction when a wall is detected more drastic
+			this.rightMotor.setSpeed(this.motorLow - 100);
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 			//this.rightMotor.stop();
@@ -72,7 +70,7 @@ public class BangBangController implements UltrasonicController{
 		else									//too far from wall - swerve left
 		{
 			this.leftMotor.setSpeed(this.motorLow);
-			this.rightMotor.setSpeed(this.motorHigh);
+			this.rightMotor.setSpeed(this.motorHigh + 100);
 			//this.leftMotor.stop();
 			this.leftMotor.forward();
 			this.rightMotor.forward();
