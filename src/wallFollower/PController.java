@@ -9,8 +9,9 @@ public class PController implements UltrasonicController {
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private int distance;
 	private int filterControl;
+	private final int filterDistance = 50;
 	
-	private final int lastDistance;
+	private int lastErrorCM;
 	
 	public PController(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 					   int bandCenter, int bandwidth) {
@@ -24,7 +25,7 @@ public class PController implements UltrasonicController {
 		leftMotor.forward();
 		rightMotor.forward();
 		filterControl = 0;
-		lastDistance = 0;
+		lastErrorCM = 0;
 	}
 	
 	@Override
@@ -47,7 +48,12 @@ public class PController implements UltrasonicController {
 		
 		// TODO: process a movement based on the us distance passed in (P style)	
 		int errorCM = this.distance - this.bandCenter;	//offset between current position and ideal distance from wall (in cm)
-		System.err.println(errorCM);
+		//System.err.println(errorCM);
+		if(errorCM - this.lastErrorCM > this.filterDistance)
+		{
+			this.lastErrorCM = errorCM;
+			return;
+		}
 		if(Math.abs(errorCM) <= this.bandwidth)	//conditions to swerve slight right - straight (in dead band)
 		{
 			//this.leftMotor.setSpeed(this.motorHigh + 30); //I don't think we need the swerve, but it's here just in case
@@ -80,6 +86,7 @@ public class PController implements UltrasonicController {
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
+		this.lastErrorCM = errorCM;
 	}
 
 	

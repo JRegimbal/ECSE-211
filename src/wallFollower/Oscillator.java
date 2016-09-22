@@ -11,7 +11,8 @@ public class Oscillator extends Thread{
 	public Oscillator(EV3LargeRegulatedMotor motor, int fov, float speed) {
 		this.motor = motor;
 		this.fov = fov;
-		this.motor.setSpeed(speed);
+		this.speed = speed;
+		this.motor.setSpeed(this.speed);
 		this.motor.rotateTo(0);
 	}
 	
