@@ -4,7 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class PController implements UltrasonicController {
 	
 	private final int bandCenter, bandwidth;
-	private final int constantRight = 40, constantLeft = 40;
+	private final int constantRight = 40, constantLeft = 60;
 	private final int motorStraight = 200, FILTER_OUT = 20;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private int distance;
@@ -34,10 +34,10 @@ public class PController implements UltrasonicController {
 		// rudimentary filter - toss out invalid samples corresponding to null signal.
 		// (n.b. this was not included in the Bang-bang controller, but easily could have).
 		//
-		if (distance == 255 && filterControl < FILTER_OUT) {
+		if (distance >= 255 && filterControl < FILTER_OUT) {
 			// bad value, do not set the distance var, however do increment the filter value
 			filterControl ++;
-		} else if (distance == 255){
+		} else if (distance >= 255){
 			// true 255, therefore set distance to 255
 			this.distance = distance;
 		} else {
@@ -62,12 +62,12 @@ public class PController implements UltrasonicController {
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
-		else									//too far from wall - swerve left
+		else if(errorCM < 0)								//too far from wall - swerve left
 		{
 			float adjustLeft, adjustRight;
-			if(Math.abs(errorCM*this.constantLeft) >= 150)
+			if(Math.abs(errorCM*this.constantLeft) >= 350)
 			{
-				adjustLeft = Math.copySign(100.0f, errorCM);
+				adjustLeft = Math.copySign(300.0f, errorCM);
 			}
 			else
 			{
@@ -81,8 +81,16 @@ public class PController implements UltrasonicController {
 			{
 				adjustRight = errorCM * this.constantRight;
 			}
-			this.leftMotor.setSpeed(this.motorStraight - adjustLeft);
-			this.rightMotor.setSpeed(this.motorStraight + adjustRight);
+			//this.leftMotor.setSpeed(this.motorStraight - adjustLeft);
+			//this.rightMotor.setSpeed(this.motorStraight + adjustRight);
+			this.leftMotor.setSpeed(this.motorStraight + (bandCenter - Math.abs(this.distance)) * 11.0f);
+			this.rightMotor.setSpeed(this.motorStraight);
+			this.leftMotor.forward();
+			this.rightMotor.forward();
+		}
+		else {
+			this.leftMotor.setSpeed(this.motorStraight);
+			this.rightMotor.setSpeed(this.motorStraight + this.distance * 1.5f);
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
