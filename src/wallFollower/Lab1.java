@@ -18,10 +18,8 @@ public class Lab1 {
 
 	private static final int bandCenter = 45;			// Offset from the wall (cm)
 	private static final int bandWidth = 10;				// Width of dead band (cm)
-	//private static final int motorLow = 120;			// Speed of slower rotating wheel (deg/sec)
-	//private static final int motorHigh = 300;			// Speed of the faster rotating wheel (deg/sec)
-	private static final int motorLow = 100;
-	private static final int motorHigh = 200;
+	private static final int motorLow = 100;			//Speed of slower rotating wheel (deg/sec)
+	private static final int motorHigh = 200;			//Speed of the faster rotating wheel (deg/sec)
 	
 // Static Resources:
 //
@@ -86,10 +84,10 @@ public class Lab1 {
 			break;
 		}
 		
-		Oscillator osc = new Oscillator(sensorMotor,60,500.0f);
+		Oscillator osc = new Oscillator(sensorMotor,60,500.0f);	//note - motor affected in constructor
 		
 		// Start the poller and printer threads
-		//osc.start();
+		//osc.start(); - oscillator no longer on, but still initialized
 		usPoller.start();
 		printer.start();
 		

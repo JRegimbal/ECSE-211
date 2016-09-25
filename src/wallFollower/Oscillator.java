@@ -27,8 +27,6 @@ public class Oscillator extends Thread{
 			this.motor.rotate(-fov);	//Rotate to next point
 			this.motor.rotate(fov);	//Rotate back
 		}
-		//if(motor.getPosition() > angle2) motor.backward();
-		//motor.forward();
 	}
 	
 }
