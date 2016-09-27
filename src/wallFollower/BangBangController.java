@@ -37,7 +37,7 @@ public class BangBangController implements UltrasonicController{
 		else if(errorCM < 0) 					//condition to swerve right - too close to wall
 		{	
 			this.leftMotor.setSpeed(this.motorHigh + 250);	//Make the correction when a wall is detected more drastic
-			this.rightMotor.setSpeed(this.motorLow);
+			this.rightMotor.setSpeed(this.motorLow);		//left motor wasn't turning as fast as right - crashed too easily
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}

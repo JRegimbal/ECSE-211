@@ -30,7 +30,7 @@ public class Lab1 {
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
-	private static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	//private static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 // Main entry point - instantiate objects used and set up sensor
 	
@@ -84,10 +84,10 @@ public class Lab1 {
 			break;
 		}
 		
-		Oscillator osc = new Oscillator(sensorMotor,60,500.0f);	//note - motor affected in constructor
+		//Oscillator osc = new Oscillator(sensorMotor,60,500.0f);	//note - motor affected in constructor (motor not used)
 		
 		// Start the poller and printer threads
-		//osc.start(); - oscillator no longer on, but still initialized
+		//osc.start(); - oscillator no longer on, but still initialized (now sensor is unattached to oscillator)
 		usPoller.start();
 		printer.start();
 		

@@ -8,7 +8,7 @@ public class PController implements UltrasonicController {
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private int distance;
 	private int filterControl;
-	private final int filterDistance = 50;
+	private final int filterDistance = 50;	//difference between previous and current errors to signal a false positive
 	
 	private int lastErrorCM;
 	
@@ -19,7 +19,7 @@ public class PController implements UltrasonicController {
 		this.bandwidth = bandwidth;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		leftMotor.setSpeed(motorStraight);					// Initalize motor rolling forward
+		leftMotor.setSpeed(motorStraight);					// Initialize motor rolling forward
 		rightMotor.setSpeed(motorStraight);
 		leftMotor.forward();
 		rightMotor.forward();
@@ -45,9 +45,8 @@ public class PController implements UltrasonicController {
 			this.distance = distance;
 		}
 		
-		// TODO: process a movement based on the us distance passed in (P style)	
 		int errorCM = this.distance - this.bandCenter;	//offset between current position and ideal distance from wall (in cm)
-		//check if the reported error suddenly changed - ignore value if so
+		//check if the reported error suddenly changed - ignore value if so (false positive)
 		if(errorCM - this.lastErrorCM > this.filterDistance)
 		{
 			this.lastErrorCM = errorCM;
@@ -62,18 +61,18 @@ public class PController implements UltrasonicController {
 		}
 		else if(errorCM < 0)								//too close to wall - swerve right
 		{
-			this.leftMotor.setSpeed(this.motorStraight + (bandCenter - Math.abs(this.distance)) * 11.0f);
+			this.leftMotor.setSpeed(this.motorStraight + (bandCenter - Math.abs(this.distance)) * 11.0f); //constant higher because the distance closer to the wall is constrained (0-bandcenter)
 			this.rightMotor.setSpeed(this.motorStraight);
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
 		else {									//too far from wall - swerve left
 			this.leftMotor.setSpeed(this.motorStraight);	
-			this.rightMotor.setSpeed(this.motorStraight + this.distance * 1.5f);
+			this.rightMotor.setSpeed(this.motorStraight + this.distance * 1.5f);	//smaller constant as distance can get much higher (bandcenter-255)
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 		}
-		this.lastErrorCM = errorCM;
+		this.lastErrorCM = errorCM;	//record last error
 	}
 
 	
