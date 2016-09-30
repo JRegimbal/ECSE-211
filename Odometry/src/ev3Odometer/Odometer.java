@@ -26,6 +26,8 @@ public class Odometer extends Thread {
 		this.theta = 0.0;
 		this.leftMotorTachoCount = 0;
 		this.rightMotorTachoCount = 0;
+		this.leftMotor.resetTachoCount();
+		this.rightMotor.resetTachoCount();
 		lock = new Object();
 	}
 
