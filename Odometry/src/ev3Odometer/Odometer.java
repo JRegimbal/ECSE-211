@@ -36,7 +36,12 @@ public class Odometer extends Thread {
 		while (true) {
 			updateStart = System.currentTimeMillis();
 			//TODO put (some of) your odometer code here
-
+			this.leftMotorTachoCount = this.leftMotorTachoCount.getTachoCount();
+			this.rightMotorTachoCount = this.rightMotorTachoCount.getTachoCount();
+								
+			double dx, dy, dtheta; //change in x, y, theta (dx and dy not using same basis as x and y - local to this point)
+			
+			
 			synchronized (lock) {
 				/**
 				 * Don't use the variables x, y, or theta anywhere but here!
