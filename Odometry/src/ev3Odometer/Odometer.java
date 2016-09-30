@@ -36,12 +36,14 @@ public class Odometer extends Thread {
 		while (true) {
 			updateStart = System.currentTimeMillis();
 			//TODO put (some of) your odometer code here
-			this.leftMotorTachoCount = this.leftMotorTachoCount.getTachoCount();
-			this.rightMotorTachoCount = this.rightMotorTachoCount.getTachoCount();
+			this.leftMotorTachoCount -= this.leftMotor.getTachoCount();	//update tachometer
+			this.rightMotorTachoCount -= this.rightMotor.getTachoCount();
 								
-			double dx, dy, dtheta; //change in x, y, theta (dx and dy not using same basis as x and y - local to this point)
-			
-			
+			double dLeft, dRight, dTheta, dPos; //change in x, y, theta (dLeft and dRight not using same basis as x and y - local to this point)
+			dLeft = Lab2.WHEEL_RADIUS * Math.PI * this.leftMotorTachoCount / 180.0;
+			dRight = Lab2.WHEEL_RADIUS * Math.PI * this.rightMotorTachoCount / 180.0;
+			dTheta = (dRight - dLeft)/Lab2.TRACK;
+			dPos = (dLeft + dRight)/2;
 			synchronized (lock) {
 				/**
 				 * Don't use the variables x, y, or theta anywhere but here!
@@ -49,7 +51,9 @@ public class Odometer extends Thread {
 				 * Do not perform complex math
 				 * 
 				 */
-				theta = -0.7376; //TODO replace example value
+				theta = (theta + dTheta) % (2*Math.PI);	//radians
+				y += dPos*Math.sin(theta);
+				x += dPos*Math.cos(theta);
 			}
 
 			// this ensures that the odometer only runs once every period
