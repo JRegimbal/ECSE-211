@@ -10,11 +10,14 @@ public class OdometryDisplay extends Thread {
 	private static final long DISPLAY_PERIOD = 250;
 	private Odometer odometer;
 	private TextLCD t;
+	float color[];
 
 	// constructor
 	public OdometryDisplay(Odometer odometer, TextLCD t) {
 		this.odometer = odometer;
 		this.t = t;
+		color = new float[Lab2.colorSensor.sampleSize()];
+		color[0] = 0.0f;
 	}
 
 	// run method (required for Thread)
@@ -27,12 +30,18 @@ public class OdometryDisplay extends Thread {
 
 		while (true) {
 			displayStart = System.currentTimeMillis();
+			Lab2.colorSensor.fetchSample(color,0);
+			color[0] *= 1000.0f;
 
 			// clear the lines for displaying odometry information
 			t.drawString("X:              ", 0, 0);
 			t.drawString("Y:              ", 0, 1);
 			t.drawString("T:              ", 0, 2);
-
+			//t.drawString("Color: " + Lab2.lightSensor.getColorID(), 0, 3);
+			//t.drawString("Color: [" + color[0] + ", " + color[1] + ", " + color[2] + "]",0,3);
+			t.drawString("" + color[0],0,3); //Display intensity for debugging
+			t.drawString("Count: " + OdometryCorrection.count,0,4); //Display line count for debugging
+			
 			// get the odometry information
 			odometer.getPosition(position, new boolean[] { true, true, true });
 
