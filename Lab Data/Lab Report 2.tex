@@ -62,10 +62,53 @@
 \maketitle
 
 \section{Objective}
-
+To determine the accuracy of the implemented odometry system, and implement a simple correction using a light sensor.
 \section{Method}
-
+\begin{enumerate}
+\item In the file Odometer.java, implement code that performs the task of an odometer as
+described in the Odometry tutorial and in class. You should only need to add member variables
+to and modify the run() method of the Odometer class.
+\item Run the robot in a 3-by-3 tile square (where one tile is 30.48 cm in linear dimension) using the
+provided code and tweak the leftRadius, rightRadius, and width parameters passed
+to the SquareDriver.drive() method in Lab2.java until the robot returns
+(approximately) to its starting position. If your left and right wheel motors are not connected to
+motor ports A and B respectively, you may need to also modify those parameters. The call to
+SquareDriver.drive() is shown below.
+\end{enumerate}
 \section{Data}
+\begin{center}
+\begin{tabular}{ | c | c | c | }
+\multicolumn{3}{c}{Offset from Origin - Correction Disabled} \\ \hline
+X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
+-0.42 & -0.66 & 0.01 \\ \hline
+-0.67 & -0.86 & 0.01 \\ \hline
+-0.84 & -0.84 & 0.01 \\ \hline
+-0.45 & -0.46 & 0.01 \\ \hline
+-0.64 & -0.82 & 0.01 \\ \hline
+-0.82 & -0.45 & 0.01 \\ \hline
+-0.69 & -0.66 & 0.01 \\ \hline
+-0.39 & -0.44 & 0.01 \\ \hline
+-0.84 & -0.66 & 0.01 \\ \hline
+-0.64 & -0.63 & 0.01 \\ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ | c | c | c | }
+\multicolumn{3}{c}{Offset from Origin - Correction Enabled} \\ \hline
+X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
+-0.04 & -0.09 & 0.01 \\ \hline
+-0.28 & -0.18 & 0.01 \\ \hline
+-0.18 & -0.19 & 0.01 \\ \hline
+-0.28 & -0.27 & 0.01 \\ \hline
+-0.31 & -0.18 & 0.01 \\ \hline
+-0.19 & -0.20 & 0.01 \\ \hline
+-0.27 & -0.13 & 0.01 \\ \hline
+-0.18 & -0.25 & 0.01 \\ \hline
+-0.08 & -0.12 & 0.01 \\ \hline
+-0.17 & -0.11 & 0.01 \\ \hline
+\end{tabular}
+\end{center}
 
 \section{Data Analysis}
 
