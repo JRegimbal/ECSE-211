@@ -8,6 +8,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class SquareDriver {
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
+	private static final double SQUARE_SIDE = 91.44;
 
 	public static void drive(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 			double leftRadius, double rightRadius, double width) {
@@ -30,8 +31,8 @@ public class SquareDriver {
 			leftMotor.setSpeed(FORWARD_SPEED);
 			rightMotor.setSpeed(FORWARD_SPEED);
 
-			leftMotor.rotate(convertDistance(leftRadius, 90.1), true);
-			rightMotor.rotate(convertDistance(rightRadius, 90.1), false);
+			leftMotor.rotate(convertDistance(leftRadius, SQUARE_SIDE), true);	//used to be 90.1
+			rightMotor.rotate(convertDistance(rightRadius, SQUARE_SIDE), false);
 
 			// turn 90 degrees clockwise
 			leftMotor.setSpeed(ROTATE_SPEED);

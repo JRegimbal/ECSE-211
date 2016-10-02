@@ -21,8 +21,8 @@ public class Lab2 {
 	public static SampleProvider colorSensor = lightSensor.getMode("Red");
 
 	// Constants
-	public static final double WHEEL_RADIUS = 2.12;	//TODO update (bring measuring tape)
-	public static final double TRACK = 15.375;
+	public static final double WHEEL_RADIUS = 2.15;	//TODO update (bring measuring tape)
+	public static final double TRACK = 17.0; //15.375
 
 	public static void main(String[] args) {
 		int buttonChoice;

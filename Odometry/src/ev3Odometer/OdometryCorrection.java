@@ -17,6 +17,7 @@ public class OdometryCorrection extends Thread {
 	private double checkPoints[];
 	private int idleColor;
 	private float lastColor;
+	private final boolean useCorrection = true;
 
 	// constructor
 	public OdometryCorrection(Odometer odometer) {
@@ -28,6 +29,10 @@ public class OdometryCorrection extends Thread {
 
 	// run method (required for Thread)
 	public void run() {
+		if(!useCorrection)
+		{
+			return;
+		}
 		long correctionStart, correctionEnd;
 		Lab2.colorSensor.fetchSample(color,0);
 		lastColor = color[0] * 1000; //Scale the intensity value
