@@ -43,7 +43,17 @@ public class Odometer extends Thread {
 		while (true) {
 			updateStart = System.currentTimeMillis();
 			//TODO put (some of) your odometer code here
-			
+			//calculations and stuff up here to limit the amount of time we need to lock the mutex
+			this.leftMotorTachoCount = this.leftMotor.getTachoCount();	//update tachometer
+			this.rightMotorTachoCount = this.rightMotor.getTachoCount();
+								
+			double dLeft, dRight, dTheta, dPos; //change in x, y, theta (dLeft and dRight not using same basis as x and y - local to this point)
+			dLeft = Lab2.WHEEL_RADIUS * Math.PI * (this.leftMotorTachoCount - this.oldltacho) / 180.0;
+			dRight = Lab2.WHEEL_RADIUS * Math.PI * (this.rightMotorTachoCount - this.oldrtacho) / 180.0;
+			oldltacho = leftMotorTachoCount;
+			oldrtacho = rightMotorTachoCount;
+			dTheta = (dRight - dLeft)/Lab2.TRACK;
+			dPos = (dLeft + dRight)/2;
 			synchronized (lock) {
 				/**
 				 * Don't use the variables x, y, or theta anywhere but here!
@@ -51,16 +61,6 @@ public class Odometer extends Thread {
 				 * Do not perform complex math
 				 * 
 				 */
-				this.leftMotorTachoCount = this.leftMotor.getTachoCount();	//update tachometer
-				this.rightMotorTachoCount = this.rightMotor.getTachoCount();
-									
-				double dLeft, dRight, dTheta, dPos; //change in x, y, theta (dLeft and dRight not using same basis as x and y - local to this point)
-				dLeft = Lab2.WHEEL_RADIUS * Math.PI * (this.leftMotorTachoCount - this.oldltacho) / 180.0;
-				dRight = Lab2.WHEEL_RADIUS * Math.PI * (this.rightMotorTachoCount - this.oldrtacho) / 180.0;
-				oldltacho = leftMotorTachoCount;
-				oldrtacho = rightMotorTachoCount;
-				dTheta = (dRight - dLeft)/Lab2.TRACK;
-				dPos = (dLeft + dRight)/2;
 				theta = (theta + dTheta) % (2*Math.PI);	//radians
 				y += dPos*Math.sin(theta);
 				x += dPos*Math.cos(theta);
