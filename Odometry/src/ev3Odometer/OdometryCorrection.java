@@ -44,7 +44,7 @@ public class OdometryCorrection extends Thread {
 			//Intensity at line is < 300.
 			if(color[0] < 300 && lastColor < 300) continue; //Only register line when the last measurement DID NOT measure a line
 			lastColor = color[0];
-			count = count % 12; //So that we don't get an out of bounds exception after the test run
+			//count = count > 12 ? 12 : count;
 
 			// put your correction code here
 			
@@ -59,18 +59,19 @@ public class OdometryCorrection extends Thread {
 					//odometer.setTheta(count * Math.PI / 2);
 				}
 				else if(count < 3) { //First vertical 
-					odometer.setY(checkPoints[1] + count * 15.0); //Add fifteen to y once per line after last checkpoint
+					odometer.setY(checkPoints[1] + count * Lab2.SQUARE_LENGTH); //Add fifteen to y once per line after last checkpoint
 				}
 				else if(count < 6) { //First horizontal
-					odometer.setX(checkPoints[2] + (count - 3)* 15.0); //Add fifteen to x once per line after last checkpoint
+					odometer.setX(checkPoints[2] + (count - 3)* Lab2.SQUARE_LENGTH); //Add fifteen to x once per line after last checkpoint
 				}
 				else if(count < 9) { //Second vertical
-					odometer.setY(checkPoints[5] + (6 - count) * 15.0); //Subtract 15 from y once per line after last checkpoint
+					odometer.setY(checkPoints[5] + (6 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from y once per line after last checkpoint
 				}
 				else { //Second horizontal
-					odometer.setX(checkPoints[6] + (9 - count) * 15.0); //Subtract 15 from x once per line after last checkpoint
+					odometer.setX(checkPoints[6] + (9 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from x once per line after last checkpoint
 				}
 				count++; //Keep track of the amount of lines seen
+				count = count % 12; //So that we don't get an out of bounds exception after the test run
 			}
 			
 			// this ensure the odometry correction occurs only once every period

@@ -11,6 +11,8 @@ import lejos.robotics.SampleProvider;
 
 public class Lab2 {
 	
+	public static final double SQUARE_LENGTH = 30.48;
+	
 	// Static Resources:
 	// Left motor connected to output A
 	// Right motor connected to output D
