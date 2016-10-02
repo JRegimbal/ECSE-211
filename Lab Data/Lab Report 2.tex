@@ -65,15 +65,21 @@
 To determine the accuracy of the implemented odometry system, and implement a simple correction using a light sensor.
 \section{Method}
 \begin{enumerate}
-\item In the file Odometer.java, implement code that performs the task of an odometer as
+\item In the file \texttt{Odometer.java}, implement code that performs the task of an odometer as
 described in the Odometry tutorial and in class. You should only need to add member variables
-to and modify the run() method of the Odometer class.
+to and modify the \texttt{run()} method of the /texttt{Odometer} class.
 \item Run the robot in a 3-by-3 tile square (where one tile is 30.48 cm in linear dimension) using the
-provided code and tweak the leftRadius, rightRadius, and width parameters passed
-to the SquareDriver.drive() method in Lab2.java until the robot returns
+provided code and tweak the \texttt{leftRadius}, \texttt{rightRadius}, and \texttt{width} parameters passed
+to the \texttt{SquareDriver.drive()} method in \texttt{Lab2.java} until the robot returns
 (approximately) to its starting position. If your left and right wheel motors are not connected to
 motor ports A and B respectively, you may need to also modify those parameters. The call to
-SquareDriver.drive() is shown below.
+\texttt{SquareDriver.drive()} is shown below.\\
+\\
+\texttt{SquareDriver.drive(leftMotor, rightMotor, leftRadius, rightRadius, width);}
+\item Now, run the robot in a 3-by-3 tile square ten (10) times and measure the signed x and ydistances from the actual location of the robot on the field (recalling that its starting position isthe origin) to that reported by its odometer. Feel free to calibrate your odometer prior to thisstep. Record these results. (Note: Your odometer is reporting the position of the point directlybetween your wheel axles).
+\item In the file \texttt{OdometryCorrection.java}, implement code that, using the light sensor,detects grid lines and updates/corrects the odometer's position data as needed. Your robotshould start its motion in the center of a tile, and thus grid lines will occur at x = 15 cm, 45 cm,75 cm, ... and y = 15 cm, 45 cm, 75 cm, .... You do not need to account for grid line intersectionsin this case.
+\item Repeat step (3) with your odometry correction enabled. Do not recalibrate your odometer.
+\item Demonstrate to a TA your code. The TA will first 'float' your motors (i.e. the motors will be shut off in such a way that they do not provide resistance to being backdriven) and push your robot on the field to confirm that your odometer works correctly. The TA will then start your robot off-center in a tile and look for it to report its correct position after running in a 3-by-3 tile square.
 \end{enumerate}
 \section{Data}
 \begin{center}
@@ -129,5 +135,9 @@ be smaller? Explain.}
 \section{Observations and Conclusion}
 
 \section{Further Improvements}
+\subsection{Propose a means of, in software, reducing the slip of the robot's wheels (do not provide code).}
+\subsection{Propose a means of, in software, correcting the angle reported by the odometer, when (do not provide code):}
+\subsubsection{The robot has two light sensors.}
+\subsubsection{The robot has only one light sensor.}
 
 \end{document}
