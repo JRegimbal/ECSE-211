@@ -54,21 +54,21 @@ public class OdometryCorrection extends Thread {
 				//Every third line comes after a corner, thus there is no guaranteed difference in x or y.
 				//Therefore, store the brick's position at these points.
 				if(count % 3 == 0) {
-					checkPoints[(2*count)/3] = odometer.getX();
-					checkPoints[(2*count)/3 + 1] = odometer.getY(); 
+					checkPoints[(2*count)/3] = odometer.getY();
+					checkPoints[(2*count)/3 + 1] = odometer.getX(); 
 					//odometer.setTheta(count * Math.PI / 2);
 				}
 				else if(count < 3) { //First vertical 
-					odometer.setY(checkPoints[1] + count * Lab2.SQUARE_LENGTH); //Add fifteen to y once per line after last checkpoint
+					odometer.setX(checkPoints[1] + count * Lab2.SQUARE_LENGTH); //Add fifteen to y once per line after last checkpoint
 				}
 				else if(count < 6) { //First horizontal
-					odometer.setX(checkPoints[2] + (count - 3)* Lab2.SQUARE_LENGTH); //Add fifteen to x once per line after last checkpoint
+					odometer.setY(checkPoints[2] - (count - 3)* Lab2.SQUARE_LENGTH); //Add fifteen to x once per line after last checkpoint
 				}
 				else if(count < 9) { //Second vertical
-					odometer.setY(checkPoints[5] + (6 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from y once per line after last checkpoint
+					odometer.setX(checkPoints[5] + (6 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from y once per line after last checkpoint
 				}
 				else { //Second horizontal
-					odometer.setX(checkPoints[6] + (9 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from x once per line after last checkpoint
+					odometer.setY(checkPoints[6] - (9 - count) * Lab2.SQUARE_LENGTH); //Subtract 15 from x once per line after last checkpoint
 				}
 				count++; //Keep track of the amount of lines seen
 				count = count % 12; //So that we don't get an out of bounds exception after the test run
