@@ -3,6 +3,8 @@
  */
 package ev3Odometer;
 
+import java.util.Arrays;
+
 import lejos.hardware.sensor.EV3ColorSensor;
 
 public class OdometryCorrection extends Thread {
@@ -10,21 +12,24 @@ public class OdometryCorrection extends Thread {
 	private Odometer odometer;
 	private float color[];
 	
-	private static final float THRESHOLD = 0.5f;
+	private static final double THRESHOLD_THETA = 40.0 * Math.PI / 180.0;
+	private static final double THRESHOLD_POS = 5.0;
 	public static int count;
 	private int colorID;
 	private double correctedValue;
-	private double checkPoints[];
+	private double lastPosition[];
 	private int idleColor;
 	private float lastColor;
 	private final boolean useCorrection = true;
+	private final boolean updateAll[] = {true, true, true};
 
 	// constructor
 	public OdometryCorrection(Odometer odometer) {
 		this.odometer = odometer;
 		count = 0;
 		color = new float[Lab2.colorSensor.sampleSize()];
-		checkPoints = new double[8];
+		lastPosition = new double[3]; //x, y, theta
+		odometer.getPosition(lastPosition, updateAll);	//need to set theta - may as well get current x and y
 	}
 
 	// run method (required for Thread)
@@ -51,6 +56,7 @@ public class OdometryCorrection extends Thread {
 			if(color[0] < 300) //Detected black
 			{
 				System.out.println("         LINE");
+				/*
 				//Every third line comes after a corner, thus there is no guaranteed difference in x or y.
 				//Therefore, store the brick's position at these points.
 				if(count % 3 == 0) {
@@ -72,6 +78,28 @@ public class OdometryCorrection extends Thread {
 				}
 				count++; //Keep track of the amount of lines seen
 				count = count % 12; //So that we don't get an out of bounds exception after the test run
+				*/
+				double currentPosition[] = new double[3];
+				odometer.getPosition(currentPosition, updateAll);
+				//check theta (see if we changed heading and turned)
+				if(Math.abs(currentPosition[2] - lastPosition[2]) < THRESHOLD_THETA)
+				{
+					if(Math.abs(Lab2.SQUARE_LENGTH + lastPosition[1] - currentPosition[1]) < THRESHOLD_POS ||	//no line missed
+							Math.abs(Lab2.SQUARE_LENGTH + lastPosition[0] - currentPosition[0]) < THRESHOLD_POS)
+					{
+						if(Math.abs(currentPosition[2] - 0.00) < THRESHOLD_THETA) //+x direction
+							odometer.setX(lastPosition[0] + Lab2.SQUARE_LENGTH);
+						else if(Math.abs(currentPosition[2] - (-Math.PI/2)) < THRESHOLD_THETA) //-y
+							odometer.setY(lastPosition[1] - Lab2.SQUARE_LENGTH);
+						else if(Math.abs(currentPosition[2] - (-Math.PI)) < THRESHOLD_THETA) //-x
+							odometer.setX(lastPosition[0] - Lab2.SQUARE_LENGTH);
+						else if(Math.abs(currentPosition[2] - (-Math.PI*3/2)) < THRESHOLD_THETA) //+y
+							odometer.setY(lastPosition[1] + Lab2.SQUARE_LENGTH);
+					}
+				}
+				//if nothing was done in the above block we either missed a line or turned and we just need to update
+				lastPosition = currentPosition.clone();
+				count++;
 			}
 			
 			// this ensure the odometry correction occurs only once every period

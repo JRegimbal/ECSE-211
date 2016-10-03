@@ -11,8 +11,6 @@ import lejos.robotics.SampleProvider;
 
 public class Lab2 {
 	
-	public static final double SQUARE_LENGTH = 30.48;
-	
 	// Static Resources:
 	// Left motor connected to output A
 	// Right motor connected to output D
@@ -23,8 +21,9 @@ public class Lab2 {
 	public static SampleProvider colorSensor = lightSensor.getMode("Red");
 
 	// Constants
-	public static final double WHEEL_RADIUS = 2.15;	//TODO update (bring measuring tape)
-	public static final double TRACK = 17.0; //15.375
+	public static final double WHEEL_RADIUS = 2.20;	//TODO update (bring measuring tape) (was 2.15)
+	public static final double TRACK = 16.5; //15.375 (was 17.0)
+	public static final double SQUARE_LENGTH = 30.48;
 
 	public static void main(String[] args) {
 		int buttonChoice;
