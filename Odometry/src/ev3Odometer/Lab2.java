@@ -21,9 +21,9 @@ public class Lab2 {
 	public static SampleProvider colorSensor = lightSensor.getMode("Red");
 
 	// Constants
-	public static final double WHEEL_RADIUS = 2.20;	//TODO update (bring measuring tape) (was 2.15)
-	public static final double TRACK = 16.5; //15.375 (was 17.0)
-	public static final double SQUARE_LENGTH = 30.48;
+	public static final double WHEEL_RADIUS = 2.20;	//radius of wheels in cm - left and right are the same so this works for both
+	public static final double TRACK = 16.5; //distance between wheels in cm
+	public static final double SQUARE_LENGTH = 30.48;	//convenient to have this marked down in one
 
 	public static void main(String[] args) {
 		int buttonChoice;

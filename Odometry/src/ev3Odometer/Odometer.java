@@ -47,7 +47,7 @@ public class Odometer extends Thread {
 			this.leftMotorTachoCount = this.leftMotor.getTachoCount();	//update tachometer
 			this.rightMotorTachoCount = this.rightMotor.getTachoCount();
 								
-			double dLeft, dRight, dTheta, dPos; //change in x, y, theta (dLeft and dRight not using same basis as x and y - local to this point)
+			double dLeft, dRight, dTheta, dPos; //left wheel movement, right wheel movement, change in heading, and change in position
 			dLeft = Lab2.WHEEL_RADIUS * Math.PI * (this.leftMotorTachoCount - this.oldltacho) / 180.0;
 			dRight = Lab2.WHEEL_RADIUS * Math.PI * (this.rightMotorTachoCount - this.oldrtacho) / 180.0;
 			oldltacho = leftMotorTachoCount;
