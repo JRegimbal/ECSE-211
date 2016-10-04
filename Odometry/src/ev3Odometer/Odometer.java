@@ -62,6 +62,7 @@ public class Odometer extends Thread {
 				 * 
 				 */
 				theta = (theta + dTheta) % (2*Math.PI);	//radians
+				if(theta < 0.0) theta += 2*Math.PI;
 				y += dPos*Math.sin(theta);
 				x += dPos*Math.cos(theta);
 			}
