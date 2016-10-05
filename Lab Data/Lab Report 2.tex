@@ -60,7 +60,7 @@
 \pagenumbering{gobble}
 \begin{document}
 \maketitle
-
+\pagenumbering{arabic}
 \section{Objective}
 To determine the accuracy of the implemented odometry system, and implement a simple correction using a light sensor.
 \section{Method}
@@ -143,8 +143,8 @@ odometer reading was modified when the robot passed a grid line. The grid lines 
 distance away from each other, thus change in position can be accurately measured (in one spatial
 axis at a time) by detecting the grid lines. Therefore, with the odometry correction, no matter how
 much the wheels spin the robot could more accurately report its position as it crosses the gridline,
-reducing the effect of wheel spin on the overall odometer reading. This allows for more precise
-measurements.
+reducing the effect of wheel spin on the overall odometer reading. This allows for more precise and
+accurate measurements.
 \subsection{With correction, do you expect that the error in the x position or the y position will
 be smaller? Explain.}
 With the odometry correction, the errors in the x position and y position should be smaller, as
