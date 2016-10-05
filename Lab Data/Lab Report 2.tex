@@ -7,6 +7,7 @@
 \documentclass[11pt]{article} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{gensymb}
 
 %%% Examples of Article customizations
 % These packages are optional, depending whether you want the features they provide.
@@ -173,6 +174,19 @@ line, the current odometer reading of position is stored. Then, when the other s
 detects a grid line, the new position readings are compared to the saved ones to determine the
 change in tachometer readings of the left and right motors. With this data, the angle can be
 calculated.
+\begin{figure}[h]
+	\begin{center}
+		\caption{Configuration of light sensors on the robot}
+		\includegraphics[scale=0.5]{2SensorDiagram}
+	\end{center}
+\end{figure}
+For the sake of simplicity in the following example, assume the robot is travelling approximately in the positive y direction (note, the \texttt{OdometryCorrection} presently determines the orientation of the
+robo, so determining the approximate direction of the robot is trivial). When one sensor crosses a
+grid line, the robot's position $(x_0,y_0)$ is stored. Next, when the other light sensor crosses a
+grid line, the robot's position $(x_1,y_1)$ is stored. It is likely that if the robot is travelling
+approximately in the positive y direction that the difference $x_1 - x_0$ is greater than $y_1 -
+y_0$ (otherwise, it would appear as though the robot was travelling approximately along the x axis).
+Thus, we derive $\theta = 90 \degree - \arcsin (\frac{y_1 - y_0}{\delta})$.
 \subsubsection{The robot has only one light sensor.}
 With one light sensor, the angle of the robot can be corrected as well. At each line crossing, the
 odometer reading of the robot can be stored. For the purpose of explanation, assume the robot is
