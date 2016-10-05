@@ -82,49 +82,63 @@ motor ports A and B respectively, you may need to also modify those parameters. 
 \item Demonstrate to a TA your code. The TA will first 'float' your motors (i.e. the motors will be shut off in such a way that they do not provide resistance to being backdriven) and push your robot on the field to confirm that your odometer works correctly. The TA will then start your robot off-center in a tile and look for it to report its correct position after running in a 3-by-3 tile square.
 \end{enumerate}
 \section{Data}
+\begin{figure}[h]
 \begin{center}
-\begin{tabular}{ | c | c | c | c | }
-\multicolumn{4}{c}{Offset from Origin - Correction Disabled} \\ \hline
-Trial No. & X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
-1 & -0.42 & -0.66 & 0.01 \\ \hline
-2 & -0.67 & -0.86 & 0.01 \\ \hline
-3 & -0.84 & -0.84 & 0.01 \\ \hline
-4 & -0.45 & -0.46 & 0.01 \\ \hline
-5 & -0.64 & -0.82 & 0.01 \\ \hline
-6 & -0.82 & -0.45 & 0.01 \\ \hline
-7 & -0.69 & -0.66 & 0.01 \\ \hline
-8 & -0.39 & -0.44 & 0.01 \\ \hline
-9 & -0.84 & -0.66 & 0.01 \\ \hline
-10 & -0.64 & -0.63 & 0.01 \\ \hline
-Standard Deviation & 0.17 & 0.16 & \\ \hline
+\caption{Offset from Origin - Correction Disabled}
+\begin{tabular}{ | c | c | c | c | c | c |}
+\multicolumn{4}{c}{} \\ \hline
+Trial No. & X (cm) & Y (cm) & $\theta$ (rad) & X Error (cm) & Y Error (cm) \\ \hline
+1 & -0.42 & -0.66 & 0.01 & 0.13 & 0.2\\ \hline
+2 & -0.67 & -0.86 & 0.01 & -0.15 & 0.2\\ \hline
+3 & -0.84 & -0.84 & 0.01 & 0.2 & -0.05\\ \hline
+4 & -0.45 & -0.46 & 0.01 & -0.05 & 0.9\\ \hline
+5 & -0.64 & -0.82 & 0.01 & 0.8 & 0.4\\ \hline
+6 & -0.82 & -0.45 & 0.01 & -0.7 & -0.4\\ \hline
+7 & -0.69 & -0.66 & 0.01 & 0.3 & -0.3\\ \hline
+8 & -0.39 & -0.44 & 0.01 & 0.1 & 0.1\\ \hline
+9 & -0.84 & -0.66 & 0.01 & -0.4 & -0.7\\ \hline
+10 & -0.64 & -0.63 & 0.01 & 0.3 & 0.1\\ \hline
+Standard Deviation & 0.17 & 0.16 & & 0.41 & 0.45\\ \hline
 \end{tabular}
 \end{center}
+\end{figure}
 
+\begin{figure}[h]
 \begin{center}
-\begin{tabular}{ | c | c | c | c | }
-\multicolumn{4}{c}{Offset from Origin - Correction Enabled} \\ \hline
-Trial No. & X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
-1 & -0.04 & -0.09 & 0.01 \\ \hline
-2 & -0.28 & -0.18 & 0.01 \\ \hline
-3 & -0.18 & -0.19 & 0.01 \\ \hline
-4 & -0.28 & -0.27 & 0.01 \\ \hline
-5 & -0.31 & -0.18 & 0.01 \\ \hline
-6 & -0.19 & -0.20 & 0.01 \\ \hline
-7 & -0.27 & -0.13 & 0.01 \\ \hline
-8 & -0.18 & -0.25 & 0.01 \\ \hline
-9 & -0.08 & -0.12 & 0.01 \\ \hline
-10 & -0.17 & -0.11 & 0.01 \\ \hline
-Standard Deviation & 0.09 & 0.06 & \\ \hline
+\caption{Offset from Origin - Correction Enabled}
+\begin{tabular}{ | c | c | c | c | c | c |}
+\multicolumn{4}{c}{} \\ \hline
+Trial No. & X (cm) & Y (cm) & $\theta$ (rad) & X Error (cm) & Y Error (cm)\\ \hline
+1 & -0.04 & -0.09 & 0.01 & 0.0 & -0.1\\ \hline
+2 & -0.28 & -0.18 & 0.01 & 0.1 & 0.1\\ \hline
+3 & -0.18 & -0.19 & 0.01 & -0.1 & 0.0\\ \hline
+4 & -0.28 & -0.27 & 0.01 & 0.1 & 0.1\\ \hline
+5 & -0.31 & -0.18 & 0.01 & -0.2 & 0.1\\ \hline
+6 & -0.19 & -0.20 & 0.01 & 0.1 & 0.1\\ \hline
+7 & -0.27 & -0.13 & 0.01 & 0.0 & 0.1\\ \hline
+8 & -0.18 & -0.25 & 0.01 & 0.1 & -0.2\\ \hline
+9 & -0.08 & -0.12 & 0.01 & -0.1 & 0.1\\ \hline
+10 & -0.17 & -0.11 & 0.01 & 0.0 & -0.05\\ \hline
+Standard Deviation & 0.09 & 0.06 & & 0.105 & 0.109\\ \hline
 \end{tabular}
 \end{center}
+\end{figure}
 
 \section{Data Analysis}
 \subsection{What was the standard deviation of the results without correction? Did it decrease when
 the correction was introduced? Explain why/why not.}
+\begin{equation}
+	\mbox{Standard Deviation} = \sqrt { \frac{\sum_{k=1}^{10}(\Delta P_{k})^2}{9} }
+\end{equation}
+The standard deviation was calculated by formula (1), where $\Delta P_k$ is the error in odometer
+measurement of the $k^{th}$ trial in the $P$ axis.
 The standard deviation of the data corresponding to the robot's distance from the origin without any
-odometry correction was 0.17cm on the X axis and 0.16cm on the Y axis. The standard deviation did
+odometry correction was 0.17cm on the X axis and 0.16cm on the Y axis. Furthermore, the standard
+deviation in the \textit{error} in measurements on the x and y axes were 0.41cm and 0.45cm,
+respectively. The standard deviation did
 decrease significantly with the odometry correction enabled, as the standard deviation of the X
-position was measured to be 0.09cm, and only 0.06cm for the Y position. This makes sense, as the
+position was measured to be 0.09cm, and only 0.06cm for the Y position, and 0.105cm and 0.109cm for
+their respective errors. This makes sense, as the
 odometer reading was modified when the robot passed a grid line. The grid lines are a known, fixed
 distance away from each other, thus change in position can be accurately measured (in one spatial
 axis at a time) by detecting the grid lines. Therefore, with the odometry correction, no matter how
@@ -145,7 +159,7 @@ subsequent line crossings. This way, there is no reason why either the x positio
 should have smaller error.
 %\includegraphics{Bubbles.png}
 \section{Observations and Conclusion}
-
+The error observed would not be tolerable should the robot travel greater distances.
 \section{Further Improvements}
 \subsection{Propose a means of, in software, reducing the slip of the robot's wheels (do not provide code).}
 To reduce the slip of the robot's wheels in software, the acceleration of the motors can be
