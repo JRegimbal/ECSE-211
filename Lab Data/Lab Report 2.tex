@@ -40,7 +40,7 @@
 
 %%% SECTION TITLE APPEARANCE
 \usepackage{sectsty}
-\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+%\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
 % (This matches ConTeXt defaults)
 
 %%% ToC (table of contents) APPEARANCE
@@ -83,36 +83,38 @@ motor ports A and B respectively, you may need to also modify those parameters. 
 \end{enumerate}
 \section{Data}
 \begin{center}
-\begin{tabular}{ | c | c | c | }
-\multicolumn{3}{c}{Offset from Origin - Correction Disabled} \\ \hline
-X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
--0.42 & -0.66 & 0.01 \\ \hline
--0.67 & -0.86 & 0.01 \\ \hline
--0.84 & -0.84 & 0.01 \\ \hline
--0.45 & -0.46 & 0.01 \\ \hline
--0.64 & -0.82 & 0.01 \\ \hline
--0.82 & -0.45 & 0.01 \\ \hline
--0.69 & -0.66 & 0.01 \\ \hline
--0.39 & -0.44 & 0.01 \\ \hline
--0.84 & -0.66 & 0.01 \\ \hline
--0.64 & -0.63 & 0.01 \\ \hline
+\begin{tabular}{ | c | c | c | c | }
+\multicolumn{4}{c}{Offset from Origin - Correction Disabled} \\ \hline
+Trial No. & X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
+1 & -0.42 & -0.66 & 0.01 \\ \hline
+2 & -0.67 & -0.86 & 0.01 \\ \hline
+3 & -0.84 & -0.84 & 0.01 \\ \hline
+4 & -0.45 & -0.46 & 0.01 \\ \hline
+5 & -0.64 & -0.82 & 0.01 \\ \hline
+6 & -0.82 & -0.45 & 0.01 \\ \hline
+7 & -0.69 & -0.66 & 0.01 \\ \hline
+8 & -0.39 & -0.44 & 0.01 \\ \hline
+9 & -0.84 & -0.66 & 0.01 \\ \hline
+10 & -0.64 & -0.63 & 0.01 \\ \hline
+Standard Deviation & 0.17 & 0.16 & \\ \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
-\begin{tabular}{ | c | c | c | }
-\multicolumn{3}{c}{Offset from Origin - Correction Enabled} \\ \hline
-X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
--0.04 & -0.09 & 0.01 \\ \hline
--0.28 & -0.18 & 0.01 \\ \hline
--0.18 & -0.19 & 0.01 \\ \hline
--0.28 & -0.27 & 0.01 \\ \hline
--0.31 & -0.18 & 0.01 \\ \hline
--0.19 & -0.20 & 0.01 \\ \hline
--0.27 & -0.13 & 0.01 \\ \hline
--0.18 & -0.25 & 0.01 \\ \hline
--0.08 & -0.12 & 0.01 \\ \hline
--0.17 & -0.11 & 0.01 \\ \hline
+\begin{tabular}{ | c | c | c | c | }
+\multicolumn{4}{c}{Offset from Origin - Correction Enabled} \\ \hline
+Trial No. & X (cm) & Y (cm) & $\theta$ (rad)\\ \hline
+1 & -0.04 & -0.09 & 0.01 \\ \hline
+2 & -0.28 & -0.18 & 0.01 \\ \hline
+3 & -0.18 & -0.19 & 0.01 \\ \hline
+4 & -0.28 & -0.27 & 0.01 \\ \hline
+5 & -0.31 & -0.18 & 0.01 \\ \hline
+6 & -0.19 & -0.20 & 0.01 \\ \hline
+7 & -0.27 & -0.13 & 0.01 \\ \hline
+8 & -0.18 & -0.25 & 0.01 \\ \hline
+9 & -0.08 & -0.12 & 0.01 \\ \hline
+10 & -0.17 & -0.11 & 0.01 \\ \hline
+Standard Deviation & 0.09 & 0.06 & \\ \hline
 \end{tabular}
 \end{center}
 
@@ -131,13 +133,37 @@ reducing the effect of wheel spin on the overall odometer reading. This allows f
 measurements.
 \subsection{With correction, do you expect that the error in the x position or the y position will
 be smaller? Explain.}
-\includegraphics{Bubbles.png}
+With the odometry correction, the errors in the x position and y position should be smaller, as
+described in \textbf{4.1}. Considering the design implemented in this lab, there is no reason why
+one direction would see more error than the other, as the motion is perfectly symmetric. To avoid
+direction bias and compromised corrections to the odometer readings, the \texttt{OdometryCorrection}
+implementation does not tamper with odometer data at the first line crossing after each corner.
+Unmeasurable slipping occurs when turning corners, thus there is no guarantee in displacement when
+the robot turns a corner and crosses a line. Therefore, \texttt{OdometryCorrection} simply saves the
+current odometer readings at the first line crossing after a corner, and offsets those readings at
+subsequent line crossings. This way, there is no reason why either the x position or y position
+should have smaller error.
+%\includegraphics{Bubbles.png}
 \section{Observations and Conclusion}
 
 \section{Further Improvements}
 \subsection{Propose a means of, in software, reducing the slip of the robot's wheels (do not provide code).}
+To reduce the slip of the robot's wheels in software, the acceleration of the motors can be
+decreased. When the angular acceleration of a wheel is too high, slipping occurs. The motors of the
+robot accelerate when the robot starts moving and when it turns corners. Thus, by reducing
+the acceleration of the motors, the amount of slipping can be drastically reduced.
 \subsection{Propose a means of, in software, correcting the angle reported by the odometer, when (do not provide code):}
 \subsubsection{The robot has two light sensors.}
+Say the robot has two light sensors at its front, one on each side. When one sensor detects a grid
+line, the current odometer reading of position is stored. Then, when the other sensor
+detects a grid line, the new position readings are compared to the saved ones to determine the
+change in tachometer readings of the left and right motors. With this data, the angle can be
+calculated.
 \subsubsection{The robot has only one light sensor.}
+With one light sensor, the angle of the robot can be corrected as well. At each line crossing, the
+odometer reading of the robot can be stored. For the purpose of explanation, assume the robot is
+moving in the positive y direction. Now, between two line crossings, it is guaranteed that the y
+position of the robot has increased by 30.48cm. The difference in x positions can be measured then,
+and the angle $\theta$ can be calculated as $\theta = \arctan{(\frac{\Delta x}{30.48})}$.
 
 \end{document}
