@@ -160,7 +160,7 @@ subsequent line crossings. This way, there is no reason why either the x positio
 should have smaller error.
 %\includegraphics{Bubbles.png}
 \section{Observations and Conclusion}
-The error observed would not be tolerable should the robot travel greater distances.
+The error observed would not be tolerable should the robot travel greater distances. Just observing the robot making a few laps around the track as is, it is clear that the error in the odometry readings increases with each successive lap. The uncorrected odometer readings get their main source of error from wheel slipage. As the path the robot must travel increases in distance, opportunities for wheel slipage continue to come and increase the error in odometry. However if the nature of the path and robot's motion remains the same - that is to say the robot isn't made to quickly accelerate and the path the robot drives on keeps the same physical properties - the frequency of slipage $f$ remains the same. The longer path simply increases the amount of time necessary to complete the task, resulting in a larger number of slips proportional to time. So error in odometry under these conditions should grow linearly with respect to distance.
 \section{Further Improvements}
 \subsection{Propose a means of, in software, reducing the slip of the robot's wheels (do not provide code).}
 To reduce the slip of the robot's wheels in software, the acceleration of the motors can be
