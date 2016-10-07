@@ -8,6 +8,7 @@
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 \usepackage{gensymb}
+\usepackage{amsfonts}
 
 %%% Examples of Article customizations
 % These packages are optional, depending whether you want the features they provide.
@@ -15,7 +16,7 @@
 
 %%% PAGE DIMENSIONS
 \usepackage{geometry} % to change the page dimensions
-\geometry{a4paper} % or letterpaper (US) or a5paper or....
+\geometry{margin=2cm} % or letterpaper (US) or a5paper or....
 % \geometry{margin=2in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
@@ -160,7 +161,18 @@ subsequent line crossings. This way, there is no reason why either the x positio
 should have smaller error.
 %\includegraphics{Bubbles.png}
 \section{Observations and Conclusion}
-The error observed would not be tolerable should the robot travel greater distances. Just observing the robot making a few laps around the track as is, it is clear that the error in the odometry readings increases with each successive lap. The uncorrected odometer readings get their main source of error from wheel slipage. As the path the robot must travel increases in distance, opportunities for wheel slipage continue to come and increase the error in odometry. However if the nature of the path and robot's motion remains the same - that is to say the robot isn't made to quickly accelerate and the path the robot drives on keeps the same physical properties - the frequency of slipage $f$ remains the same. The longer path simply increases the amount of time necessary to complete the task, resulting in a larger number of slips proportional to time. So error in odometry under these conditions should grow linearly with respect to distance.
+The error observed would not be tolerable should the robot travel greater distances. Just observing
+the robot making a few laps around the track as is, it is clear that the error in the odometry
+readings increases with each successive lap. The uncorrected odometer readings get their main source
+of error from wheel slippage. As the path the robot must travel increases in distance, opportunities
+for wheel slippage continue to come and increase the error in odometry. However if the nature of the
+path and robot's motion remains the same - that is to say the robot isn't made to quickly accelerate
+and the path the robot drives on keeps the same physical properties - the frequency of slippage $f$
+remains the same. The longer path simply increases the amount of time necessary to complete the
+task, resulting in a larger number of slips proportional to time. So error in odometry under these
+conditions should grow linearly with respect to distance. Therefore, if the robot were to travel at
+a distance of five times the length that was tested, the error of the odometer will be approximately
+five times greater, which would not be tolerable.
 \section{Further Improvements}
 \subsection{Propose a means of, in software, reducing the slip of the robot's wheels (do not provide code).}
 To reduce the slip of the robot's wheels in software, the acceleration of the motors can be
@@ -174,24 +186,36 @@ line, the current odometer reading of position is stored. Then, when the other s
 detects a grid line, the new position readings are compared to the saved ones to determine the
 change in tachometer readings of the left and right motors. With this data, the angle can be
 calculated.
-\begin{figure}[h]
+\begin{figure}[h!t]
 	\begin{center}
 		\caption{Configuration of light sensors on the robot}
-		\includegraphics[scale=0.5]{2SensorDiagram}
+		\includegraphics[scale=0.4]{2SensorDiagram}
 	\end{center}
 \end{figure}
-For the sake of simplicity in the following example, assume the robot is travelling approximately in the positive y direction (note, the \texttt{OdometryCorrection} presently determines the orientation of the
-robo, so determining the approximate direction of the robot is trivial). When one sensor crosses a
+For the sake of simplicity in the following example, assume the robot is travelling approximately in
+the positive y direction. To correct the heading, the robot can start by storing its ideal heading
+$\theta = k\frac{\pi}{2}, \mbox{ } k \in \mathbb{N}$ where $k$ depends on the amount of lines
+already crossed. In this example, since the robot travels in the positive y direction, $\theta =
+\frac{\pi}{2}$ radians. When one sensor crosses a
 grid line, the robot's position $(x_0,y_0)$ is stored. Next, when the other light sensor crosses a
-grid line, the robot's position $(x_1,y_1)$ is stored. It is likely that if the robot is travelling
-approximately in the positive y direction that the difference $x_1 - x_0$ is greater than $y_1 -
-y_0$ (otherwise, it would appear as though the robot was travelling approximately along the x axis).
-Thus, we derive $\theta = 90 \degree - \arcsin (\frac{y_1 - y_0}{\delta})$.
+grid line, the robot's position $(x_1,y_1)$ is stored. Now, the points $(x_1,y_1),(x_0,y_0)$ depict
+the linear trajectory of the robot as it crosses the grid line. With this data, the corrected heading
+$\Theta$ can be calculated as $\Theta = \theta - \arctan(\frac{x_1 - x_0}{y_1 - y_0})$, again
+assuming the robot travels along the y axis. Similar logic follows for other orientations of the
+robot.
 \subsubsection{The robot has only one light sensor.}
 With one light sensor, the angle of the robot can be corrected as well. At each line crossing, the
 odometer reading of the robot can be stored. For the purpose of explanation, assume the robot is
 moving in the positive y direction. Now, between two line crossings, it is guaranteed that the y
 position of the robot has increased by 30.48cm. The difference in x positions can be measured then,
-and the angle $\theta$ can be calculated as $\theta = \arctan{(\frac{\Delta x}{30.48})}$.
+and the angle $\Theta$ can be calculated as $\Theta = \theta - \arctan{(\frac{\Delta x}{30.48})}$,
+where $\theta$ represents the same ideal heading as described in \textbf{6.2.1}, and $\Delta x$
+represents the change in $x$ position in this example. Once again, similar logic follows for other
+orientations of the robot. Note that in this correction scheme, the heading is corrected using data
+acquired from two separate line crossings, whereas the scheme proposed in \textbf{6.2.1} makes a
+correction using data acquired throughout one line crossing. The robot travels a smaller distance
+between measurements in the scheme presented in \textbf{6.2.1}, therefore there is less error
+introduced into the algorithm, so it will likely produce a more accurate correction than the
+algorithm described here in \textbf{6.2.2}.
 
 \end{document}
