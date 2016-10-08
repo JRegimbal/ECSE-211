@@ -34,6 +34,6 @@ public class BasicController implements UltrasonicController {
 
 	@Override
 	public int readUSDistance() {
-		return this.distance();
+		return this.distance;
 	}
 }

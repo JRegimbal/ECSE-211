@@ -21,8 +21,6 @@ public class OdometryDisplay extends Thread {
 
 		while (true) {
 			displayStart = System.currentTimeMillis();
-			Lab2.colorSensor.fetchSample(color,0);
-			color[0] *= 1000.0f;
 
 			// clear the lines for displaying odometry information
 			t.drawString("X:              ", 0, 0);

@@ -21,7 +21,7 @@ public class Printer extends Thread {
 		while(true) {
 			t.clear();
 			t.drawString("On course: ",0,0);
-			if(this.option = Button.ID_LEFT) {
+			if(this.option == Button.ID_LEFT) {
 				t.drawString("Part 1",0,1);
 			}
 			else if (this.option == Button.ID_RIGHT) {

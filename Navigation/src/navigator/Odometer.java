@@ -38,7 +38,7 @@ public class Odometer extends Thread {
 			dRight = Lab3.WHEEL_RADIUS * Math.PI * (this.rightMotorTachoCount - this.oldrtacho) / 180.0;
 			oldltacho = leftMotorTachoCount;
 			oldrtacho = rightMotorTachoCount;
-			dTheta = (dRight - dLeft)/Lab3.TRACK;
+			dTheta = (dLeft - dRight)/Lab3.TRACK;
 			dPos = (dLeft + dRight)/2;
 			synchronized (mutex) {
 				/**
@@ -48,9 +48,9 @@ public class Odometer extends Thread {
 				 * 
 				 */
 				theta = (theta + dTheta) % (2*Math.PI);	//radians - wrap around
-				if(theta < 0.0) theta += 2*Math.PI; //No negative angles
-				y += dPos*Math.sin(theta);
-				x += dPos*Math.cos(theta);
+				//if(theta < 0.0) theta += 2*Math.PI; //No negative angles
+				y += dPos*Math.cos(theta);
+				x += dPos*Math.sin(theta);
 			}
 
 			// this ensures that the odometer only runs once every period
@@ -70,8 +70,8 @@ public class Odometer extends Thread {
 	public void getPosition(double[] position, boolean[] update) {
 		synchronized(mutex) {
 			if(update[0]) position[0] = x;
-			if(update[1]) position[1] = x;
-			if(update[2]) position[2] = x;
+			if(update[1]) position[1] = y;
+			if(update[2]) position[2] = theta;
 		}
 	}
 

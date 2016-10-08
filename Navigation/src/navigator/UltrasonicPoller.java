@@ -1,10 +1,10 @@
-package navigation;
+package navigator;
 
 import lejos.robotics.SampleProvider;
 
 public class UltrasonicPoller extends Thread {
 	private SampleProvider us;
-	private UltraSonicController cont;
+	private UltrasonicController cont;
 	private float[] usData;
 
 	public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicController cont) {

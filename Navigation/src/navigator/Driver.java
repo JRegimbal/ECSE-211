@@ -1,7 +1,5 @@
 package navigator;
 
-import lejos.hardware.EV3LargeRegulatedMotor;
-
-public interface Driver {
+public interface Driver extends UltrasonicController{
 	public void drive();
 }
