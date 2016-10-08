@@ -18,6 +18,7 @@ public class Lab3 {
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	public static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	public static final double WHEEL_RADIUS = 2.141;
 	public static final double TRACK = 14.73;
@@ -53,15 +54,15 @@ public class Lab3 {
 								0.0,30.0,
 								0.0,0.0};*/
 		
-		double waypoints2[] = {60.0,0.0,0.0,60.0};
+		double waypoints2[] = {0.0,60.0,60.0,0.0};
 		
 
 		switch(option) {
 			case Button.ID_LEFT:
 				//TODO Implement part 1
-				printer = new Printer(option,controller);
 				//(0,0) -> (0,60) -> (30,30) -> (30,60) -> (60,0)
-				driver = new BlindPathDriver(waypoints,leftMotor,rightMotor,odometer,TRACK);
+				driver = new BlindPathDriver(waypoints,leftMotor,rightMotor,odometer,TRACK,false);
+				printer = new Printer(option,driver);
 				usPoller = new UltrasonicPoller(usDistance,usData,driver);
 				odometer.start();
 				odometryDisplay.start();
@@ -74,11 +75,12 @@ public class Lab3 {
 				break;
 			case Button.ID_RIGHT:
 				//TODO Implement part 2
-				driver = new SmartDriver(waypoints2,leftMotor,rightMotor,odometer,TRACK);
+				driver = new BlindPathDriver(waypoints2,leftMotor,rightMotor,odometer,TRACK,true);
 				usPoller = new UltrasonicPoller(usDistance,usData,driver);
-				printer = new Printer(option,controller);
+				printer = new Printer(option,driver);
 				odometer.start();
-				odometryDisplay.start();
+				//odometryDisplay.start();
+				printer.start();
 				usPoller.start();
 				driver.drive();
 				Button.waitForAnyPress();

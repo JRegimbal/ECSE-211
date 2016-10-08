@@ -40,6 +40,6 @@ public class Printer extends Thread {
 	public static void printMainMenu() {
 		t.clear();
 		t.drawString("Left: Part 1",0,0);
-		t.drawString("Right: Part 2",1,0);
+		t.drawString("Right: Part 2",0,1);
 	}
 }
