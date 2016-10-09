@@ -34,6 +34,8 @@ public class BlindPathDriver implements Driver {
 	private double lastY;
 	private double width;
 	
+	private static final int MOTOR_TURN = 60;
+	
 	private double dangerStart[];
 	
 	int filter;
@@ -83,38 +85,8 @@ public class BlindPathDriver implements Driver {
 		for(int i = 0; i < waypoints.length; i+= 2) {
 			double targetX = waypoints[i];
 			double targetY = waypoints[i+1];
-			/**
-			double dx = targetX - lastX;
-			double dy = targetY - lastY;
-			double theta = (Math.atan2(dy,dx)) - lastTheta; //Should return minimal angle.
-			if(!(Math.abs(theta) < 180.0)) {
-				if(theta < 0.0) theta = theta + 360.0;
-				else theta = theta - 360.0;
-			}
-			double distance = Math.sqrt(dx * dx + dy * dy);
 			
-			//System.out.println("Angle:    (" + theta * 180.0 / Math.PI);
-			
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
-			leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS,width,theta * 180.0 / Math.PI), true);
-			rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS,width,theta * 180.0 / Math.PI), false);
-
-			leftMotor.setSpeed(FORWARD_SPEED);
-			rightMotor.setSpeed(FORWARD_SPEED);
-			leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, distance),true);
-			rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS,distance),false);
-			lastX = targetX;
-			lastY = targetY;
-			lastTheta = Math.atan2(dy,dx);
-			*/
-
 			travelTo(targetX,targetY);
-			/*
-			leftMotor.stop();
-			rightMotor.stop();
-			break;
-			*/
 		}
 		leftMotor.stop();
 		rightMotor.stop();
@@ -128,75 +100,13 @@ public class BlindPathDriver implements Driver {
 		//System.out.println("Theta: " + odometer.getTheta());
 		//System.out.println("Target: " + Math.atan2(x-odometer.getY(), y - odometer.getX()));
 		while(euclidDistance(x - odometer.getX(),y - odometer.getY()) > THRESHOLD || danger) {
-		//while()
-			double ox,oy,ot;
-			ox = odometer.getX();
-			oy = odometer.getY();
-			ot = odometer.getTheta();
-			
-			/*
-			if(!navigating) {
-				leftMotor.stop();
-				rightMotor.stop();
-				break;
-			}
-			*/
-			//System.out.println(odometer.getX());
 			boolean passed = false;
 			if(danger) continue;
 			
-			if(false) {
-				passed = true;
-				int counter = 0;
-				leftMotor.setSpeed(0);
-				rightMotor.setSpeed(0);
-				leftMotor.rotate(0,true);
-				rightMotor.rotate(0,false);
-				leftMotor.setSpeed(ROTATE_SPEED);
-				rightMotor.setSpeed(ROTATE_SPEED);
-				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, -90),true);
-				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, -90),false);
-				Lab3.sensorMotor.rotate(-90);
-				while(counter < 3) {
-					while(!passed) {
-						leftMotor.setSpeed(FORWARD_SPEED);
-						rightMotor.setSpeed(FORWARD_SPEED);
-						leftMotor.forward();
-						rightMotor.forward();
-						if(dist < BANDCENTER) passed = true;
-					}
-					while(dist <= BANDCENTER + 3) {
-						System.out.println("Passed");
-						leftMotor.setSpeed(FORWARD_SPEED);
-						rightMotor.setSpeed(FORWARD_SPEED);
-						leftMotor.forward();
-						rightMotor.forward();
-					}
-					//Lab3.sensorMotor.rotate(90);
-					leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, (int)width),true);
-					rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, (int)width),false);
-					leftMotor.setSpeed(ROTATE_SPEED);
-					rightMotor.setSpeed(ROTATE_SPEED);
-					
-					leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS,width,90),true);
-					rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90),false);
-					/*
-					leftMotor.setSpeed(FORWARD_SPEED);
-					rightMotor.setSpeed(FORWARD_SPEED);
-					leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST),true);
-					rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST),false);
-					*/
-					counter++;
-				}
-				
-
-				danger = false;
-			}
 			double dx = x - odometer.getX();
 			double dy = y - odometer.getY();
 			double theta = Math.atan2(dx,dy);
 			turnTo(theta);
-			//break;
 			
 			leftMotor.setSpeed(FORWARD_SPEED);
 			rightMotor.setSpeed(FORWARD_SPEED);
@@ -204,16 +114,10 @@ public class BlindPathDriver implements Driver {
 			rightMotor.forward();
 			
 		}
-		//System.out.println("Next Waypoint");
 		navigating = false;
 	}
 	
 	public void turnTo(double theta) {
-		//System.out.println("(" + theta + ", " + odometer.getTheta() + ")");
-		//System.out.println("Theta: " + (int)(theta * 180 / Math.PI));
-		//System.out.println("Odo: " + (int)(odometer.getTheta() * 180 / Math.PI));
-		//System.out.println("=========");
-		Sound.beep();
 		if(Math.abs(theta - odometer.getTheta()) > THETA_THRESHOLD) {
 			if(!(Math.abs(theta) < Math.PI)) {
 				if(theta < 0.0) theta = theta + Math.PI;
@@ -235,27 +139,19 @@ public class BlindPathDriver implements Driver {
 		dist = distance;
 		if(!avoid) return;
 		if(distance < BANDCENTER && !danger) {
-			filter++;
-			if(filter >= MAX_FILTER) {
-				System.out.println("DANGER");
+				//System.out.println("DANGER");
 				danger = true;
-				Lab3.sensorMotor.rotate(-45);
-				odometer.getPosition(dangerStart, UPDATE_ALL);
-				/*
-				leftMotor.stop();
-				rightMotor.stop();
+				Lab3.sensorMotor.rotate(-MOTOR_TURN);
 				leftMotor.setSpeed(ROTATE_SPEED);
 				rightMotor.setSpeed(ROTATE_SPEED);
-				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90),true);
-				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90),false);
-				Lab3.sensorMotor.rotate(-90);
-				filter = 0;
-				System.exit(0);
-				*/
-			}
+				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),true);
+				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),false);
+				odometer.getPosition(dangerStart, UPDATE_ALL);
 		}
 		if(danger) {
-			if(distance < 3 * BANDCENTER || euclidDistance(dangerStart[0] - odometer.getX(),dangerStart[1] - odometer.getY()) < 20.0) {
+			double [] position = new double[3];
+			odometer.getPosition(position, UPDATE_ALL);
+			if(!isOnLine(dangerStart,position)) {
 				errorCM = distance - BANDCENTER;
 				if(Math.abs(errorCM) < BANDWIDTH) {
 					leftMotor.setSpeed(MOTOR_LOW);
@@ -276,20 +172,29 @@ public class BlindPathDriver implements Driver {
 					rightMotor.forward();
 				}
 			}
-			else if (counter < 2){
-				leftMotor.setSpeed(ROTATE_SPEED);
-				rightMotor.setSpeed(ROTATE_SPEED);
-				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90));
-				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90));
-				counter++;
-			}
 			else {
-				Lab3.sensorMotor.rotate(45);
 				danger = false;
-				counter = 0;
+				Lab3.sensorMotor.rotate(MOTOR_TURN);
 			}
 		}
+	} 
+	
+	public boolean isOnLine(double[] lineDef,double[] pos) {
+		final double LINE_THRESHOLD = 2;
+		//Returns true if pos is on line defined by lineDef and pos is not on the point lineDef
+		if(euclidDistance(lineDef[0]-pos[0], lineDef[1]-pos[1]) < LINE_THRESHOLD) {
+			return false;
+		}
+		double angle_error = Math.abs(Math.atan2(pos[1] - lineDef[1], pos[0] - lineDef[0]) - lineDef[2]);
+		System.out.println(angle_error);
+		if(angle_error < Math.PI/6 )
+		{
+			Sound.beep();
+			return true;
+		}
+		return false;
 	}
+	
 	@Override
 	public int readUSDistance() {
 		// TODO Auto-generated method stub

@@ -14,7 +14,7 @@ public class Lab3 {
 	private static final int bandWidth = 10;
 	private static final int motorLow = 100;
 	private static final int motorHigh = 200;
-
+	
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
@@ -44,6 +44,8 @@ public class Lab3 {
 		Printer printer = null;
 
 		UltrasonicPoller usPoller = null;
+		
+		Dexter morgan = new Dexter();
 
 		double waypoints[] = {	60.0,30.0,
 								30.0,30.0,
@@ -80,8 +82,9 @@ public class Lab3 {
 				printer = new Printer(option,driver);
 				odometer.start();
 				//odometryDisplay.start();
-				printer.start();
+				//printer.start();
 				usPoller.start();
+				morgan.start();
 				driver.drive();
 				Button.waitForAnyPress();
 				System.exit(0);
