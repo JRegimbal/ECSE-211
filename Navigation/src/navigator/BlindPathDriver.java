@@ -20,7 +20,7 @@ public class BlindPathDriver implements Driver {
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
 	private static final int BANDWIDTH	= 8;
-	private static final int BANDCENTER	= 25;
+	private static final int BANDCENTER	= 23;
 	
 	private static final int BOOST	= 20;
 	
@@ -78,7 +78,7 @@ public class BlindPathDriver implements Driver {
 		}
 
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 		}catch(Exception ex) {}
 		//System.out.println("\n");
 
@@ -139,14 +139,14 @@ public class BlindPathDriver implements Driver {
 		dist = distance;
 		if(!avoid) return;
 		if(distance < BANDCENTER && !danger) {
-				//System.out.println("DANGER");
+				odometer.getPosition(dangerStart, UPDATE_ALL);
 				danger = true;
 				Lab3.sensorMotor.rotate(-MOTOR_TURN);
 				leftMotor.setSpeed(ROTATE_SPEED);
 				rightMotor.setSpeed(ROTATE_SPEED);
 				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),true);
 				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),false);
-				odometer.getPosition(dangerStart, UPDATE_ALL);
+
 		}
 		if(danger) {
 			double [] position = new double[3];
@@ -175,6 +175,10 @@ public class BlindPathDriver implements Driver {
 			else {
 				danger = false;
 				Lab3.sensorMotor.rotate(MOTOR_TURN);
+				leftMotor.setSpeed(FORWARD_SPEED);
+				rightMotor.setSpeed(FORWARD_SPEED);
+				leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
+				rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
 			}
 		}
 	} 
@@ -185,11 +189,14 @@ public class BlindPathDriver implements Driver {
 		if(euclidDistance(lineDef[0]-pos[0], lineDef[1]-pos[1]) < LINE_THRESHOLD) {
 			return false;
 		}
-		double angle_error = Math.abs(Math.atan2(pos[1] - lineDef[1], pos[0] - lineDef[0]) - lineDef[2]);
-		System.out.println(angle_error);
+		double angle_error = Math.abs(Math.atan2(pos[1] - lineDef[1], pos[0] - lineDef[0]) - lineDef[2] + Math.PI/2);
+		//System.out.println(angle_error);
 		if(angle_error < Math.PI/6 )
 		{
 			Sound.beep();
+			System.out.println("\n");
+			System.out.println("Target Heading: " + (int)(lineDef[2] * 180.0/Math.PI));
+			System.out.println("Atan: " + (int)(Math.atan2(pos[1]-lineDef[1], pos[0]-lineDef[0])*180.0/Math.PI));
 			return true;
 		}
 		return false;

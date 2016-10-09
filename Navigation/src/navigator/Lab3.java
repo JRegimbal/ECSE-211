@@ -81,7 +81,7 @@ public class Lab3 {
 				usPoller = new UltrasonicPoller(usDistance,usData,driver);
 				printer = new Printer(option,driver);
 				odometer.start();
-				//odometryDisplay.start();
+				odometryDisplay.start();
 				//printer.start();
 				usPoller.start();
 				morgan.start();
