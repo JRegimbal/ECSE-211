@@ -11,11 +11,11 @@ public class BlindPathDriver implements Driver {
 	private static final int MOTOR_LOW		= 75;
 	private static final int MOTOR_HIGH		= 250;
 	
-	//private static final double THRESHOLD		= 0.5;
-	//private static final double THETA_THRESHOLD	= 0.04;
+	private static final double THRESHOLD		= 0.5;
+	private static final double THETA_THRESHOLD	= 0.04;
 	
-	private static final double THRESHOLD	= 2.0;
-	private static final double THETA_THRESHOLD = 0.4;
+	//private static final double THRESHOLD	= 2.0;
+	//private static final double THETA_THRESHOLD = 0.4;
 	
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
@@ -36,7 +36,7 @@ public class BlindPathDriver implements Driver {
 	
 	private static final int MOTOR_TURN = 60;
 	
-	private double dangerStart[];
+	private double dangerStart[] = new double[3];
 	
 	int filter;
 	private static final int MAX_FILTER = 0;
@@ -44,6 +44,7 @@ public class BlindPathDriver implements Driver {
 	private boolean navigating;
 	private boolean avoid;
 	private boolean danger;
+	private boolean hasSeenWall = false;
 	
 	int counter;
 
@@ -138,20 +139,20 @@ public class BlindPathDriver implements Driver {
 	public void processUSData(int distance) {
 		dist = distance;
 		if(!avoid) return;
-		if(distance < BANDCENTER && !danger) {
-				odometer.getPosition(dangerStart, UPDATE_ALL);
+		if(distance < BANDCENTER && !danger && !hasSeenWall) {
 				danger = true;
 				Lab3.sensorMotor.rotate(-MOTOR_TURN);
 				leftMotor.setSpeed(ROTATE_SPEED);
 				rightMotor.setSpeed(ROTATE_SPEED);
 				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),true);
 				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, -MOTOR_TURN),false);
+				odometer.getPosition(dangerStart, UPDATE_ALL);
 
 		}
-		if(danger) {
+		if(danger && !hasSeenWall) {
 			double [] position = new double[3];
 			odometer.getPosition(position, UPDATE_ALL);
-			if(!isOnLine(dangerStart,position)) {
+			if(!hasDone180(dangerStart,position)) {
 				errorCM = distance - BANDCENTER;
 				if(Math.abs(errorCM) < BANDWIDTH) {
 					leftMotor.setSpeed(MOTOR_LOW);
@@ -175,15 +176,15 @@ public class BlindPathDriver implements Driver {
 			else {
 				danger = false;
 				Lab3.sensorMotor.rotate(MOTOR_TURN);
-				leftMotor.setSpeed(FORWARD_SPEED);
-				rightMotor.setSpeed(FORWARD_SPEED);
-				leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
-				rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
+				//leftMotor.setSpeed(FORWARD_SPEED);
+				//rightMotor.setSpeed(FORWARD_SPEED);
+				//leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
+				//rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
 			}
 		}
 	} 
 	
-	public boolean isOnLine(double[] lineDef,double[] pos) {
+	/*public boolean isOnLine(double[] lineDef,double[] pos) {
 		final double LINE_THRESHOLD = 2;
 		//Returns true if pos is on line defined by lineDef and pos is not on the point lineDef
 		if(euclidDistance(lineDef[0]-pos[0], lineDef[1]-pos[1]) < LINE_THRESHOLD) {
@@ -198,6 +199,16 @@ public class BlindPathDriver implements Driver {
 			System.out.println("Target Heading: " + (int)(lineDef[2] * 180.0/Math.PI));
 			System.out.println("Atan: " + (int)(Math.atan2(pos[1]-lineDef[1], pos[0]-lineDef[0])*180.0/Math.PI));
 			return true;
+		}
+		return false;
+	}*/
+	
+	public boolean hasDone180(double[] initialPos, double[] pos)
+	{
+		if(Math.abs(Math.abs(initialPos[2] - pos[2]) - Math.PI) < Math.PI/18) //threshold for this
+		{
+			hasSeenWall = true;
+			return true;	
 		}
 		return false;
 	}
