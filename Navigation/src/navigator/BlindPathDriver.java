@@ -8,15 +8,19 @@ public class BlindPathDriver implements Driver {
 	public static final int FORWARD_SPEED	= 200;
 	public static final int ROTATE_SPEED	= 150;
 	
+	private static final int MOTOR_LOW		= 75;
+	private static final int MOTOR_HIGH		= 250;
+	
 	//private static final double THRESHOLD		= 0.5;
 	//private static final double THETA_THRESHOLD	= 0.04;
 	
 	private static final double THRESHOLD	= 2.0;
 	private static final double THETA_THRESHOLD = 0.4;
 	
+	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
-	private static final int BANDWIDTH	= 5;
-	private static final int BANDCENTER	= 15;
+	private static final int BANDWIDTH	= 8;
+	private static final int BANDCENTER	= 25;
 	
 	private static final int BOOST	= 20;
 	
@@ -30,12 +34,16 @@ public class BlindPathDriver implements Driver {
 	private double lastY;
 	private double width;
 	
+	private double dangerStart[];
+	
 	int filter;
 	private static final int MAX_FILTER = 0;
 	
 	private boolean navigating;
 	private boolean avoid;
 	private boolean danger;
+	
+	int counter;
 
 	EV3LargeRegulatedMotor leftMotor;
 	EV3LargeRegulatedMotor rightMotor;
@@ -55,6 +63,8 @@ public class BlindPathDriver implements Driver {
 		dist = 0;
 		filter = 0;
 		danger = false;
+		counter = 0;
+		dangerStart = new double[3];
 	}
 
 	@Override
@@ -117,7 +127,7 @@ public class BlindPathDriver implements Driver {
 		//rightMotor.stop();
 		//System.out.println("Theta: " + odometer.getTheta());
 		//System.out.println("Target: " + Math.atan2(x-odometer.getY(), y - odometer.getX()));
-		while(euclidDistance(x - odometer.getX(),y - odometer.getY()) > THRESHOLD) {
+		while(euclidDistance(x - odometer.getX(),y - odometer.getY()) > THRESHOLD || danger) {
 		//while()
 			double ox,oy,ot;
 			ox = odometer.getX();
@@ -133,7 +143,9 @@ public class BlindPathDriver implements Driver {
 			*/
 			//System.out.println(odometer.getX());
 			boolean passed = false;
-			if(danger) {
+			if(danger) continue;
+			
+			if(false) {
 				passed = true;
 				int counter = 0;
 				leftMotor.setSpeed(0);
@@ -176,6 +188,7 @@ public class BlindPathDriver implements Driver {
 					*/
 					counter++;
 				}
+				
 
 				danger = false;
 			}
@@ -221,11 +234,13 @@ public class BlindPathDriver implements Driver {
 	public void processUSData(int distance) {
 		dist = distance;
 		if(!avoid) return;
-		if(distance < BANDCENTER) {
+		if(distance < BANDCENTER && !danger) {
 			filter++;
 			if(filter >= MAX_FILTER) {
 				System.out.println("DANGER");
 				danger = true;
+				Lab3.sensorMotor.rotate(-45);
+				odometer.getPosition(dangerStart, UPDATE_ALL);
 				/*
 				leftMotor.stop();
 				rightMotor.stop();
@@ -237,6 +252,41 @@ public class BlindPathDriver implements Driver {
 				filter = 0;
 				System.exit(0);
 				*/
+			}
+		}
+		if(danger) {
+			if(distance < 3 * BANDCENTER || euclidDistance(dangerStart[0] - odometer.getX(),dangerStart[1] - odometer.getY()) < 20.0) {
+				errorCM = distance - BANDCENTER;
+				if(Math.abs(errorCM) < BANDWIDTH) {
+					leftMotor.setSpeed(MOTOR_LOW);
+					rightMotor.setSpeed(MOTOR_LOW);
+					leftMotor.forward();
+					rightMotor.forward();
+				}
+				else if(errorCM < 0) {
+					leftMotor.setSpeed(MOTOR_LOW);
+					rightMotor.setSpeed(MOTOR_HIGH);
+					leftMotor.forward();
+					rightMotor.forward();
+				}
+				else {
+					leftMotor.setSpeed(MOTOR_HIGH);
+					rightMotor.setSpeed(MOTOR_LOW);
+					leftMotor.forward();
+					rightMotor.forward();
+				}
+			}
+			else if (counter < 2){
+				leftMotor.setSpeed(ROTATE_SPEED);
+				rightMotor.setSpeed(ROTATE_SPEED);
+				leftMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90));
+				rightMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, 90));
+				counter++;
+			}
+			else {
+				Lab3.sensorMotor.rotate(45);
+				danger = false;
+				counter = 0;
 			}
 		}
 	}
