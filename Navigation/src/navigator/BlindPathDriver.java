@@ -18,7 +18,7 @@ public class BlindPathDriver implements Driver {
 	
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
-	private static final int BANDWIDTH	= 8;
+	private static final int BANDWIDTH	= 4;
 	private static final int BANDCENTER	= 24;
 	
 	private static final int BOOST	= 20;
@@ -161,7 +161,7 @@ public class BlindPathDriver implements Driver {
 				}
 				else if(errorCM < 0) {
 					leftMotor.setSpeed(MOTOR_LOW);
-					rightMotor.setSpeed(MOTOR_HIGH);
+					rightMotor.setSpeed(MOTOR_HIGH + 25); //to avoid crashing into the block
 					leftMotor.forward();
 					rightMotor.forward();
 				}
