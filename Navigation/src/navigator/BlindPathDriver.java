@@ -1,6 +1,5 @@
 package navigator;
 
-import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class BlindPathDriver implements Driver {
@@ -20,7 +19,7 @@ public class BlindPathDriver implements Driver {
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
 	private static final int BANDWIDTH	= 8;
-	private static final int BANDCENTER	= 23;
+	private static final int BANDCENTER	= 24;
 	
 	private static final int BOOST	= 20;
 	

@@ -21,7 +21,7 @@ public class Lab3 {
 	public static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	public static final double WHEEL_RADIUS = 2.141;
-	public static final double TRACK = 14.73;
+	public static final double TRACK = 16.50; //14.73
 
 	public static void main(String [] args) {
 		int option = 0;
@@ -31,7 +31,7 @@ public class Lab3 {
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 
-		BasicController controller = new BasicController(leftMotor,rightMotor,bandCenter,bandWidth);
+		//BasicController controller = new BasicController(leftMotor,rightMotor,bandCenter,bandWidth);
 		Driver driver = null;
 		Odometer odometer = new Odometer(leftMotor,rightMotor);
 		OdometryDisplay odometryDisplay = new OdometryDisplay(odometer,t);
