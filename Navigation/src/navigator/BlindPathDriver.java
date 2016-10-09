@@ -191,7 +191,7 @@ public class BlindPathDriver implements Driver {
 		}
 		double angle_error = Math.abs(Math.atan2(pos[1] - lineDef[1], pos[0] - lineDef[0]) - lineDef[2] + Math.PI/2);
 		//System.out.println(angle_error);
-		if(angle_error < Math.PI/6 )
+		if(angle_error < Math.PI/10 )
 		{
 			Sound.beep();
 			System.out.println("\n");
