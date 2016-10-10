@@ -10,18 +10,13 @@ import lejos.hardware.lcd.TextLCD;
 
 public class Lab3 {
 
-	private static final int bandCenter = 45;
-	private static final int bandWidth = 10;
-	private static final int motorLow = 100;
-	private static final int motorHigh = 200;
-	
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	public static final EV3LargeRegulatedMotor sensorMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	public static final double WHEEL_RADIUS = 2.141;
-	public static final double TRACK = 16.50; //14.73
+	public static final double TRACK = 16.50;
 
 	public static void main(String [] args) {
 		int option = 0;
@@ -31,8 +26,7 @@ public class Lab3 {
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 
-		//BasicController controller = new BasicController(leftMotor,rightMotor,bandCenter,bandWidth);
-		Driver driver = null;
+		PathDriver driver = null;
 		Odometer odometer = new Odometer(leftMotor,rightMotor);
 		OdometryDisplay odometryDisplay = new OdometryDisplay(odometer,t);
 
@@ -41,30 +35,24 @@ public class Lab3 {
 		SampleProvider usDistance = usSensor.getMode("Distance");
 		float[] usData = new float[usDistance.sampleSize()];
 
-		Printer printer = null;
-
 		UltrasonicPoller usPoller = null;
 		
-		Dexter morgan = new Dexter();
+		ThreadEnder ender = new ThreadEnder(); //lets us interrupt and quit the program completely
 
 		double waypoints[] = {	60.0,30.0,
 								30.0,30.0,
 								30.0,60.0,
 								60.0,0.0};
-		/*double waypoints[] = {	0.0,30.0,
-								30.0,30.0,
-								0.0,30.0,
-								0.0,0.0};*/
 		
-		double waypoints2[] = {0.0,60.0,60.0,0.0};
+		double waypoints2[] = {	0.0,60.0,
+								60.0,0.0};
 		
 
 		switch(option) {
 			case Button.ID_LEFT:
-				//TODO Implement part 1
-				//(0,0) -> (0,60) -> (30,30) -> (30,60) -> (60,0)
-				driver = new BlindPathDriver(waypoints,leftMotor,rightMotor,odometer,TRACK,false);
-				printer = new Printer(option,driver);
+				//Part 1
+				driver = new PathDriver(waypoints,leftMotor,rightMotor,odometer,TRACK,false);
+			new Printer(option,driver);
 				usPoller = new UltrasonicPoller(usDistance,usData,driver);
 				odometer.start();
 				odometryDisplay.start();
@@ -76,15 +64,15 @@ public class Lab3 {
 				System.exit(0);
 				break;
 			case Button.ID_RIGHT:
-				//TODO Implement part 2
-				driver = new BlindPathDriver(waypoints2,leftMotor,rightMotor,odometer,TRACK,true);
+				//Part 2
+				driver = new PathDriver(waypoints2,leftMotor,rightMotor,odometer,TRACK,true);
 				usPoller = new UltrasonicPoller(usDistance,usData,driver);
-				printer = new Printer(option,driver);
+			new Printer(option,driver);
 				odometer.start();
 				odometryDisplay.start();
 				//printer.start();
 				usPoller.start();
-				morgan.start();
+				ender.start();
 				driver.drive();
 				Button.waitForAnyPress();
 				System.exit(0);
@@ -94,9 +82,5 @@ public class Lab3 {
 				System.exit(-1);
 				break;
 		}
-
-		//driver.drive();
-
-		
 	}
 }

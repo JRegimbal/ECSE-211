@@ -2,7 +2,7 @@ package navigator;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-public class BlindPathDriver implements Driver {
+public class PathDriver implements UltrasonicController {
 
 	public static final int FORWARD_SPEED	= 200;
 	public static final int ROTATE_SPEED	= 150;
@@ -13,24 +13,16 @@ public class BlindPathDriver implements Driver {
 	private static final double THRESHOLD		= 0.5;
 	private static final double THETA_THRESHOLD	= 0.04;
 	
-	//private static final double THRESHOLD	= 2.0;
-	//private static final double THETA_THRESHOLD = 0.4;
-	
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
 	private static final int BANDWIDTH	= 4;
 	private static final int BANDCENTER	= 24;
-	
-	private static final int BOOST	= 20;
-	
+		
 	private static int dist;
 	
 	private static int errorCM;
 
 	private double [] waypoints;
-	private double lastTheta;
-	private double lastX;
-	private double lastY;
 	private double width;
 	
 	private static final int MOTOR_TURN = 60;
@@ -38,7 +30,6 @@ public class BlindPathDriver implements Driver {
 	private double dangerStart[] = new double[3];
 	
 	int filter;
-	private static final int MAX_FILTER = 0;
 	
 	private boolean navigating;
 	private boolean avoid;
@@ -51,17 +42,15 @@ public class BlindPathDriver implements Driver {
 	EV3LargeRegulatedMotor rightMotor;
 	Odometer odometer;
 
-	public BlindPathDriver(double [] waypoints,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, Odometer odometer, double width,boolean avoid) {
+	public PathDriver(double [] waypoints,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, Odometer odometer, double width,boolean avoid) {
 		this.waypoints = waypoints;
-		lastTheta = 0.0;
-		lastX = lastY = 0.0;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.width = width;
 		this.odometer = odometer;
 		navigating = false;
 		this.avoid = avoid;
-		this.errorCM = 0;
+		PathDriver.errorCM = 0;
 		dist = 0;
 		filter = 0;
 		danger = false;
@@ -69,7 +58,6 @@ public class BlindPathDriver implements Driver {
 		dangerStart = new double[3];
 	}
 
-	@Override
 	public void drive () {
 
 		for(EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] {leftMotor, rightMotor}) {
@@ -80,8 +68,7 @@ public class BlindPathDriver implements Driver {
 		try {
 			Thread.sleep(5000);
 		}catch(Exception ex) {}
-		//System.out.println("\n");
-
+		
 		for(int i = 0; i < waypoints.length; i+= 2) {
 			double targetX = waypoints[i];
 			double targetY = waypoints[i+1];
@@ -93,14 +80,8 @@ public class BlindPathDriver implements Driver {
 	}
 	
 	public void travelTo(double x, double y) {
-		//System.out.println("");
 		navigating = true;
-		//leftMotor.stop();
-		//rightMotor.stop();
-		//System.out.println("Theta: " + odometer.getTheta());
-		//System.out.println("Target: " + Math.atan2(x-odometer.getY(), y - odometer.getX()));
 		while(euclidDistance(x - odometer.getX(),y - odometer.getY()) > THRESHOLD || danger) {
-			boolean passed = false;
 			if(danger) continue;
 			
 			double dx = x - odometer.getX();
@@ -175,32 +156,9 @@ public class BlindPathDriver implements Driver {
 			else {
 				danger = false;
 				Lab3.sensorMotor.rotate(MOTOR_TURN);
-				//leftMotor.setSpeed(FORWARD_SPEED);
-				//rightMotor.setSpeed(FORWARD_SPEED);
-				//leftMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
-				//rightMotor.rotate(Util.convertDistance(Lab3.WHEEL_RADIUS, BOOST));
 			}
 		}
 	} 
-	
-	/*public boolean isOnLine(double[] lineDef,double[] pos) {
-		final double LINE_THRESHOLD = 2;
-		//Returns true if pos is on line defined by lineDef and pos is not on the point lineDef
-		if(euclidDistance(lineDef[0]-pos[0], lineDef[1]-pos[1]) < LINE_THRESHOLD) {
-			return false;
-		}
-		double angle_error = Math.abs(Math.atan2(pos[1] - lineDef[1], pos[0] - lineDef[0]) - lineDef[2] + Math.PI/2);
-		//System.out.println(angle_error);
-		if(angle_error < Math.PI/10 )
-		{
-			Sound.beep();
-			System.out.println("\n");
-			System.out.println("Target Heading: " + (int)(lineDef[2] * 180.0/Math.PI));
-			System.out.println("Atan: " + (int)(Math.atan2(pos[1]-lineDef[1], pos[0]-lineDef[0])*180.0/Math.PI));
-			return true;
-		}
-		return false;
-	}*/
 	
 	public boolean hasDone180(double[] initialPos, double[] pos)
 	{
@@ -214,7 +172,6 @@ public class BlindPathDriver implements Driver {
 	
 	@Override
 	public int readUSDistance() {
-		// TODO Auto-generated method stub
 		return dist;
 	}
 	
