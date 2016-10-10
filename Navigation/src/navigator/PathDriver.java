@@ -15,8 +15,8 @@ public class PathDriver implements UltrasonicController {
 	
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
-	private static final int BANDWIDTH	= 4;
-	private static final int BANDCENTER	= 24;
+	private static final int BANDWIDTH	= 2;
+	private static final int BANDCENTER	= 26;
 		
 	private static int dist;
 	
