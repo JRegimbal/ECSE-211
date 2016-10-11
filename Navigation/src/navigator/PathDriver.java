@@ -4,6 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class PathDriver implements UltrasonicController {
 
+	//constants
 	public static final int FORWARD_SPEED	= 200;
 	public static final int ROTATE_SPEED	= 150;
 	
@@ -16,7 +17,7 @@ public class PathDriver implements UltrasonicController {
 	private static final boolean[] UPDATE_ALL = {true,true,true};
 	
 	private static final int BANDWIDTH	= 2;
-	private static final int BANDCENTER	= 26;
+	private static final int BANDCENTER	= 27;
 		
 	private static int dist;
 	
@@ -115,10 +116,10 @@ public class PathDriver implements UltrasonicController {
 	}
 	
 	@Override
-	public void processUSData(int distance) {
+	public void processUSData(int distance) {	//obstacle avoidance
 		dist = distance;
 		if(!avoid) return;
-		if(distance < BANDCENTER && !danger) {
+		if(distance < BANDCENTER - 3 && !danger) {
 				danger = true;
 				Lab3.sensorMotor.rotate(-MOTOR_TURN);
 				leftMotor.setSpeed(ROTATE_SPEED);
@@ -132,20 +133,20 @@ public class PathDriver implements UltrasonicController {
 			double [] position = new double[3];
 			odometer.getPosition(position, UPDATE_ALL);
 			if(!hasDone180(dangerStart,position)) {
-				errorCM = distance - BANDCENTER;
-				if(Math.abs(errorCM) < BANDWIDTH) {
+				errorCM = distance - BANDCENTER;			//Bang Bang
+				if(Math.abs(errorCM) < BANDWIDTH) {	//go straight
 					leftMotor.setSpeed(MOTOR_LOW);
 					rightMotor.setSpeed(MOTOR_LOW);
 					leftMotor.forward();
 					rightMotor.forward();
 				}
-				else if(errorCM < 0) {
+				else if(errorCM < 0) {	//left turn
 					leftMotor.setSpeed(MOTOR_LOW);
-					rightMotor.setSpeed(MOTOR_HIGH + 25); //to avoid crashing into the block
+					rightMotor.setSpeed(MOTOR_HIGH + 75); //to avoid crashing into the block
 					leftMotor.forward();
 					rightMotor.forward();
 				}
-				else {
+				else {					//right turn
 					leftMotor.setSpeed(MOTOR_HIGH);
 					rightMotor.setSpeed(MOTOR_LOW);
 					leftMotor.forward();
@@ -155,11 +156,15 @@ public class PathDriver implements UltrasonicController {
 			else {
 				danger = false;
 				Lab3.sensorMotor.rotate(MOTOR_TURN);
+				rightMotor.setSpeed(ROTATE_SPEED*2);
+				leftMotor.setSpeed(ROTATE_SPEED);
+				leftMotor.rotate(-Util.convertAngle(Lab3.WHEEL_RADIUS, width, MOTOR_TURN),true);
+				rightMotor.rotate(Util.convertAngle(Lab3.WHEEL_RADIUS, width, MOTOR_TURN + 30),false);
 			}
 		}
 	} 
 	
-	public boolean hasDone180(double[] initialPos, double[] pos)
+	public boolean hasDone180(double[] initialPos, double[] pos)	//check if robot ha turned 180-deg, passed obstacle.
 	{
 		if(Math.abs(Math.abs(initialPos[2] - pos[2]) - Math.PI) < Math.PI/18) //threshold for this
 		{
