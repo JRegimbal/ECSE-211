@@ -100,8 +100,8 @@ public class PathDriver implements UltrasonicController {
 	
 	public void turnTo(double theta) {
 		if(Math.abs(theta - odometer.getTheta()) > THETA_THRESHOLD) {
-			if(!(Math.abs(theta) < Math.PI)) {
-				if(theta < 0.0) theta = theta + Math.PI;
+			if(!(Math.abs(theta - odometer.getTheta()) < Math.PI)) {
+				if(theta - odometer.getTheta() < 0.0) theta = theta + Math.PI;
 				else theta = theta - Math.PI;
 			} 
 			leftMotor.setSpeed(ROTATE_SPEED);
