@@ -34,7 +34,6 @@ public class PathDriver implements UltrasonicController {
 	private boolean navigating;
 	private boolean avoid;
 	private boolean danger;
-	private boolean hasSeenWall = false;
 	
 	int counter;
 
@@ -119,7 +118,7 @@ public class PathDriver implements UltrasonicController {
 	public void processUSData(int distance) {
 		dist = distance;
 		if(!avoid) return;
-		if(distance < BANDCENTER && !danger && !hasSeenWall) {
+		if(distance < BANDCENTER && !danger) {
 				danger = true;
 				Lab3.sensorMotor.rotate(-MOTOR_TURN);
 				leftMotor.setSpeed(ROTATE_SPEED);
@@ -129,7 +128,7 @@ public class PathDriver implements UltrasonicController {
 				odometer.getPosition(dangerStart, UPDATE_ALL);
 
 		}
-		if(danger && !hasSeenWall) {
+		if(danger) {
 			double [] position = new double[3];
 			odometer.getPosition(position, UPDATE_ALL);
 			if(!hasDone180(dangerStart,position)) {
@@ -164,7 +163,6 @@ public class PathDriver implements UltrasonicController {
 	{
 		if(Math.abs(Math.abs(initialPos[2] - pos[2]) - Math.PI) < Math.PI/18) //threshold for this
 		{
-			hasSeenWall = true;
 			return true;	
 		}
 		return false;
