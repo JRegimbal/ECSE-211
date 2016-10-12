@@ -1,6 +1,7 @@
 #No LaTeX logs or anything like that
 *.aux
 *.log
+*.dvi
 
 #Don't push random .gz or .zip files - shouldn't have packages in our code repo
 *.zip
@@ -10,3 +11,5 @@
 */bin/
 *.jar
 *.class
+
+nohup.out
