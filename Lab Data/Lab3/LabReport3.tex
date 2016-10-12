@@ -123,6 +123,18 @@ small, in some situations the corrections may be large enough to cause significa
 of the acceleration) which can lead to significant error in the odometer readings.
 
 \section{Observations and Conclusion}
+\subsection{Explain the operation of the controllers for navigation. How accurately does it move the
+robot to its destination? How quickly does it settle on its destination?}
+The controller for navigation works by continuously correcting the heading of the robot and having
+it move forward until it is within a certain euclidean distance from the waypoint. The heading
+correction works by using the waypoint coordinates and the odometer's
+readings to calculate by which angle the robot must rotate to be facing its destination. To avoid
+constant, tiny corrections (which would result in very jerky behavior and possibly more slippage),
+the robot only corrects its heading when it is outside some threshold. This helps the robot settle
+quickly on its destination without sacrificing much in terms of accuracy. The robot was observed to
+navigate to comfortably within 3 centimeters of its destination in every trial.
+\subsection{How would increasing the speed of the robot affect the accuracy of the robot? What is
+the main source of error in navigation (and odometry)?}
 \section{Further Improvements}
 
 \end{document}
