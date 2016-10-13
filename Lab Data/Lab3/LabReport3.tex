@@ -133,8 +133,11 @@ constant, tiny corrections (which would result in very jerky behavior and possib
 the robot only corrects its heading when it is outside some threshold. This helps the robot settle
 quickly on its destination without sacrificing much in terms of accuracy. The robot was observed to
 navigate to comfortably within 3 centimeters of its destination in every trial.
+
 \subsection{How would increasing the speed of the robot affect the accuracy of the robot? What is
 the main source of error in navigation (and odometry)?}
-\section{Further Improvements}
+The main source of error in odometry and odometry-based navigation is wheel slippage. Since the position of the robot is tracked by using wheel rotation with an accurate physical model of the chassis, any deviation from its expected behavior - such as wheel slipping - will introduce error into odometry and thus navigation. Since the robot makes corrections in navigation and changes paths to go to different waypoints, a higher traveling speed would require more acceleration. With the wheels accelerating more, the likelihood that they will slip more often and for longer when making adjustments to wheel direction and speed increases. And as this error increases, the overall accuracy in navigation decreases.
 
+\section{Further Improvements}
+A robot using odometry-based navigation could minimize error with some physical and software changes. For example, higher friction wheels could be substituted to make it more difficult for the robot to slip during normal use. With less slipping, the overall error in navigation is minimized. Predictions could be made by finding if there is a constant amount of error introduced over a certain distance. For example, the robot could be consistently +0.5cm off per 100cm travelled. This correction could be factored into odometry in software, allowing for more accurate positioning in navigation. Finally a method of landmark based correction could be implemented, similar to the light sensor detected evenly spaced lines in Lab 2. Landmark detection would provide an absolute distance from either a point or line on the track, allowing for the robot to reset its odometry readings and essentially zero the error accumulated through travel.
 \end{document}
