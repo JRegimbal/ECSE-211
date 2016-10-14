@@ -184,11 +184,10 @@ adjustments to wheel direction and speed increases. And as this error increases,
 accuracy in navigation decreases.
 
 \section{Further Improvements}
-A robot using odometry-based navigation could minimize error with some physical and software
-changes. For example, higher friction wheels could be substituted to make it more difficult for the
-robot to slip during normal use. With less slipping, the overall error in navigation is minimized.
+To decrease error, higher friction wheels could be substituted to make it more difficult for the
+robot to slip during normal use. 
 Predictions could be made by finding if there is a constant amount of error introduced over a
-certain distance. For example, the robot could be consistently +0.5cm off per 100cm travelled. This
+certain distance (for example, the robot could be consistently +0.5cm off per 100cm travelled). This
 correction could be factored into odometry in software, allowing for more accurate positioning in
 navigation. Furthermore, reducing the speed of the robot would in turn reduce the amount of
 acceleration of the robot, effectively reducing the amount of slipping of the wheels. Finally a
