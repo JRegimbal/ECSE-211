@@ -9,7 +9,7 @@
 \usepackage{geometry}
 \usepackage[ampersand]{easylist}
 
-\geometry{margin=2cm}
+\geometry{margin=1cm}
 
 \title{Design Principles and Methods - Navigation Lab Report}
 \author{Harley Wiltzer (260690006)\\Juliette Regimbal (260657238)}
@@ -27,10 +27,19 @@ To design a software system that allows a (main) thread of execution to command 
 && \texttt{void travelTo(double x, double y)}\\This method causes the robot to travel to the absolute field location (x, y). This method should continuously call \texttt{turnTo(double theta)} and then set the motor speed to forward(straight). This will make sure that your heading is updated until you reach your exact goal. (This method will poll the odometer for information.)
 && \texttt{void turnTo(double theta)}\\This method causes the robot to turn (on point) to the absolute heading \texttt{theta}. This method should turn a MINIMAL angle to its target.
 && \texttt{boolean isNavigating()}\\This method returns true if another thread has called \texttt{travelTo()} or \texttt{turnTo()} and the method has yet to return; false otherwise.
-& Adjust the parameters of your controller, if any, to minimize the distance between the desired destination and the final position of the robot, while simultaneously minimizing the number of oscillations made by the robot around its destination before stopping.
-& Write a program to travel to the waypoints (60, 30), (30, 30), (30, 60), and (60, 0) in that order. Test this program ten (10) times, and record the position the robot a) as reported by the odometer, and b) as measured on the field.
-& Modify your code to use the ultrasonic sensor to detect an obstacle (a cinder block) and avoid collision with it. You may mount the ultrasonic sensor as you wish, and may use your wall follower code if desired. Additionally, you may create another class to perform this function.
-& Write a program to, with obstacle avoidance, travel to the waypoints (0, 60) and (60, 0) in that order. To demonstrate the effectiveness of your obstacle avoidance, the TA will first trun your robot's program to travel that path without obstacles, then place a single cinder block somewhere along the path (though not at a waypoint), and run your robot's program again.
+& Adjust the parameters of your controller, if any, to minimize the distance between the desired
+destination and the final position of the robot, while simultaneously minimizing the number of
+oscillations made by the robot around its destination before stopping.
+& Write a program to travel to the waypoints (60, 30), (30, 30), (30, 60), and (60, 0) in that
+order. Test this program ten (10) times, and record the position the robot a) as reported by the
+odometer, and b) as measured on the field.
+& Modify your code to use the ultrasonic sensor to detect an obstacle (a cinder block) and avoid
+collision with it. You may mount the ultrasonic sensor as you wish, and may use your wall follower
+code if desired. Additionally, you may create another class to perform this function.
+& Write a program to, with obstacle avoidance, travel to the waypoints (0, 60) and (60, 0) in that
+order. To demonstrate the effectiveness of your obstacle avoidance, the TA will first trun your
+robot's program to travel that path without obstacles, then place a single cinder block somewhere
+along the path (though not at a waypoint), and run your robot's program again.
 \end{easylist}
 \newpage
 \section{Data}
@@ -39,7 +48,8 @@ To design a software system that allows a (main) thread of execution to command 
 \caption{Final Position of Robot (cm) - Part 1}
 \begin{tabular}{| c | c | c | c | c | c | c |}
 \multicolumn{4}{c}{} \\ \hline
-Trial No. & x-odometer & y-odometer & x-actual & y-actual & x-error & y-error\\ \hline
+Trial No. & x-odometer (cm) & y-odometer (cm) & x-actual (cm) & y-actual (cm) & x-error (cm)  &
+y-error (cm) \\ \hline
 1 & 60.92 & -1.80 & 61.8 & 0.4 & -0.88 & -2.20 \\ \hline
 2 & 60.84 & -1.52 & 63.0 & -0.2 & -2.16 & -1.32 \\ \hline
 3 & 60.61 & -0.87 & 61.9 & 0.5 & -1.29 & -1.31 \\ \hline
@@ -51,7 +61,7 @@ Trial No. & x-odometer & y-odometer & x-actual & y-actual & x-error & y-error\\ 
 9 & 61.04 & -1.86 & 61.5 & -1.2 & -0.46 & -0.66 \\ \hline
 10 & 61.08 & -2.04 & 63.0 & -0.2 & -1.92 & -1.84 \\ \hline
 Mean & 60.77 & -1.33 & 61.95 & -0.02 & -1.18 & -1.30 \\ \hline
-Standard Deviation & 0.34 & 0.69 & 0.70 & 0.77 & 1.37 & 1.44 \\ \hline
+St. Dev. & 0.34 & 0.69 & 0.70 & 0.77 & 0.58 & 0.44 \\ \hline
 \end{tabular}
 \end{center}
 \end{figure}
@@ -61,9 +71,10 @@ Standard Deviation & 0.34 & 0.69 & 0.70 & 0.77 & 1.37 & 1.44 \\ \hline
 	\mbox{Mean} = \frac{1}{n} \sum_{k=1}^{n}\mathcal{E}_k
 \end{equation}
 \begin{equation}
-	\mbox{Standard Deviation} = \sqrt{\frac{\sum_{k=1}^{n}\mathcal{E}^2_k}{n-1}}
+	\mbox{Standard Deviation} = \sqrt{\frac{\sum_{k=1}^{n}(\mathcal{E}_k-\mu_{\mathcal{E}})^2}{n-1}}
 \end{equation}
-In formulae (1) and (2), $n$ represents the number of trials for which data was acquired, and
+In formulae (1) and (2), $n$ represents the number of trials for which data was acquired,
+$\mu_{\mathcal{E}}$ represents the mean of the error, and
 $\mathcal{E}_k$ represents the error in measurement in some coordinate axis. Below, the calculations
 for these values are explicitly shown.
 \subsubsection{Calculations of the means}
@@ -85,17 +96,17 @@ for these values are explicitly shown.
 	\begin{minipage}{\linewidth}
 		\begin{align*}
 		s_x &=
-		\sqrt{\dfrac{(-0.88)^2+(-2.16)^2+(-1.29)^2+(-1.32)^2+(-0.56)^2+(-1.54)^2+(-1.08)^2+(-0.60)^2+(-0.46)^2+(-1.92)^2}{9}}
+		\sqrt{\dfrac{(-0.88-(-1.18))^2+(-2.16-(-1.18))^2+(-1.29-(-1.18))^2+(-1.32-(-1.18))^2+(-0.56-(-1.18))^2+(-1.54-(-1.18))^2+(-1.08-(-1.18))^2+(-0.60-(-1.18))^2+(-0.46-(-1.18))^2+(-1.92-(-1.18))^2}{9}}
 		\\
-		&= 1.37\mbox{cm}
+		&= 0.58\mbox{cm}
 		\end{align*}
 	\end{minipage}
-}
+}\\
 \resizebox{\linewidth}{!}{
 	\begin{minipage}{\linewidth}
 		\begin{align*}
 		s_y &=
-		\sqrt{\dfrac{(-2.20)^2+(-1.32)^2+(-1.31)^2+(-1.21)^2+(-0.96)^2+(-1.18)^2+(-1.40)^2+(-0.95)^2+(-0.66)^2+(-1.84)^2}{9}}
+		\sqrt{\dfrac{(-2.20-(-1.30))^2+(-1.32-(-1.30))^2+(-1.31-(-1.30))^2+(-1.21-(-1.30))^2+(-0.96-(-1.30))^2+(-1.18-(-1.30))^2+(-1.40-(-1.30))^2+(-0.95-(-1.30))^2+(-0.66-(-1.30))^2+(-1.84-(-1.30))^2}{9}}
 		\\
 		&= 1.44\mbox{cm}
 		\end{align*}
@@ -110,7 +121,8 @@ However, due to the design of the navigator, more error emerges. Since the navig
 must correct its angle continously, one cannot simply tell the navigator to travel some distance in
 a given direction. Instead, the navigator is programmed to move on to the next waypoint when it is
 within a certain range of the desired target position. Therefore, with this design, error is
-inherent and even \textit{allowed}, as a tradeoff for better heading correction. The result is that
+inherent and even \textit{allowed}, as a tradeoff for better heading correction and a more dynamic
+controller. The result is that
 while the robot can very accurately reach the waypoint in the appropriate direction, it only gets
 to within a certain error margin of the waypoint. These errors, however, are independent from that of
 the odometer error. Although the robot may not reach the exact waypoint, the odometer \textit{knows}
@@ -120,7 +132,14 @@ position due to the design of the navigator, this does not hinder the performanc
 Furthermore, since the robot is continuously correcting its heading, the wheels undergo a lot of
 acceleration (in order to change the robot's direction). Although usually the corrections are very
 small, in some situations the corrections may be large enough to cause significant slipping (because
-of the acceleration) which can lead to significant error in the odometer readings.
+of the acceleration) which can lead to significant error in the odometer readings.\\
+Finally, another source of error lies in the model of the robot. Odometer calculations are done
+given certain measurements, such as the radii of the wheels of the robot and the distance between
+them. The controller of the robot assumes that these are perfectly accurate, which is not true in
+reality, thus any error on those measurements leads to error in the odometer's performance. Also, as
+the wheels accelerate, they undergo stress which can lead to deformation. The model of the robot in
+the controller assumes perfectly circular wheels, and such an assumption grows less and less
+accurate as the wheels wear out, thus introducing more error in the odometer.
 
 \section{Observations and Conclusion}
 \subsection{Explain the operation of the controllers for navigation. How accurately does it move the
@@ -165,11 +184,10 @@ adjustments to wheel direction and speed increases. And as this error increases,
 accuracy in navigation decreases.
 
 \section{Further Improvements}
-A robot using odometry-based navigation could minimize error with some physical and software
-changes. For example, higher friction wheels could be substituted to make it more difficult for the
-robot to slip during normal use. With less slipping, the overall error in navigation is minimized.
+To decrease error, higher friction wheels could be substituted to make it more difficult for the
+robot to slip during normal use. 
 Predictions could be made by finding if there is a constant amount of error introduced over a
-certain distance. For example, the robot could be consistently +0.5cm off per 100cm travelled. This
+certain distance (for example, the robot could be consistently +0.5cm off per 100cm travelled). This
 correction could be factored into odometry in software, allowing for more accurate positioning in
 navigation. Furthermore, reducing the speed of the robot would in turn reduce the amount of
 acceleration of the robot, effectively reducing the amount of slipping of the wheels. Finally a
