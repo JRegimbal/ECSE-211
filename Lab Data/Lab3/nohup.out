@@ -490,3 +490,303 @@ Set a breakpoint on '_pixman_log_error' to debug
 (evince:22741): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
 
 (evince:22741): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_handler_disconnect: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:7138): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:7138): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:7138): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:7138): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+*** BUG ***
+In pixman_region32_init_rect: Invalid rectangle passed
+Set a breakpoint on '_pixman_log_error' to debug
+
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:10876): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:10876): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_get_visible: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:10876): GLib-GObject-CRITICAL **: g_signal_handler_disconnect: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:10876): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:10876): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkWidget'
+
+(evince:10876): Gtk-CRITICAL **: gtk_widget_set_sensitive: assertion 'GTK_IS_WIDGET (widget)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid (NULL) pointer instance
+
+(evince:10876): GLib-GObject-CRITICAL **: g_signal_connect_data: assertion 'G_TYPE_CHECK_INSTANCE (instance)' failed
+
+(evince:10876): EvinceView-CRITICAL **: ev_document_model_get_page: assertion 'EV_IS_DOCUMENT_MODEL (model)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_text: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
+
+(evince:10876): GLib-GObject-WARNING **: invalid unclassed pointer in cast to 'GtkEntry'
+
+(evince:10876): Gtk-CRITICAL **: gtk_entry_set_width_chars: assertion 'GTK_IS_ENTRY (entry)' failed
