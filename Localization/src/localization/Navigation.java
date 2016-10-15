@@ -93,18 +93,26 @@ public class Navigation {
 
 		double error = angle - this.odometer.getTheta();
 
-		while (Math.abs(error) > DEG_ERR) {
+		while (Math.abs(error) > DEG_ERR * Math.PI / 180.0) {
 
 			error = angle - this.odometer.getTheta();
 
-			if (error < -180.0) {
+			if (error < -Math.PI) {
 				this.setSpeeds(-SLOW, SLOW);
+				//odometer.getMotors()[0].forward();
+				//odometer.getMotors()[1].backward();
 			} else if (error < 0.0) {
 				this.setSpeeds(SLOW, -SLOW);
+				//odometer.getMotors()[0].backward();
+				//odometer.getMotors()[1].forward();
 			} else if (error > 180.0) {
 				this.setSpeeds(SLOW, -SLOW);
+				//odometer.getMotors()[0].backward();
+				//odometer.getMotors()[1].forward();
 			} else {
 				this.setSpeeds(-SLOW, SLOW);
+				//odometer.getMotors()[0].forward();
+				//odometer.getMotors()[1].backward();
 			}
 		}
 

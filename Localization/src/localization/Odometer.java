@@ -14,11 +14,14 @@ public class Odometer extends Thread {
 	private Object mutex;
 
 	private double oldltacho, oldrtacho;
+	
+	private double data;
 
 	public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.x = this.y = this.theta = 0.0;
+		this.x = this.y = 0.0;
+		this.theta = 0.5 * Math.PI;
 		this.leftMotorTachoCount = this.rightMotorTachoCount = 0;
 		this.oldltacho = this.oldrtacho = 0;
 		this.leftMotor.resetTachoCount();
@@ -40,7 +43,7 @@ public class Odometer extends Thread {
 			dRight = WHEEL_RADIUS * Math.PI * (this.rightMotorTachoCount - this.oldrtacho) / 180.0;
 			oldltacho = leftMotorTachoCount;
 			oldrtacho = rightMotorTachoCount;
-			dTheta = (dLeft - dRight)/TRACK;
+			dTheta = (-dLeft + dRight)/TRACK;
 			dPos = (dLeft + dRight)/2;
 			synchronized (mutex) {
 				/**
@@ -51,8 +54,8 @@ public class Odometer extends Thread {
 				 */
 				theta = (theta + dTheta) % (2*Math.PI);	//radians - wrap around
 				//if(theta < 0.0) theta += 2*Math.PI; //No negative angles
-				y += dPos*Math.cos(theta);
-				x += dPos*Math.sin(theta);
+				y += dPos*Math.sin(theta);
+				x += dPos*Math.cos(theta);
 			}
 
 			// this ensures that the odometer only runs once every period
@@ -174,6 +177,14 @@ public class Odometer extends Thread {
 		synchronized (mutex) {
 			this.rightMotorTachoCount = rightMotorTachoCount;	
 		}
+	}
+	
+	public double getFilteredData() {
+		return data;
+	}
+	
+	public void setData(double data) {
+		this.data = data;
 	}
 }
 

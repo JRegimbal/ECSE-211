@@ -44,21 +44,54 @@ public class Lab4 {
 				
 		// setup the odometer and display
 		Odometer odo = new Odometer(leftMotor, rightMotor);
+		
+		int option = mainMenu();
+		
 		LCDInfo lcd = new LCDInfo(odo);	//starts automatically upon creation
 		
+		odo.start();
+		Navigation nav = new Navigation(odo);
+
 		ender.start();
 		
+		switch(option) {
+		case Button.ID_LEFT:
+			USLocalizer usl = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.FALLING_EDGE);
+			usl.doLocalization();
+			System.out.println("Finished localization");
+			break;
+		case Button.ID_RIGHT:
+			USLocalizer usr = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.RISING_EDGE);
+			usr.doLocalization();
+			System.out.println("Finished localization");
+			break;
+		default:
+			System.out.println("Are you nuts?");
+		}
+		
 		// perform the ultrasonic localization
-		USLocalizer usl = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.FALLING_EDGE);
-		usl.doLocalization();
+		nav.turnTo(0, true);
 		
 		// perform the light sensor localization
 		LightLocalizer lsl = new LightLocalizer(odo, colorValue, colorData);
-		lsl.doLocalization();			
+		lsl.doLocalization();	
+	
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);	
 		
+	}
+	
+	private static int mainMenu() {
+		System.out.println("Fall    N   <A>  ");
+		System.out.println("     -' | '-/    ");
+		System.out.println("    /   | / \\   ");
+		System.out.println(" -W)----o----(E- ");
+		System.out.println("    \\  /|   /    ");
+		System.out.println("     /-.|.-      ");
+		System.out.println("   <>   S    Rise");	
+
+		return Button.waitForAnyPress();
 	}
 
 }

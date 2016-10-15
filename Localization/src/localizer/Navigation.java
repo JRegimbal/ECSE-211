@@ -1,3 +1,4 @@
+package localizer;
 /*
  * File: Navigation.java
  * Written by: Sean Lawlor
