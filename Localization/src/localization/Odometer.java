@@ -3,6 +3,10 @@ package localization;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer extends Thread {
+	
+	public enum TURNDIR {CW, CCW};
+	public enum LINEDIR {Forward,Backward};
+	
 	private double x,y,theta;
 	private int leftMotorTachoCount,rightMotorTachoCount;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
@@ -75,6 +79,54 @@ public class Odometer extends Thread {
 	public EV3LargeRegulatedMotor[] getMotors() {
 		EV3LargeRegulatedMotor[] motors = {leftMotor, rightMotor};
 		return motors;
+	}
+	
+	public void setMotorSpeeds(int speedL, int speedR) {
+		leftMotor.setSpeed(speedL);
+		rightMotor.setSpeed(speedR);
+	}
+	
+	public void setMotorSpeed(int speed) {
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+	}
+	
+	public void forwardMotors() {
+		leftMotor.forward();
+		rightMotor.forward();
+	}
+	
+	public void backwardMotors() {
+		leftMotor.backward();
+		rightMotor.backward();
+	}
+	
+	public void spin(TURNDIR dir) {
+		if(dir == TURNDIR.CW) {
+			leftMotor.forward();
+			rightMotor.backward();
+		}
+		else {
+			leftMotor.backward();
+			rightMotor.backward();
+		}
+	}
+	
+	public void moveCM(LINEDIR dir, double distance, boolean stop) {
+		if(dir == LINEDIR.Forward) forwardMotors();
+		else backwardMotors();
+		double startpos[] = new double[3];
+		double curpos[] = new double[3];
+		getPosition(startpos,new boolean[] {true,true,true});
+		do {
+			getPosition(curpos, new boolean[] {true,true,true});
+		}
+		while(euclideanDistance(startpos,curpos) < distance);
+		
+		if(stop) {
+			setMotorSpeed(0);
+			forwardMotors();
+		}
 	}
 
 	public void getPosition(double[] position, boolean[] update) {
@@ -185,6 +237,10 @@ public class Odometer extends Thread {
 	
 	public void setData(double data) {
 		this.data = data;
+	}
+	
+	public double euclideanDistance(double[] a, double[] b) {
+		return Math.sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1]-b[1])*(a[1]-b[1]));
 	}
 }
 

@@ -1,10 +1,13 @@
 package localization;
 
-import lejos.hardware.*;
+import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
-import lejos.hardware.sensor.*;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
 public class Lab4 {
@@ -19,6 +22,8 @@ public class Lab4 {
 	private static final Port usPort = LocalEV3.get().getPort("S1");		
 	private static final Port colorPort = LocalEV3.get().getPort("S2");
 	private static final ThreadEnder ender = new ThreadEnder();
+	
+	public static TextLCD Text_LCD = LocalEV3.get().getTextLCD();
 
 	
 	public static void main(String[] args) {
@@ -54,23 +59,33 @@ public class Lab4 {
 
 		ender.start();
 		
+		// perform the ultrasonic localization
+		
 		switch(option) {
 		case Button.ID_LEFT:
 			USLocalizer usl = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.FALLING_EDGE);
 			usl.doLocalization();
-			System.out.println("Finished localization");
+			lcd.pause();
+			Text_LCD.clear();
+			Text_LCD.drawString("Finished US Localization", 0, 0);
 			break;
 		case Button.ID_RIGHT:
 			USLocalizer usr = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.RISING_EDGE);
 			usr.doLocalization();
-			System.out.println("Finished localization");
+			lcd.pause();
+			Text_LCD.clear();
+			Text_LCD.drawString("Finished US Localization", 0, 0);
 			break;
 		default:
-			System.out.println("Are you nuts?");
+			Text_LCD.clear();
+			Text_LCD.drawString("Are you nuts?", 3, 0);
+			System.exit(1);
 		}
 		
-		// perform the ultrasonic localization
 		nav.turnTo(0, true);
+		Button.waitForAnyPress();
+		
+		lcd.resume();
 		
 		// perform the light sensor localization
 		LightLocalizer lsl = new LightLocalizer(odo, colorValue, colorData);
@@ -83,13 +98,14 @@ public class Lab4 {
 	}
 	
 	private static int mainMenu() {
-		System.out.println("Fall    N   <A>  ");
-		System.out.println("     -' | '-/    ");
-		System.out.println("    /   | / \\   ");
-		System.out.println(" -W)----o----(E- ");
-		System.out.println("    \\  /|   /    ");
-		System.out.println("     /-.|.-      ");
-		System.out.println("   <>   S    Rise");	
+		Text_LCD.clear();
+		Text_LCD.drawString("Fall    N   <A>  ", 0, 0);
+		Text_LCD.drawString("     -' | '-/    ", 0, 1);
+		Text_LCD.drawString("    /   | / \\   ", 0, 2);
+		Text_LCD.drawString(" -W)----o----(E- ", 0, 3);
+		Text_LCD.drawString("    \\  /|   /    ", 0, 4);
+		Text_LCD.drawString("     /-.|.-      ", 0, 5);
+		Text_LCD.drawString("   <>   S    Rise", 0, 6);	
 
 		return Button.waitForAnyPress();
 	}

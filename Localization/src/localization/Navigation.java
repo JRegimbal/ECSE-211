@@ -79,7 +79,7 @@ public class Navigation {
 			minAng = (Math.atan2(y - odometer.getY(), x - odometer.getX())) * (180.0 / Math.PI);
 			if (minAng < 0)
 				minAng += 360.0;
-			this.turnTo(minAng, false);
+			this.turnTo(minAng * Math.PI / 180.0, false);
 			this.setSpeeds(FAST, FAST);
 		}
 		this.setSpeeds(0, 0);
@@ -92,6 +92,11 @@ public class Navigation {
 	public void turnTo(double angle, boolean stop) {
 
 		double error = angle - this.odometer.getTheta();
+		
+		if((Math.abs(error)) > Math.PI) {
+			if(error < 0) error += 2*Math.PI;
+			else error -= 2*Math.PI;
+		}
 
 		while (Math.abs(error) > DEG_ERR * Math.PI / 180.0) {
 

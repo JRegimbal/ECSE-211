@@ -49,7 +49,7 @@ public class USLocalizer {
 			odo.getMotors()[0].setSpeed(0);
 			odo.getMotors()[1].setSpeed(0);
 			lastTheta = odo.getTheta();
-			System.out.println("*1 ("+getFilteredData()+")");
+			//System.out.println("*1 ("+getFilteredData()+")");
 
 			// keep rotating until the robot sees a wall, then latch the angle
 			while(!seesWall() || Math.abs(odo.getTheta() - lastTheta) < THETA_THRESHOLD) {
@@ -64,7 +64,7 @@ public class USLocalizer {
 			lastTheta = odo.getTheta();
 			
 			angleA = (odo.getTheta() < 0.0) ? odo.getTheta() + 2*Math.PI : odo.getTheta();
-			System.out.println("*2. angleA = " + (int)(angleA * 180.0 / Math.PI) + "("+getFilteredData()+")");
+			//System.out.println("*2. angleA = " + (int)(angleA * 180.0 / Math.PI) + "("+getFilteredData()+")");
 			// switch direction and wait until it sees no wall
 			
 			while(seesWall() || Math.abs(odo.getTheta() - lastTheta) < THETA_THRESHOLD) {
@@ -77,7 +77,7 @@ public class USLocalizer {
 			//odo.getMotors()[0].stop();
 			//odo.getMotors()[1].stop();
 			step = 0;
-			System.out.println("*3"+" ("+getFilteredData()+")");
+			//System.out.println("*3"+" ("+getFilteredData()+")");
 			//Sound.beep();
 			// keep rotating until the robot sees a wall, then latch the angle 
 			while(!seesWall() || step < 30) {
@@ -87,11 +87,11 @@ public class USLocalizer {
 			}
 			step = 0;
 			angleB = (odo.getTheta() < 0.0) ? odo.getTheta() + 2*Math.PI : odo.getTheta();
-			System.out.println("*4. angleB = " + (int)(angleB*180.0/Math.PI) +"("+getFilteredData()+")");
+			//System.out.println("*4. angleB = " + (int)(angleB*180.0/Math.PI) +"("+getFilteredData()+")");
 			Sound.beep();
 			Sound.beep();
-			odo.getMotors()[0].stop();
-			odo.getMotors()[1].stop();
+			odo.setMotorSpeed(0);
+			odo.forwardMotors();
 			
 			// angleA is clockwise from angleB, so assume the average of the
 			// angles to the right of angleB is 45 degrees past 'north'
@@ -122,7 +122,7 @@ public class USLocalizer {
 			odo.getMotors()[0].setSpeed(0);
 			odo.getMotors()[1].setSpeed(0);
 			lastTheta = odo.getTheta();
-			System.out.println("*1 ("+getFilteredData()+")");
+			//System.out.println("*1 ("+getFilteredData()+")");
 
 			// keep rotating until the robot sees a wall, then latch the angle
 			while(seesWall() || Math.abs(odo.getTheta() - lastTheta) < THETA_THRESHOLD) {
@@ -137,7 +137,7 @@ public class USLocalizer {
 			lastTheta = odo.getTheta();
 			
 			angleA = (odo.getTheta() < 0.0) ? odo.getTheta() + 2*Math.PI : odo.getTheta();
-			System.out.println("*2. angleA = " + (int)(angleA * 180.0 / Math.PI) + "("+getFilteredData()+")");
+			//System.out.println("*2. angleA = " + (int)(angleA * 180.0 / Math.PI) + "("+getFilteredData()+")");
 			// switch direction and wait until it sees no wall
 			
 			while(!seesWall() || Math.abs(odo.getTheta() - lastTheta) < THETA_THRESHOLD) {
@@ -147,11 +147,9 @@ public class USLocalizer {
 				odo.getMotors()[1].forward();
 				step++;
 			}
-			//odo.getMotors()[0].stop();
-			//odo.getMotors()[1].stop();
 			step = 0;
-			System.out.println("*3"+" ("+getFilteredData()+")");
-			//Sound.beep();
+			//System.out.println("*3"+" ("+getFilteredData()+")");
+
 			// keep rotating until the robot sees a wall, then latch the angle 
 			while(seesWall() || step < 30) {
 				odo.getMotors()[0].backward();
@@ -160,8 +158,7 @@ public class USLocalizer {
 			}
 			step = 0;
 			angleB = (odo.getTheta() < 0.0) ? odo.getTheta() + 2*Math.PI : odo.getTheta();
-			System.out.println("*4. angleB = " + (int)(angleB*180.0/Math.PI) +"("+getFilteredData()+")");
-			Sound.beep();
+			//System.out.println("*4. angleB = " + (int)(angleB*180.0/Math.PI) +"("+getFilteredData()+")");
 			Sound.beep();
 			odo.getMotors()[0].stop();
 			odo.getMotors()[1].stop();
@@ -199,7 +196,7 @@ public class USLocalizer {
 				filter = 0;
 				return distance;
 			}
-			odo.setData(666);
+			odo.setData(lastDistance);
 			return lastDistance;
 		}
 		/*
