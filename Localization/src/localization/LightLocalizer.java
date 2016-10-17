@@ -20,7 +20,7 @@ public class LightLocalizer {
 	private static final int ROTATE_SPEED	= 40;
 	private static final int FORWARD_SPEED	= 160;
 	
-	private static final double LS_DISTANCE	= 17.0;
+	private static final double LS_DISTANCE	= 14.0; // 17
 	
 	public LightLocalizer(Odometer odo, SampleProvider colorSensor, float[] colorData) {
 		this.odo = odo;

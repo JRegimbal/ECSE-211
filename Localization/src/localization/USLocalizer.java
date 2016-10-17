@@ -5,10 +5,12 @@ import lejos.robotics.SampleProvider;
 
 public class USLocalizer {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	private static final float NO_WALL = 50.0f;
+	private static final float NO_WALL = 45.0f;	//50
 	private static final double THETA_THRESHOLD = Math.PI / 6.0;
 	public static int ROTATION_SPEED = 60;
 
+	private final float angleCorrection = 7.42f; //angle correction from data - for falling edge - in degrees
+	
 	private Odometer odo;
 	private SampleProvider usSensor;
 	private float[] usData;
@@ -33,12 +35,18 @@ public class USLocalizer {
 		double [] pos = new double [3];
 		double angleA, angleB;
 		//while(filter < 10) getUnfilteredData();
-		
+		/*while(seesWall()) {		//don't face wall to start
+			odo.setMotorSpeed(ROTATION_SPEED);
+			odo.getMotors()[0].forward();
+			odo.getMotors()[1].backward();
+		}
+		Sound.beep();	//debugging*/
 		if (locType == LocalizationType.FALLING_EDGE) {
 			// rotate the robot until it sees no wall
 			try {
-				//Thread.sleep(1000);
+				Thread.sleep(1000);
 			}catch (Exception ex) {}
+			
 			odo.getMotors()[0].setSpeed(ROTATION_SPEED);
 			odo.getMotors()[1].setSpeed(ROTATION_SPEED);
 			
@@ -98,6 +106,8 @@ public class USLocalizer {
 			double angle;
 			if(angleA - angleB < 0) angle = (Math.PI/4) - 0.5 * (angleA + angleB);
 			else angle = (5*Math.PI/4) - 0.5 * (angleA + angleB);
+			
+			angle += angleCorrection * Math.PI / 180.0;
 			
 			// update the odometer position (example to follow:)
 			odo.setPosition(new double [] {0.0, 0.0, angle + odo.getTheta()}, new boolean [] {true, true, true});
@@ -176,7 +186,25 @@ public class USLocalizer {
 	
 	private boolean seesWall() {
 		return (getFilteredDataBasic() < NO_WALL);
+	//	return (Math.abs(getFilteredData() - minimumUS) < DISTANCE_THRESHOLD);
 	}
+	
+/*	private float detectUSMinimum() {
+		//find closest distance between robot and wall
+		float minimum, lastValue;
+		odo.setMotorSpeeds(ROTATION_SPEED, ROTATION_SPEED);
+		lastValue = 255.0f; //dummy value to start
+		odo.getMotors()[0].forward();
+		odo.getMotors()[1].backward();
+		for(float current = getFilteredDataBasic(); lastValue > current;) { lastValue = current; current = getFilteredDataBasic(); } //in loop to avoid warnings in eclipse
+		minimum = lastValue;
+		odo.getMotors()[0].backward();	//rotate other way
+		odo.getMotors()[1].forward();
+		for(float current = getFilteredDataBasic(); lastValue > current;) { lastValue = current; current = getFilteredDataBasic(); }
+		minimum = (minimum > lastValue ? minimum : lastValue);
+		return minimum;
+	}*/
+	
 	
 	private float getUnfilteredData() {
 		usSensor.fetchSample(usData, 0);
