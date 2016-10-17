@@ -15,7 +15,6 @@ public class USLocalizer {
 	private SampleProvider usSensor;
 	private float[] usData;
 	private LocalizationType locType;
-	private int filter; //TODO we don't end up using this
 	private double lastTheta;
 	int step; //TODO not sure we need this
 	
@@ -169,9 +168,7 @@ public class USLocalizer {
 	
 	private boolean seesWall() {
 		return (getFilteredDataBasic() < NO_WALL);
-	//	return (Math.abs(getFilteredData() - minimumUS) < DISTANCE_THRESHOLD);
 	}
-
 
 	//TODO I don't know what this is
 /*	private float detectUSMinimum() {
@@ -189,38 +186,6 @@ public class USLocalizer {
 		minimum = (minimum > lastValue ? minimum : lastValue);
 		return minimum;
 	}*/
-	
-	//TODO We don't actually use this
-	private float getFilteredData() {
-		usSensor.fetchSample(usData, 0);
-		float distance = usData[0] * 100.0f;
-		if(distance >= NO_WALL) {
-			filter++;
-			if(filter >= 0) {
-				distance = NO_WALL;
-				odo.setData(distance);
-				lastDistance = distance;
-				filter = 0;
-				return distance;
-			}
-			odo.setData(lastDistance);
-			return lastDistance;
-		}
-		/*
-		else {
-			filter++;
-			if(filter > 10) {
-				odo.setData(distance);
-				return distance;
-			}
-			odo.setData(distance);
-			return NO_WALL;
-		}
-		*/
-		lastDistance = distance;
-		odo.setData(distance);
-		return distance;
-	}
 	
 	private float getFilteredDataBasic() {
 		usSensor.fetchSample(usData, 0); //Store distance in usData
