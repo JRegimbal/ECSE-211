@@ -120,10 +120,24 @@ the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor proble
 
 \section{Further Improvements}
 \subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
+To avoid small errors more acurately, there are several methods that can be used as opposed to a
+clipping filter. Notably, one may implement a \textit{median filter}, which is very effective at
+eliminating the effects of noise for a signal from an ultrasonic sensor. It works as follows: chose
+some \textit{window} size $\aleph$. Every time new data is fetched, the median of the last $\aleph$
+readings is calculated. If the newest data is greater than this median, it is replaced by the
+median.
 
 \subsection{Propose a sensor design that would result in a more accurate and reliable reading than
 an ultrasonic sensor.}
 
 \subsection{Propose another form of localization other than rising edge and falling edge.}
+\par Instead of detecting either rising edges or falling edges, the robot can detect one of each. For
+example, the robot could choose one direction to rotate in, detect a large enough change in distance
+(this can represent a rising edge \textit{or} a falling edge), and continue rotating in that
+direction (as opposed to changing directions in the rising and falling edge methods). At this point,
+the robot will eventually detect another large change in distance (corresponding to a falling edge
+or a rising edge) and make trigonometric calculations based on the two \textit{edges} that it
+detects. The benefit of this routine is that the robot never needs to switch direction, so there is
+no acceleration required to make that switch, effectively reducing the amount of wheel slippage.
 
 \end{document}
