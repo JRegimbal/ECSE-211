@@ -98,13 +98,46 @@ Next, using formula (2), the standard deviation of these measurements will be ca
 	\end{minipage}
 }
 \section{Observations and Conclusion}
-\subsection{Which of the two localization routines performed the best? Which performed the worst? What factors do you think contributed to the performance (or lack thereof) of each method?}
-\subsection{Why does the light sensor provide a more accurate means of orienting the robot than the ultrasonic sensor?
-\subsection{Propose a means of determining (approximately) the inital position of the robot using the ultrasonic sensor. (Consider the minima of the ultrasonic sensor's readings as the robot rotates). Why is detecting minima with the ultrasonic sensor problematic?}
+\subsection{Which of the two localization routines performed the best? Which performed the worst?
+What factors contributed to the performance (or lack thereof) of each method?}
+\par The falling edge localization routine, before any adjustments were made, had a higher mean error
+than the rising edge localization, meaning the falling edge routine was less accurate. However, the
+standard deviation of the falling edge routine was lower than that of the rising edge routine,
+meaning the falling edge localization was more precise. Because of this low standard deviation, the
+falling edge localization was further corrected to rotate by the mean error once the initial
+localization was complete, so as to reduce the mean to approximately 0 degrees. This was reliable
+since the falling edge routine was more consistent, so the error in each trial was closer to the
+mean, and it can be expected then that this extra rotation will consistently localize the robot with
+minimal error. \\
+
+\textbf{TODO: factors affecting performance}
+
+\subsection{Why does the light sensor provide a more accurate means of localization than the
+ultrasonic sensor?}
+
+\subsection{Propose a means of determining (approximately) the initial position of the robot using
+the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
 
 \section{Further Improvements}
 \subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
-\subsection{Propose a sensor design that would result in a more accurate and reliable reading than an ultrasonic sensor.}
-\subsection{Propose another form of localization that uses the rising-edge or falling-edge.}
+To avoid small errors more acurately, there are several methods that can be used as opposed to a
+clipping filter. Notably, one may implement a \textit{median filter}, which is very effective at
+eliminating the effects of noise for a signal from an ultrasonic sensor. It works as follows: chose
+some \textit{window} size $\aleph$. Every time new data is fetched, the median of the last $\aleph$
+readings is calculated. If the newest data is greater than this median, it is replaced by the
+median.
+
+\subsection{Propose a sensor design that would result in a more accurate and reliable reading than
+an ultrasonic sensor.}
+
+\subsection{Propose another form of localization other than rising edge and falling edge.}
+\par Instead of detecting either rising edges or falling edges, the robot can detect one of each. For
+example, the robot could choose one direction to rotate in, detect a large enough change in distance
+(this can represent a rising edge \textit{or} a falling edge), and continue rotating in that
+direction (as opposed to changing directions in the rising and falling edge methods). At this point,
+the robot will eventually detect another large change in distance (corresponding to a falling edge
+or a rising edge) and make trigonometric calculations based on the two \textit{edges} that it
+detects. The benefit of this routine is that the robot never needs to switch direction, so there is
+no acceleration required to make that switch, effectively reducing the amount of wheel slippage.
 
 \end{document}
