@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{gensymb}
+\usepackage{sectsty}
+\usepackage{geometry}
+\usepackage[ampersand]{easylist}
+
+\geometry{margin=1cm}
+
+\title{Design Principles and Methods - Localization Lab Report}
+\author{Harley Wiltzer (260690006)\\Juliette Regimbal (260657238)}
+\date{October 20, 2016}
+\pagenumbering{gobble}
+\begin{document}
+\maketitle
+\pagenumbering{arabic}
+
+\section{Objective}
+To use the ultrasonic sensor and light sensor to accurately navigate the robot to a known (initial) position and orientation on the field.
+\section{Method}
+\begin{enumerate}
+\item Put you odometer and navigation classes created in Labs 2 and 3 in the Odometer.java and Navigation.java files. Working odometer and navigation classes are also provided in case you had failed to complete either lab.
+\item Fill in the code for the class called \texttt{USLocalizer}. This class actually contains two different localization routines, each of which can be implemented and tested separately. You may need to create extra functions in your Navigation in order to move as you require.
+\item Test each localization routine ten times using random starting orientations (but the same starting position, notably in the corner square) and record the error in the final orientation of the robot. Compute the mean and standard deviation for each routine.
+\item Based on the standard deviations from (2), determine the best ultrasonic sensor-based localization method for your robot. Use this one for the rest of the lab, but do not remove the code for the other, as you will need to submit it. Also, correct the appropriate constant in your code to make the mean error 0. You should not need to do any additional tests to confirm that your correction in fact made it 0.
+\item Fill in the code for the class called \texttt{LightLocalizer}. You need not test the accuracy of this part of the localization. You'll require some trigonometric equations as outlined in the Localization tutorial. Follow the process that the tutorial demonstrates. Also when you've found (0, 0) and 0$\degree$, travel to (0, 0) and turn to 0$\degree$.
+\item Demonstrate to a TA the correct operation of your robot's localization. The TA will choose the starting orientation of your robot. As can be inferred from the comments in the provided code, your robot should: a) use the ultrasonic sensor and the routine you developed and tested in (1), (2), and (3) to find and rotate to an approximatation of 0$\degree$, b) drive to the point specified in the Localization tutorial. Begin rotating and clocking angles. c) Compute the trigonometric values for the robot's heading and the (0, 0) point, and d) Travel to (0, 0, 0).
+\end{enumerate}
+\newpage
+\section{Data}
+\begin{figure}[h!t]
+\begin{center}
+\caption{Offset from 0$\degree$ - Falling and Rising Edge}
+\begin{tabular}{| c | c | c |}
+\multicolumn{3}{c}{} \\ \hline
+Trial No. & Falling Edge ($\degree$) & Rising Edge ($\degree$) \\ \hline
+1 & 9.6 & 3.8 \\ \hline
+2 & 6.5 & 3.0 \\ \hline
+3 & 6.1 & -1.2 \\ \hline
+4 & 14.7 & -1.5 \\ \hline
+5 & 4.6 & -1.9 \\ \hline
+6 & 5.7 & 0.4 \\ \hline
+7 & 5.0 & -1.9 \\ \hline
+8 & 3.8 & -16.7 \\ \hline
+9 & 2.7 & 1.5 \\ \hline
+10 & 15.5 & -1.2 \\ \hline
+Mean & 7.4 & -1.6 \\\hline
+Standard Deviation & 4.4 & 5.7 \\ \hline
+\end{tabular}
+\end{center}
+\end{figure}
+\section{Error Calculations}
+\begin{equation}
+	\mbox{Mean} = \frac{1}{n} \sum_{k=1}^{n}\mathcal{E}_k
+\end{equation}
+\begin{equation}
+	\mbox{Standard Deviation} = \sqrt{\frac{\sum_{k=1}^{n}(\mathcal{E}_k-\mu_{\mathcal{E}})^2}{n-1}}
+\end{equation}
+\subsection{Falling Edge}
+Using formula (1), the mean error of the falling edge localization routine will be calculated.
+\begin{equation*}
+	\begin{aligned}
+		\mu_F &= \dfrac{9.6+6.5+6.1+14.7+4.6+5.7+5.0+3.8+2.7+15.5}{10} \\
+		&= 7.4 \degree
+	\end{aligned}
+\end{equation*}
+Next, using formula (2), the standard deviation of these measurements will be calcuated.\\
+\resizebox{\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{align*}
+			\sigma_F &=
+			\sqrt{\dfrac{(9.6-7.4)^2+(6.5-7.4)^2+(6.1-7.4)^2+(14.7-7.4)^2+(4.6-7.4)^2+(5.7-7.4)^2+(5.0-7.4)^2+(3.8-7.4)^2+(3.8-7.4)^2+(2.7-7.4)^2+(15.5-7.4)^2}{9}}
+			\\
+			&= 4.4 \degree
+		\end{align*}
+	\end{minipage}
+}
+\subsection{Rising Edge}
+Using formula (1), the mean error of the falling edge localization routine will be calculated.
+\begin{equation*}
+	\begin{aligned}
+		\mu_R &= \dfrac{3.8+3.0-1.2-1.5-1.9+0.4-1.9-16.7+1.5-1.2}{10} \\
+		&= -1.6 \degree
+	\end{aligned}
+\end{equation*}
+Next, using formula (2), the standard deviation of these measurements will be calcuated.\\
+\resizebox{\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{align*}
+			\sigma_R &=
+			\sqrt{\dfrac{(3.8+1.6)^2+(3.0+1.6)^2+(-1.2+1.6)^2+(-1.5+1.6)^2+(-1.9+1.6)^2+(0.4+1.6)^2+(-1.9+1.6)^2+(-16.7+1.6)^2+(1.5+1.6)^2+(-1.2+1.6)^2}{9}}
+			\\
+			&= 4.4 \degree
+		\end{align*}
+	\end{minipage}
+}
+\section{Observations and Conclusion}
+<<<<<<< HEAD
+\subsection{Which of the two localization routines performed the best? Which performed the worst? What factors do you think contributed to the performance (or lack thereof) of each method?}
+\subsection{Why does the light sensor provide a more accurate means of orienting the robot than the ultrasonic sensor?
+\subsection{Propose a means of determining (approximately) the inital position of the robot using the ultrasonic sensor. (Consider the minima of the ultrasonic sensor's readings as the robot rotates). Why is detecting minima with the ultrasonic sensor problematic?}
+
+\section{Further Improvements}
+\subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
+\subsection{Propose a sensor design that would result in a more accurate and reliable reading than an ultrasonic sensor.}
+\subsection{Propose another form of localization that uses the rising-edge or falling-edge.}
+=======
+\subsection{Which of the two localization routines performed the best? Which performed the worst?
+What factors contributed to the performance (or lack thereof) of each method?}
+\par The falling edge localization routine, before any adjustments were made, had a higher mean error
+than the rising edge localization, meaning the falling edge routine was less accurate. However, the
+standard deviation of the falling edge routine was lower than that of the rising edge routine,
+meaning the falling edge localization was more precise. Because of this low standard deviation, the
+falling edge localization was further corrected to rotate by the mean error once the initial
+localization was complete, so as to reduce the mean to approximately 0 degrees. This was reliable
+since the falling edge routine was more consistent, so the error in each trial was closer to the
+mean, and it can be expected then that this extra rotation will consistently localize the robot with
+minimal error. \\
+
+\textbf{TODO: factors affecting performance}
+
+\subsection{Why does the light sensor provide a more accurate means of localization than the
+ultrasonic sensor?}
+
+\subsection{Propose a means of determining (approximately) the initial position of the robot using
+the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
+
+\section{Further Improvements}
+\subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
+To avoid small errors more acurately, there are several methods that can be used as opposed to a
+clipping filter. Notably, one may implement a \textit{median filter}, which is very effective at
+eliminating the effects of noise for a signal from an ultrasonic sensor. It works as follows: chose
+some \textit{window} size $\aleph$. Every time new data is fetched, the median of the last $\aleph$
+readings is calculated. If the newest data is greater than this median, it is replaced by the
+median.
+
+\subsection{Propose a sensor design that would result in a more accurate and reliable reading than
+an ultrasonic sensor.}
+
+\subsection{Propose another form of localization other than rising edge and falling edge.}
+\par Instead of detecting either rising edges or falling edges, the robot can detect one of each. For
+example, the robot could choose one direction to rotate in, detect a large enough change in distance
+(this can represent a rising edge \textit{or} a falling edge), and continue rotating in that
+direction (as opposed to changing directions in the rising and falling edge methods). At this point,
+the robot will eventually detect another large change in distance (corresponding to a falling edge
+or a rising edge) and make trigonometric calculations based on the two \textit{edges} that it
+detects. The benefit of this routine is that the robot never needs to switch direction, so there is
+no acceleration required to make that switch, effectively reducing the amount of wheel slippage.
+>>>>>>> 6eea4ba27c00521808c4927cc5c74145ba908bd9
+
+\end{document}
