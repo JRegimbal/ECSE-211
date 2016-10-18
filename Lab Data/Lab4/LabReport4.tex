@@ -52,13 +52,51 @@ Standard Deviation & 4.4 & 5.7 \\ \hline
 \end{tabular}
 \end{center}
 \end{figure}
-\section{Data Analysis}
+\section{Error Calculations}
 \begin{equation}
 	\mbox{Mean} = \frac{1}{n} \sum_{k=1}^{n}\mathcal{E}_k
 \end{equation}
 \begin{equation}
 	\mbox{Standard Deviation} = \sqrt{\frac{\sum_{k=1}^{n}(\mathcal{E}_k-\mu_{\mathcal{E}})^2}{n-1}}
 \end{equation}
+\subsection{Falling Edge}
+Using formula (1), the mean error of the falling edge localization routine will be calculated.
+\begin{equation*}
+	\begin{aligned}
+		\mu_F &= \dfrac{9.6+6.5+6.1+14.7+4.6+5.7+5.0+3.8+2.7+15.5}{10} \\
+		&= 7.4 \degree
+	\end{aligned}
+\end{equation*}
+Next, using formula (2), the standard deviation of these measurements will be calcuated.\\
+\resizebox{\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{align*}
+			\sigma_F &=
+			\sqrt{\dfrac{(9.6-7.4)^2+(6.5-7.4)^2+(6.1-7.4)^2+(14.7-7.4)^2+(4.6-7.4)^2+(5.7-7.4)^2+(5.0-7.4)^2+(3.8-7.4)^2+(3.8-7.4)^2+(2.7-7.4)^2+(15.5-7.4)^2}{9}}
+			\\
+			&= 4.4 \degree
+		\end{align*}
+	\end{minipage}
+}
+\subsection{Rising Edge}
+Using formula (1), the mean error of the falling edge localization routine will be calculated.
+\begin{equation*}
+	\begin{aligned}
+		\mu_R &= \dfrac{3.8+3.0-1.2-1.5-1.9+0.4-1.9-16.7+1.5-1.2}{10} \\
+		&= -1.6 \degree
+	\end{aligned}
+\end{equation*}
+Next, using formula (2), the standard deviation of these measurements will be calcuated.\\
+\resizebox{\linewidth}{!}{
+	\begin{minipage}{\linewidth}
+		\begin{align*}
+			\sigma_R &=
+			\sqrt{\dfrac{(3.8+1.6)^2+(3.0+1.6)^2+(-1.2+1.6)^2+(-1.5+1.6)^2+(-1.9+1.6)^2+(0.4+1.6)^2+(-1.9+1.6)^2+(-16.7+1.6)^2+(1.5+1.6)^2+(-1.2+1.6)^2}{9}}
+			\\
+			&= 4.4 \degree
+		\end{align*}
+	\end{minipage}
+}
 \section{Observations and Conclusion}
 \section{Further Improvements}
 
