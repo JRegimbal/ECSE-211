@@ -50,26 +50,28 @@ public class Lab4 {
 		// setup the odometer and display
 		Odometer odo = new Odometer(leftMotor, rightMotor);
 		
-		int option = mainMenu();
+		int option = mainMenu(); //Display main menu and store selected US Localization method.
 		
 		LCDInfo lcd = new LCDInfo(odo);	//starts automatically upon creation
 		
-		odo.start();
+		odo.start(); //Start odometer thread
 		Navigation nav = new Navigation(odo);
 
-		ender.start();
+		ender.start(); //In case of infinite loops
 		
 		// perform the ultrasonic localization
 		
 		switch(option) {
 		case Button.ID_LEFT:
+			//Falling edge was selected
 			USLocalizer usl = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.FALLING_EDGE);
 			usl.doLocalization();
-			lcd.pause();
+			lcd.pause(); 
 			Text_LCD.clear();
 			Text_LCD.drawString("Finished US Localization", 0, 0);
 			break;
 		case Button.ID_RIGHT:
+			//Rising edge was selected
 			USLocalizer usr = new USLocalizer(odo, usValue, usData, USLocalizer.LocalizationType.RISING_EDGE);
 			usr.doLocalization();
 			lcd.pause();
@@ -77,6 +79,7 @@ public class Lab4 {
 			Text_LCD.drawString("Finished US Localization", 0, 0);
 			break;
 		default:
+			//Invalid option - end program
 			Text_LCD.clear();
 			Text_LCD.drawString("Are you nuts?", 3, 0);
 			System.exit(1);
@@ -98,6 +101,7 @@ public class Lab4 {
 	}
 	
 	private static int mainMenu() {
+		//Display main menu, return button id of input
 		Text_LCD.clear();
 		Text_LCD.drawString("Fall    N   <A>  ", 0, 0);
 		Text_LCD.drawString("     -' | '-/    ", 0, 1);
