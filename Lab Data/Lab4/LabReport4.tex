@@ -15,10 +15,12 @@
 \author{Harley Wiltzer (260690006)\\Juliette Regimbal (260657238)}
 \date{October 20, 2016}
 \pagenumbering{gobble}
+
 \begin{document}
 \maketitle
 \pagenumbering{arabic}
 
+%Color definitions
 \definecolor{dblue}{rgb}{0.4,0.4,0.6}
 \definecolor{lblue}{rgb}{0.8,0.8,1.0}
 \definecolor{lyellow}{rgb}{1.0,1.0,0.6}
@@ -149,12 +151,12 @@ stable behaviour. It is a fixed distance away from the odometer's center and the
 less prone to false positives and does not even require a filter. For these reasons localization
 using the light sensor produces a more reliably accurate correction than localization using the
 ultrasonic sensor.
-
 \subsection{Propose a means of determining (approximately) the initial position of the robot using
 the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
 \par The approximate initial position of the robot could be calculated using the minimal distance
 between the robot and each wall. Ideally, this will report an accurate distance in centimeters from
-each wall, easily allowing for the x and y coordinates to be set. In reality, this method has issues
+each wall, easily allowing for the $x$ and $y$ coordinates to be set (given the dimensions of the grid).
+In reality, this method has issues
 stemming from the inaccuracies with the ultrasonic sensor described in section \textbf{6.1}. With so
 much error, multiple passes and filtering would be necessary to determine the minima, and even then
 the coordinates likely be off be a few centimeters. This process would be time consuming and would
