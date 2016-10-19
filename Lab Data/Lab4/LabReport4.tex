@@ -7,6 +7,7 @@
 \usepackage{sectsty}
 \usepackage{geometry}
 \usepackage[ampersand]{easylist}
+\usepackage[table]{xcolor}
 
 \geometry{margin=1cm}
 
@@ -17,6 +18,11 @@
 \begin{document}
 \maketitle
 \pagenumbering{arabic}
+
+\definecolor{dblue}{rgb}{0.4,0.4,0.6}
+\definecolor{lblue}{rgb}{0.8,0.8,1.0}
+\definecolor{lyellow}{rgb}{1.0,1.0,0.6}
+\definecolor{lgreen}{rgb}{0.7,1.0,0.7}
 
 \section{Objective}
 To use the ultrasonic sensor and light sensor to accurately navigate the robot to a known (initial) position and orientation on the field.
@@ -34,8 +40,10 @@ To use the ultrasonic sensor and light sensor to accurately navigate the robot t
 \begin{figure}[h!t]
 \begin{center}
 \caption{Offset from 0$\degree$ - Falling and Rising Edge}
+\rowcolors{2}{lblue}{white}
 \begin{tabular}{| c | c | c |}
 \multicolumn{3}{c}{} \\ \hline
+\rowcolor{dblue}
 Trial No. & Falling Edge ($\degree$) & Rising Edge ($\degree$) \\ \hline
 1 & 9.6 & 3.8 \\ \hline
 2 & 6.5 & 3.0 \\ \hline
@@ -47,7 +55,9 @@ Trial No. & Falling Edge ($\degree$) & Rising Edge ($\degree$) \\ \hline
 8 & 3.8 & -16.7 \\ \hline
 9 & 2.7 & 1.5 \\ \hline
 10 & 15.5 & -1.2 \\ \hline
+\rowcolor{lyellow}
 Mean & 7.4 & -1.6 \\\hline
+\rowcolor{lgreen}
 Standard Deviation & 4.4 & 5.7 \\ \hline
 \end{tabular}
 \end{center}
@@ -114,11 +124,26 @@ minimal error. \\
 
 \subsection{Why does the light sensor provide a more accurate means of localization than the
 ultrasonic sensor?}
-\par The localization using the light sensor detects 4 angles - one for each line - before determining the heading correction. The ultrasonic sensor only detects 2 angles, one for each wall. Along with this the light sensor is less susceptible to noise than the ultrasonic sensor. While the ultrasonic sensor often reports wildly disparate values and needs at least basic filtering to be at all useful. Even then the ultrasonic sensor is susceptible to noise in its environment, causing false positives and introducing error into the correction. The light sensor, however, has much more stable behaviour. It is a fixed distance away from the odometer's center and the light sensor is far less prone to false positives and does not even require a filter. For these reasons localization using the light sensor produces a more reliably accurate correction than localization using the ultrasonic sensor.
+\par The localization using the light sensor detects 4 angles - one for each line - before
+determining the heading correction. The ultrasonic sensor only detects 2 angles, one for each wall.
+Along with this the light sensor is less susceptible to noise than the ultrasonic sensor. While the
+ultrasonic sensor often reports wildly disparate values and needs at least basic filtering to be at
+all useful. Even then the ultrasonic sensor is susceptible to noise in its environment, causing
+false positives and introducing error into the correction. The light sensor, however, has much more
+stable behaviour. It is a fixed distance away from the odometer's center and the light sensor is far
+less prone to false positives and does not even require a filter. For these reasons localization
+using the light sensor produces a more reliably accurate correction than localization using the
+ultrasonic sensor.
 
 \subsection{Propose a means of determining (approximately) the initial position of the robot using
 the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
-\par The approximate initial position of the robot could be calculated using the minimal distance between the robot and each wall. Ideally, this will report an accurate distance in centimeters from each wall, easily allowing for the x and y coordinates to be set. In reality, this method has issues stemming from the inaccuracies with the ultrasonic sensor described in section \textbf{6.1}. With so much error, multiple passes and filtering would be necessary to determine the minima, and even then the coordinates likely be off be a few centimeters. This process would be time consuming and would not result in accurate localization, and shouldn't be used with the ultrasonic sensor provided.
+\par The approximate initial position of the robot could be calculated using the minimal distance
+between the robot and each wall. Ideally, this will report an accurate distance in centimeters from
+each wall, easily allowing for the x and y coordinates to be set. In reality, this method has issues
+stemming from the inaccuracies with the ultrasonic sensor described in section \textbf{6.1}. With so
+much error, multiple passes and filtering would be necessary to determine the minima, and even then
+the coordinates likely be off be a few centimeters. This process would be time consuming and would
+not result in accurate localization, and shouldn't be used with the ultrasonic sensor provided.
 
 \section{Further Improvements}
 \subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
