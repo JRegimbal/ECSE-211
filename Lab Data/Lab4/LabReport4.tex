@@ -121,7 +121,21 @@ since the falling edge routine was more consistent, so the error in each trial w
 mean, and it can be expected then that this extra rotation will consistently localize the robot with
 minimal error. \\
 
-\textbf{TODO: factors affecting performance}
+\par
+There was a plethora of factors that hindered the performance of both localization methods. Firstly,
+it was extremely important for the robot to start with its center of rotation on the 45\degree 
+ diagonal. Deviance from this starting point resulted in much larger error than when the robot was
+more properly placed, as errors up to 22.1\degree  were observed in such circumstances. Furthermore,
+noise from the ultrasonic sensor was particularly detrimental to the performance of both falling
+edge and rising edge localization, as the ultrasonic sensor was detecting walls that did not exist.
+This turned out to be more of an issue during the falling edge localization. However, this error was
+reduced by filtering the ultrasonic sensor data, and by only checking for walls after a certain
+heading difference from the last wall. Finally, rising edge localization experienced some errors
+presumably due to the ultrasonic sensor interfering with itself. The rising edge localization method
+has the robot facing the wall most of the time, so the pings of the ultrasonic sensor may have been
+interfering with the reflections of other pings off the wall.
+
+\textbf{TODO: Does this make any sense at all?}
 
 \subsection{Why does the light sensor provide a more accurate means of localization than the
 ultrasonic sensor?}
