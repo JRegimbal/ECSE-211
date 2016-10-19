@@ -25,7 +25,6 @@ public class USLocalizer {
 		this.usSensor = usSensor;
 		this.usData = usData;
 		this.locType = locType;
-		filter = 0;
 		step = 0;
 		lastDistance = 0;
 	}
@@ -169,23 +168,6 @@ public class USLocalizer {
 	private boolean seesWall() {
 		return (getFilteredDataBasic() < NO_WALL);
 	}
-
-	//TODO I don't know what this is
-/*	private float detectUSMinimum() {
-		//find closest distance between robot and wall
-		float minimum, lastValue;
-		odo.setMotorSpeeds(ROTATION_SPEED, ROTATION_SPEED);
-		lastValue = 255.0f; //dummy value to start
-		odo.getMotors()[0].forward();
-		odo.getMotors()[1].backward();
-		for(float current = getFilteredDataBasic(); lastValue > current;) { lastValue = current; current = getFilteredDataBasic(); } //in loop to avoid warnings in eclipse
-		minimum = lastValue;
-		odo.getMotors()[0].backward();	//rotate other way
-		odo.getMotors()[1].forward();
-		for(float current = getFilteredDataBasic(); lastValue > current;) { lastValue = current; current = getFilteredDataBasic(); }
-		minimum = (minimum > lastValue ? minimum : lastValue);
-		return minimum;
-	}*/
 	
 	private float getFilteredDataBasic() {
 		usSensor.fetchSample(usData, 0); //Store distance in usData

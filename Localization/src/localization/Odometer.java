@@ -113,15 +113,16 @@ public class Odometer extends Thread {
 	}
 	
 	public void moveCM(LINEDIR dir, double distance, boolean stop) {
+		//Moves robot by a certain distance in a given direction
 		if(dir == LINEDIR.Forward) forwardMotors();
 		else backwardMotors();
 		double startpos[] = new double[3];
-		double curpos[] = new double[3];
+		double curpos[] = new double[3]; //Current position buffer
 		getPosition(startpos,new boolean[] {true,true,true});
 		do {
-			getPosition(curpos, new boolean[] {true,true,true});
+			getPosition(curpos, new boolean[] {true,true,true}); //While hasn't moved far enough, update current position
 		}
-		while(euclideanDistance(startpos,curpos) < distance);
+		while(euclideanDistance(startpos,curpos) < distance); //Stop when you've moved by the appropriate distance (approximately)
 		
 		if(stop) {
 			setMotorSpeed(0);
