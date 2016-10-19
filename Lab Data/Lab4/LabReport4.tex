@@ -114,9 +114,11 @@ minimal error. \\
 
 \subsection{Why does the light sensor provide a more accurate means of localization than the
 ultrasonic sensor?}
+\par The localization using the light sensor detects 4 angles - one for each line - before determining the heading correction. The ultrasonic sensor only detects 2 angles, one for each wall. Along with this the light sensor is less susceptible to noise than the ultrasonic sensor. While the ultrasonic sensor often reports wildly disparate values and needs at least basic filtering to be at all useful. Even then the ultrasonic sensor is susceptible to noise in its environment, causing false positives and introducing error into the correction. The light sensor, however, has much more stable behaviour. It is a fixed distance away from the odometer's center and the light sensor is far less prone to false positives and does not even require a filter. For these reasons localization using the light sensor produces a more reliably accurate correction than localization using the ultrasonic sensor.
 
 \subsection{Propose a means of determining (approximately) the initial position of the robot using
 the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
+\par The approximate initial position of the robot could be calculated using the minimal distance between the robot and each wall. Ideally, this will report an accurate distance in centimeters from each wall, easily allowing for the x and y coordinates to be set. In reality, this method has issues stemming from the inaccuracies with the ultrasonic sensor described in section \textbf{6.1}. With so much error, multiple passes and filtering would be necessary to determine the minima, and even then the coordinates likely be off be a few centimeters. This process would be time consuming and would not result in accurate localization, and shouldn't be used with the ultrasonic sensor provided.
 
 \section{Further Improvements}
 \subsection{Propose a way to avoid small errors more accurately than a clipping filter.}
