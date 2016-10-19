@@ -2,6 +2,7 @@ package chassis;
 
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -9,6 +10,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 import utilities.Odometer;
+import utilities.USLocalizer;
 
 public class Lab5 {
 	//Constants (measurements, frequencies, etc)
@@ -20,6 +22,7 @@ public class Lab5 {
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final Port colorPort = LocalEV3.get().getPort("S2");
+	private static TextLCD textLCD = LocalEV3.get().getTextLCD();
 	
 	public static void main(String[] args) {
 		//Setup sensors
@@ -33,9 +36,16 @@ public class Lab5 {
 		
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
+		LCDInfo lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
+		USLocalizer localizer = new USLocalizer(odo, colorValue, colorData, USLocalizer.LocalizationType.FALLING_EDGE);
+		
+		textLCD.drawString("Press any key to start.", 0, 0);
+		Button.waitForAnyPress();
 		
 		//Start threads
 		odo.start();
+		lcd.resume();
+		localizer.doLocalization();
 		
 		//Wait for escape to exit
 		while(Button.waitForAnyPress() != Button.ID_ESCAPE);
