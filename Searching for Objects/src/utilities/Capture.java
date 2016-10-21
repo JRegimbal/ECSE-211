@@ -4,6 +4,7 @@ import chassis.Lab5;
 
 public class Capture extends Thread {
 	private Odometer odo;
+	private final double [] GOAL_ZONE = new double [] {80, 80}; //(80, 80) in cm, goal zone
 	
 	public Capture(Odometer odo) {
 		this.odo = odo;

@@ -47,7 +47,7 @@ public class Lab5 {
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
 		LCDInfo lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
 		USLocalizer localizer = new USLocalizer(odo, usSensor, usData, USLocalizer.LocalizationType.FALLING_EDGE);
-		Search search = new Search(odo, colorValue, colorData);
+		Search search = new Search(odo, colorValue, colorData, usValue, usData);
 		Capture capture = new Capture(odo);
 		
 		textLCD.drawString("Press any key to start.", 0, 0);
