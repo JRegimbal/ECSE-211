@@ -47,7 +47,7 @@ To use the ultrasonic sensor and light sensor to accurately navigate the robot t
 \begin{tabular}{| c | c | c |}
 \multicolumn{3}{c}{} \\ \hline
 \rowcolor{dblue}
-Trial No. & Falling Edge ($\degree$) & Rising Edge ($\degree$) \\ \hline
+Trial No. & Falling Edge Error ($\degree$) & Rising Edge Error ($\degree$) \\ \hline
 1 & 9.6 & 3.8 \\ \hline
 2 & 6.5 & 3.0 \\ \hline
 3 & 6.1 & -1.2 \\ \hline
@@ -147,7 +147,16 @@ false positives and introducing error into the correction. The light sensor, how
 stable behaviour. It is a fixed distance away from the odometer's center and the light sensor is far
 less prone to false positives and does not even require a filter. For these reasons localization
 using the light sensor produces a more reliably accurate correction than localization using the
-ultrasonic sensor.
+ultrasonic sensor. Furthermore, the conditions for successful localization with the light sensor are
+far less constrained than that with the ultrasonic sensor. For the light sensor localization to
+work, the robot must be positioned some distance (depending on the design of the robot) from the
+origin, in the third quadrant. No matter what its position or orientation are at this point, the
+light sensor localization should be successful. With the ultrasonic sensor, the robot's center of
+rotation must be very close to the diagonal ranging from the corner of the wall to $(0,0)$. Small
+deviations from this position can result in large error in localization. Therefore, the accuracy of
+the ultrasonic sensor localization routine is limited much more by human accuracy (placing the robot
+on the $45 \degree$ line) than the light sensor routine, which explains why the light sensor
+localization is often much more accurate and precise.
 \subsection{Propose a means of determining (approximately) the initial position of the robot using
 the ultrasonic sensor. Why is detecting minima with the ultrasonic sensor problematic?}
 \par The approximate initial position of the robot could be calculated using the minimal distance
@@ -164,22 +173,54 @@ not result in accurate localization, and shouldn't be used with the ultrasonic s
 To avoid small errors more acurately, there are several methods that can be used as opposed to a
 clipping filter. Notably, one may implement a \textit{median filter}, which is very effective at
 eliminating the effects of noise for a signal from an ultrasonic sensor. It works as follows: chose
-some \textit{window} size $\aleph$. Every time new data is fetched, the median of the last $\aleph$
+some \textit{window} size $\epsilon$. Every time new data is fetched, the median of the last
+$\epsilon$
 readings is calculated. If the newest data is greater than this median, it is replaced by the
 median.
 
 \subsection{Propose a sensor design that would result in a more accurate and reliable reading than
 an ultrasonic sensor.}
-\par One alternative sensor design that would yield more accurate results would be to equip the robot with an infrared sensor and, on the field, place infrared LEDs on the $x$ and $y$ axes. The robot could search for the position where both LEDs can be detected - (0, 0) - and then rotate itself to a heading of 0$\degree$ since the LEDs would be directed in the $+x$ and $+y$ directions. Using light rather than sound prevents other sources of noise from interfering with measurements taken, and the infrared LEDs would produce a large spike when in the correct location. With such a spike, the measurements could be interpreted as being binary - detecting or not detecting - which removes or at the very least simplifies the requirements for filtered input. The heading correction would only be as accurate as the odometer, but a poorly designed odometer would create far greater problems than inaccurate localization. The main drawback of this method is that the robot would be dependent on the LEDs for localization, and would not be able to use the field in its current form. The infrared light produced by the LEDs would also have to be narrowly focused so their intersection is only at the (0, 0) point. With no unique landmarks on the field, a combination of inputs using the light sensor to detect grid lines and the ultrasonic sensor to detect the boundary of the field would have to be used. Such a method of localization would be more complicated and error prone.
+\par One alternative sensor design that would yield more accurate results would be to equip the
+robot with an infrared sensor and, on the field, place infrared LEDs on the $x$ and $y$ axes. The
+robot could search for the position where both LEDs can be detected - (0, 0) - and then rotate
+itself to a heading of 0$\degree$ since the LEDs would be directed in the $+x$ and $+y$ directions.
+Using light rather than sound prevents other sources of noise from interfering with measurements
+taken, and the infrared LEDs would produce a large spike when in the correct location. With such a
+spike, the measurements could be interpreted as being binary - detecting or not detecting - which
+removes or at the very least simplifies the requirements for filtered input. The heading correction
+would only be as accurate as the odometer, but a poorly designed odometer would create far greater
+problems than inaccurate localization. The main drawback of this method is that the robot would be
+dependent on the LEDs for localization, and would not be able to use the field in its current form.
+The infrared light produced by the LEDs would also have to be narrowly focused so their intersection
+is only at the (0, 0) point. With no unique landmarks on the field, a combination of inputs using
+the light sensor to detect grid lines and the ultrasonic sensor to detect the boundary of the field
+would have to be used. Such a method of localization would be more complicated and error prone.
 
 \subsection{Propose another form of localization other than rising edge and falling edge.}
-\par Instead of detecting either rising edges or falling edges, the robot can detect one of each. For
-example, the robot could choose one direction to rotate in, detect a large enough change in distance
-(this can represent a rising edge \textit{or} a falling edge), and continue rotating in that
-direction (as opposed to changing directions in the rising and falling edge methods). At this point,
-the robot will eventually detect another large change in distance (corresponding to a falling edge
-or a rising edge) and make trigonometric calculations based on the two \textit{edges} that it
-detects. The benefit of this routine is that the robot never needs to switch direction, so there is
-no acceleration required to make that switch, effectively reducing the amount of wheel slippage.
+\par Instead of detecting rising or falling edges, a method akin to that described in \textbf{5.3}
+can be used. First, the robot would store headings associated with minimal distances (detected by
+the ultrasonic sensor) to the walls, these would correspond to the heading for which the robot is
+parallel to the negative $x$ axis, $\theta_x$, and the heading for which the robot is facing the
+negative $y$ direction, $\theta_y$. Furthermore, the values of those minima will be stored as
+$\delta_x$ and $\delta_y$ respectively. With this data, the robot knows (approximately) its position
+relative to the corner. Given the length of a gridline, $\aleph$, the robot updates its odometer
+position to $(\aleph - \delta_x,\aleph - \delta_y)$. For now, the robot's heading is not
+altered. Next, the robot calls \texttt{turnTo($\theta_x
++ 180 \degree$)}, which would orient the robot to the \textit{positive} $x$ axis, at which point it
+can set its heading to 0. Note, the $\theta_x + 180\degree$ in the \texttt{turnTo()} call is based
+on the fact that $\theta_x$ is the heading of the robot when it is parallel to the \textit{negative}
+$y$ axis by definition, thus the robot must rotate another $180\degree$ to be facing the positive
+$x$ axis.
+\par It should be noted, however, that this method of localization has its disadvantages. As
+described in \textbf{5.3}, detecting minima of distance with the ultrasonic sensor can be quite
+problematic, therefore the data that is crucial to the localization in this method may be convoluted.
+%\par Instead of detecting either rising edges or falling edges, the robot can detect one of each. For
+%example, the robot could choose one direction to rotate in, detect a large enough change in distance
+%(this can represent a rising edge \textit{or} a falling edge), and continue rotating in that
+%direction (as opposed to changing directions in the rising and falling edge methods). At this point,
+%the robot will eventually detect another large change in distance (corresponding to a falling edge
+%or a rising edge) and make trigonometric calculations based on the two \textit{edges} that it
+%detects. The benefit of this routine is that the robot never needs to switch direction, so there is
+%no acceleration required to make that switch, effectively reducing the amount of wheel slippage.
 
 \end{document}
