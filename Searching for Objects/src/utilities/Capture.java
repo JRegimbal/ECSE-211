@@ -21,9 +21,6 @@ public class Capture extends Thread {
 			} catch (InterruptedException e){ }
 		}
 		
-		chassis.LCDInfo.getLCD().clear();
-		chassis.LCDInfo.getLCD().drawString("Capturing", 0, 0);
-		
 		getBlock();
 		Navigator.travelTo(GOAL_ZONE[0], GOAL_ZONE[1]); //travel to scoring zone with block
 		
@@ -34,7 +31,6 @@ public class Capture extends Thread {
 		Sound.beep();
 		Sound.beep();
 		Sound.beep();
-		LCDInfo.getLCD().clear();
 	}
 	
 	private void getBlock() {

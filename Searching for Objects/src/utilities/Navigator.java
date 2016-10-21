@@ -14,13 +14,16 @@ public class Navigator {
 	public static void travelTo(double x, double y) {
 		double [] currentPosition = new double[] {0, 0, 0};
 		odo.getPosition(currentPosition);
-		if(odo.euclideanDistance(currentPosition, new double[] {x, y}) < NAVIGATION_THRESHOLD) {
+		if(odo.euclideanDistance(currentPosition, new double[] {x, y}) > NAVIGATION_THRESHOLD) {
 			double dx = x-currentPosition[0];
 			double dy = y-currentPosition[1];
 			double newTheta = Math.atan2(dy, dx);
 			turnTo(newTheta);
-			
 			odo.setMotorSpeeds(Odometer.NAVIGATE_SPEED, Odometer.NAVIGATE_SPEED);
+			odo.forwardMotors();
+			
+			while(odo.euclideanDistance(new double[] {odo.getX(), odo.getY()}, new double[] {x, y}) > NAVIGATION_THRESHOLD);
+			odo.setMotorSpeeds(0, 0);
 			odo.forwardMotors();
 		}
 	}

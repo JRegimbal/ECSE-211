@@ -37,7 +37,7 @@ public class Lab5 {
 		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
-		LCDInfo lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
+		LCDInfo lcd = new LCDInfo(odo, textLCD, true);	//do not start on creation
 		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.FALLING_EDGE);
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo);
@@ -53,7 +53,7 @@ public class Lab5 {
 			odo.start();	//start threads
 			search.start();
 			capture.start();
-			//lcd.resume();
+			lcd.resume();
 			//localizer.doLocalization();
 			break;
 		case Button.ID_LEFT:

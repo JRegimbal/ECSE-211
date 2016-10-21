@@ -4,6 +4,7 @@ import chassis.Lab5;
 import chassis.USSensor;
 import lejos.hardware.Sound;
 import lejos.robotics.Color;
+import utilities.Odometer.LINEDIR;
 
 import java.lang.reflect.Array;
 
@@ -38,10 +39,7 @@ public class Search extends Thread {
 			try {
 				Thread.sleep(300);
 			} catch (Exception e) {}
-		}
-		chassis.LCDInfo.getLCD().clear();
-		chassis.LCDInfo.getLCD().drawString("Searching", 0, 0);
-		
+		}		
 		if(Lab5.demo == Lab5.DemoState.k_Part2) {
 			//PART 2
 			//TODO: Comb through track, check for detection
@@ -73,13 +71,14 @@ public class Search extends Thread {
 						//obstacleLocation = new double[] {odo.getX(), odo.getY()};
 						Sound.twoBeeps();
 					}
+					odo.moveCM(LINEDIR.Backward, 4, true);
 				} else {	//go to next scan point
 					//scanPointNumber = (scanPointNumber+1) % scanPoints.length;
 				}
-				chassis.LCDInfo.getLCD().drawString("Go to origin", 0, 3);
+				chassis.LCDInfo.displayMessage("Go to origin.");
 				Navigator.travelTo(0, 0);
 				Navigator.turnTo(0);
-				chassis.LCDInfo.getLCD().clear(3);
+				chassis.LCDInfo.displayMessage("");
 				//odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
 				//odo.turnTo(scanPoints[scanPointNumber][2]);
 			}

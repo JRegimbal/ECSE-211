@@ -26,6 +26,11 @@ public class LCDInfo implements TimerListener{
 		if(start) lcdTimer.start();
 	}
 	
+	public static void displayMessage(String message) {
+		LCD.clear(3);
+		LCD.drawString(message, 0, 3);
+	}
+	
 	public void timedOut() { 
 		odo.getPosition(pos);
 		LCD.clear();
@@ -36,6 +41,28 @@ public class LCDInfo implements TimerListener{
 		LCD.drawInt((int)(pos[0]), 3, 0);
 		LCD.drawInt((int)(pos[1]), 3, 1);
 		LCD.drawInt((int)(pos[2] * 180.0 / Math.PI), 3, 2);
+		String stateString;
+		switch(Lab5.state) {
+		case k_Capture:
+			stateString = "Capture";
+			break;
+		case k_Disabled:
+			stateString = "Disabled";
+			break;
+		case k_Localization:
+			stateString = "Localization";
+			break;
+		case k_Search:
+			stateString = "Search";
+			break;
+		case k_Setup:
+			stateString = "Setup";
+			break;
+		default:
+			stateString = "";
+			break;
+		}
+		LCD.drawString(stateString, 0, 4);
 	}
 	
 	public void pause() {
