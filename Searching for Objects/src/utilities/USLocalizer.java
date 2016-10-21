@@ -1,6 +1,7 @@
 package utilities;
 
 import chassis.Lab5;
+import chassis.USSensor;
 import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
@@ -13,17 +14,15 @@ public class USLocalizer extends Thread {
 	private final float angleCorrection = 7.42f; //angle correction from data - for falling edge - in degrees
 	
 	private Odometer odo;
-	private SampleProvider usSensor;
-	private float[] usData;
+	private USSensor usSensor;
 	private LocalizationType locType;
 	private double lastTheta;
 	int step; //TODO not sure we need this
 	private float lastDistance;
 	
-	public USLocalizer(Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
+	public USLocalizer(Odometer odo,  USSensor usSensor, LocalizationType locType) {
 		this.odo = odo;
 		this.usSensor = usSensor;
-		this.usData = usData;
 		this.locType = locType;
 		step = 0;
 		lastDistance = 0;
@@ -177,12 +176,8 @@ public class USLocalizer extends Thread {
 	}
 	
 	private boolean seesWall() {
-		return (getFilteredDataBasic() < NO_WALL);
+		return (usSensor.getFilteredDataBasic() < NO_WALL);
 	}
 	
-	private float getFilteredDataBasic() {
-		usSensor.fetchSample(usData, 0); //Store distance in usData
-		return (usData[0] * 100.0f >= NO_WALL) ? NO_WALL : usData[0] * 100.0f; //Cap data at NO_WALL, scale data by 100.
-	}
 
 }

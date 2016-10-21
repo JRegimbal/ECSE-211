@@ -1,26 +1,35 @@
 package utilities;
 
 import chassis.Lab5;
-import lejos.robotics.SampleProvider;
+import chassis.USSensor;
+import lejos.hardware.Sound;
+import lejos.robotics.Color;
+
+import java.lang.reflect.Array;
+
+import chassis.ColorSensor;
 
 public class Search extends Thread {
+	private static final int US_SAMPLES = 10;
 	private Odometer odo;
-	private SampleProvider colorSensor, usSensor;
-	private float[] colorData, usData;
-	private final float FIELD_BOUNDS = 120; //cm
+	private USSensor usSensor;
+	private ColorSensor colorSensor;
+	private final float FIELD_BOUNDS = 65; //cm
 	private float lastDistanceDetected;
 	private final float DISTANCE_THRESHOLD = 25; //cm
 	private final double fieldToSearch = Math.PI/2;
 	private final double fieldIncrement = 5*Math.PI/180; //5-degree increments
 	private final float[][] scanPoints = new float[][] {{0, 0, 0}, {0, 60, (float)Math.PI/2}};
 	private final int SEARCH_SPEED = 200;
+	private final float BLOCK_COLOR = Color.BLUE;
+	private final static float BLOCK_DISTANCE = 4.0f; //distance to detect block type in cm
+	public static double[] blockLocation;
+	public static double[] obstacleLocation;
 	
-	public Search(Odometer odo, SampleProvider colorSensor, float[] colorData, SampleProvider usSensor, float[] usData) {
+	public Search(Odometer odo, ColorSensor colorSensor, USSensor usSensor) {
 		this.odo = odo;
 		this.colorSensor = colorSensor;
-		this.colorData = colorData;
 		this.usSensor = usSensor;
-		this.usData = usData;
 	}
 	@Override
 	public void run() {
@@ -30,51 +39,71 @@ public class Search extends Thread {
 				Thread.sleep(300);
 			} catch (Exception e) {}
 		}
-		
-		//TODO: Comb through track, check for detection
-		//sweep track for obstacles from position (0,0) starting at 0-radians
-		int scanPointNumber = 0;
-		while(true) {
-			lastDistanceDetected = FIELD_BOUNDS;
-			double thetaScanStart = odo.getTheta();
-			boolean objectFound;
-			while(!(objectFound = isObjectDetected()) && odo.getTheta() < thetaScanStart + fieldToSearch) {	//check if there is an object at current heading or if area has been scanned
-				odo.turnTo(odo.getTheta() + fieldIncrement);
-			}
-			if(objectFound) {	//go to object, check if it is a styrofoam block
-				odo.setMotorSpeeds(SEARCH_SPEED, SEARCH_SPEED);
-				odo.forwardMotors();
-				while(getFilteredDataBasic() > 5.0f); //wait until 5 centimeters from object
-				odo.setMotorSpeeds(0, 0);
-				odo.forwardMotors();
-				if(isStyrofoamBlock()) {	//begin capture
-					break;
+		if(Lab5.demo == Lab5.DemoState.k_Part2) {
+			//PART 2
+			//TODO: Comb through track, check for detection
+			//sweep track for obstacles from position (0,0) starting at 0-radians
+			int scanPointNumber = 0;
+			boolean blockFound=false, obstacleFound=false;
+			
+			while(!blockFound && !obstacleFound) {
+				lastDistanceDetected = FIELD_BOUNDS;
+				double thetaScanStart = odo.getTheta();
+				boolean objectFound;
+				while(!(objectFound = isObjectDetected()) && odo.getTheta() < thetaScanStart + fieldToSearch) {	//check if there is an object at current heading or if area has been scanned
+					odo.turnBy(fieldIncrement);
 				}
-			} else {	//go to next scan point
-				scanPointNumber++;
+				if(objectFound) {	//go to object, check if it is a styrofoam block
+					odo.setMotorSpeeds(SEARCH_SPEED, SEARCH_SPEED);
+					odo.forwardMotors();
+					while(usSensor.getSampleAverage(US_SAMPLES) > BLOCK_DISTANCE); //wait until close enough to detect
+					odo.setMotorSpeeds(0, 0);
+					odo.forwardMotors();
+					if(isStyrofoamBlock()) {	//begin capture
+						blockFound = true;
+						blockLocation = new double[] {odo.getX(), odo.getY()};
+						Sound.beep();
+					} else {
+						obstacleFound = true;
+						obstacleLocation = new double[] {odo.getX(), odo.getY()};
+						Sound.twoBeeps();
+					}
+				} else {	//go to next scan point
+					scanPointNumber = (scanPointNumber+1) % scanPoints.length;
+				}
+				odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
+				odo.turnTo(scanPoints[scanPointNumber][2]);
 			}
-			odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
-			odo.turnTo(scanPoints[scanPointNumber][2]);
+			
+			//Styrofoam block found - begin capture
+			Lab5.state = Lab5.RobotState.k_Capture;
+		} else { //PART 1
+			while(true) {
+				chassis.LCDInfo.getLCD().clear();
+				if(usSensor.getSampleAverage(US_SAMPLES) <= BLOCK_DISTANCE) {
+					chassis.LCDInfo.getLCD().drawString("Object Detected", 0, 0);
+					if(isStyrofoamBlock()) {
+						chassis.LCDInfo.getLCD().drawString("Block", 0, 1);
+					} else {
+						chassis.LCDInfo.getLCD().drawString("Not Block", 0, 1);
+					}
+				}
+				try {
+					Thread.sleep(500);
+				} catch(Exception e) { }
+			}
 		}
-		
-		//Styrofoam block found - begin capture
-		Lab5.state = Lab5.RobotState.k_Capture;
 	}
 	
 	private boolean isStyrofoamBlock() {
-		return false;
+		return (colorSensor.getColor() == BLOCK_COLOR);
 	}
 	
 	private boolean isObjectDetected() {
-		float currentDistance = getFilteredDataBasic();
+		float currentDistance = usSensor.getSampleAverage(US_SAMPLES);
 		boolean isObject = (lastDistanceDetected - currentDistance > DISTANCE_THRESHOLD);
 		lastDistanceDetected = currentDistance;
 		return isObject;
-	}
-	
-	private float getFilteredDataBasic() {
-		usSensor.fetchSample(usData, 0); //Store distance in usData
-		return (usData[0] * 100.0f >= FIELD_BOUNDS) ? FIELD_BOUNDS : usData[0] * 100.0f; //Cap data at field bounds, scale data by 100.
 	}
 	
 }

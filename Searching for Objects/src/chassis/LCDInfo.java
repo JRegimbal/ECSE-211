@@ -9,7 +9,7 @@ public class LCDInfo implements TimerListener{
 	public static final int LCD_REFRESH = 100;
 	private Odometer odo;
 	private Timer lcdTimer;
-	private TextLCD LCD;
+	private static TextLCD LCD;
 	
 	// arrays for displaying data
 	private double [] pos;
@@ -44,5 +44,9 @@ public class LCDInfo implements TimerListener{
 	
 	public void resume() {
 		lcdTimer.start();
+	}
+	
+	public static TextLCD getLCD() {
+		return LCD;
 	}
 }

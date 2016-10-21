@@ -5,10 +5,6 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorModes;
-import lejos.robotics.SampleProvider;
 
 import utilities.Odometer;
 import utilities.USLocalizer;
@@ -21,49 +17,55 @@ public class Lab5 {
 	private static final double WHEEL_RADIUS = 2.141; //cm
 	private static final double TRACK = 16.50; //cm
 	//Resources (motors, sensors)
-	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
-	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final Port colorPort = LocalEV3.get().getPort("S2");
 	private static TextLCD textLCD = LocalEV3.get().getTextLCD();
 	
 	public static RobotState state = RobotState.k_Disabled;
+	public static DemoState demo = DemoState.k_Default;
 	
 	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled};
+	public enum DemoState {k_Part1, k_Part2, k_Default};
 	
 	public static void main(String[] args) {
 		state = RobotState.k_Setup;
 		//Setup sensors
-		SensorModes usSensor = new EV3UltrasonicSensor(usPort);
-		SampleProvider usValue = usSensor.getMode("Distance");
-		float[] usData = new float[usValue.sampleSize()];
+		USSensor usSensor = new USSensor(usPort);
 		
-		@SuppressWarnings("resource")
-		SensorModes colorSensor = new EV3ColorSensor(colorPort);
-		SampleProvider colorValue = colorSensor.getMode("Red");
-		float[] colorData = new float[colorValue.sampleSize()];
-		
+		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
 		LCDInfo lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
-		USLocalizer localizer = new USLocalizer(odo, usSensor, usData, USLocalizer.LocalizationType.FALLING_EDGE);
-		Search search = new Search(odo, colorValue, colorData, usValue, usData);
+		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.FALLING_EDGE);
+		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo);
 		
-		textLCD.drawString("Press any key to start.", 0, 0);
-		Button.waitForAnyPress();
-		state = RobotState.k_Localization;
-		//Start threads
-		odo.start();
-		search.start();
-		capture.start();
-		lcd.resume();
-		localizer.run();
-		
-		
+		textLCD.drawString("<-Part 1 Part 2->", 0, 0);
+		int input = Button.waitForAnyPress();
+		switch(input) {
+		case Button.ID_RIGHT:
+			demo = DemoState.k_Part2;
+			state = RobotState.k_Search;
+			odo.start();	//start threads
+			search.start();
+			capture.start();
+			lcd.resume();
+			//localizer.doLocalization();
+			break;
+		case Button.ID_LEFT:
+			demo = DemoState.k_Part1;
+			state = RobotState.k_Search;
+			search.start();
+			break;
+		default:
+			//invalid input
+			System.exit(-1);
+		}
 		//Wait for escape to exit
 		while(Button.waitForAnyPress() != Button.ID_ESCAPE);
-		if(state == RobotState.k_Disabled) {	//execution has normally exited
+		/*if(state == RobotState.k_Disabled) {	//execution has normally exited
 			try {
 				odo.join();
 				search.join();
@@ -77,7 +79,7 @@ public class Lab5 {
 				capture.interrupt();
 				localizer.interrupt();
 			} catch (Exception e) {}
-		}
+		}*/
 		System.exit(0);
 	}
 }

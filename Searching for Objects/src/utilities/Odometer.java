@@ -262,6 +262,12 @@ public class Odometer extends Thread {
 		}
 	}
 	
+	public void turnBy(double theta) {
+		setMotorSpeeds(ROTATE_SPEED, ROTATE_SPEED);
+		leftMotor.rotate(convertAngle(wheelRadius,trackLength,theta * 180.0 / Math.PI), true);
+		rightMotor.rotate(-convertAngle(wheelRadius,trackLength,theta * 180.0 / Math.PI), false);
+	}
+	
 	public void travelTo(double x, double y) {
 		while(euclideanDistance(new double [] {x, y}, new double [] {getX(), getY()}) > NAVIGATE_THRESHOLD) {			
 			double dx = x - getX();
@@ -275,6 +281,8 @@ public class Odometer extends Thread {
 			rightMotor.forward();
 			
 		}
+		rightMotor.stop();
+		leftMotor.stop();
 	}
 	
 	private int convertDistance(double radius, double distance) {
@@ -284,5 +292,6 @@ public class Odometer extends Thread {
 	private int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
+	
 }
 
