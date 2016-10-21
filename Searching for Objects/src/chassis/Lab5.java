@@ -9,8 +9,11 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
+
 import utilities.Odometer;
 import utilities.USLocalizer;
+import utilities.Search;
+import utilities.Capture;
 
 public class Lab5 {
 	//Constants (measurements, frequencies, etc)
@@ -24,12 +27,18 @@ public class Lab5 {
 	private static final Port colorPort = LocalEV3.get().getPort("S2");
 	private static TextLCD textLCD = LocalEV3.get().getTextLCD();
 	
+	public static RobotState state = RobotState.k_Disabled;
+	
+	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled};
+	
 	public static void main(String[] args) {
+		state = RobotState.k_Setup;
 		//Setup sensors
 		SensorModes usSensor = new EV3UltrasonicSensor(usPort);
 		SampleProvider usValue = usSensor.getMode("Distance");
 		float[] usData = new float[usValue.sampleSize()];
 		
+		@SuppressWarnings("resource")
 		SensorModes colorSensor = new EV3ColorSensor(colorPort);
 		SampleProvider colorValue = colorSensor.getMode("Red");
 		float[] colorData = new float[colorValue.sampleSize()];
@@ -37,18 +46,38 @@ public class Lab5 {
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
 		LCDInfo lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
-		USLocalizer localizer = new USLocalizer(odo, colorValue, colorData, USLocalizer.LocalizationType.FALLING_EDGE);
+		USLocalizer localizer = new USLocalizer(odo, usSensor, usData, USLocalizer.LocalizationType.FALLING_EDGE);
+		Search search = new Search(odo, colorValue, colorData);
+		Capture capture = new Capture(odo);
 		
 		textLCD.drawString("Press any key to start.", 0, 0);
 		Button.waitForAnyPress();
-		
+		state = RobotState.k_Localization;
 		//Start threads
 		odo.start();
+		search.start();
+		capture.start();
 		lcd.resume();
-		localizer.doLocalization();
+		localizer.run();
+		
 		
 		//Wait for escape to exit
 		while(Button.waitForAnyPress() != Button.ID_ESCAPE);
+		if(state == RobotState.k_Disabled) {	//execution has normally exited
+			try {
+				odo.join();
+				search.join();
+				capture.join();
+				localizer.join();
+			} catch (Exception e) {}
+		} else {								//cancelled while still running
+			try {
+				odo.interrupt();
+				search.interrupt();
+				capture.interrupt();
+				localizer.interrupt();
+			} catch (Exception e) {}
+		}
 		System.exit(0);
 	}
 }

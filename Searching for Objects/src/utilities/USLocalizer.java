@@ -1,9 +1,10 @@
 package utilities;
 
+import chassis.Lab5;
 import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
-public class USLocalizer {
+public class USLocalizer extends Thread {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
 	private static final float NO_WALL = 45.0f;	//Minimum distance for which the US sensor reading should be interpreted as no wall detected
 	private static final double THETA_THRESHOLD = Math.PI / 6.0; //Minimum angle between two walls
@@ -17,7 +18,6 @@ public class USLocalizer {
 	private LocalizationType locType;
 	private double lastTheta;
 	int step; //TODO not sure we need this
-	
 	private float lastDistance;
 	
 	public USLocalizer(Odometer odo,  SampleProvider usSensor, float[] usData, LocalizationType locType) {
@@ -30,6 +30,12 @@ public class USLocalizer {
 	}
 	
 	public void doLocalization() {
+		Lab5.state = Lab5.RobotState.k_Localization;
+		this.start();
+	}
+	
+	@Override
+	public void run() {
 		double [] pos = new double [3];
 		double angleA, angleB;
 		if (locType == LocalizationType.FALLING_EDGE) {
@@ -163,6 +169,11 @@ public class USLocalizer {
 			// update the odometer position (example to follow:)
 			odo.setPosition(new double [] {0.0, 0.0, angle + odo.getTheta()}, new boolean [] {true, true, true}); //Update odometer values
 		}
+		try {
+			Thread.sleep(2000);
+		} catch (Exception e) {	}
+		//slight pause to show localization is complete
+		Lab5.state = Lab5.RobotState.k_Search;
 	}
 	
 	private boolean seesWall() {
