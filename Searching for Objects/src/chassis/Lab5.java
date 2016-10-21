@@ -42,6 +42,8 @@ public class Lab5 {
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo);
 		
+		utilities.Navigator.setOdometer(odo);
+		
 		textLCD.drawString("<-Part 1 Part 2->", 0, 0);
 		int input = Button.waitForAnyPress();
 		switch(input) {
@@ -51,7 +53,7 @@ public class Lab5 {
 			odo.start();	//start threads
 			search.start();
 			capture.start();
-			lcd.resume();
+			//lcd.resume();
 			//localizer.doLocalization();
 			break;
 		case Button.ID_LEFT:
@@ -80,6 +82,10 @@ public class Lab5 {
 				localizer.interrupt();
 			} catch (Exception e) {}
 		}*/
+		odo.interrupt();;
+		search.interrupt();
+		capture.interrupt();
+		localizer.interrupt();
 		System.exit(0);
 	}
 }

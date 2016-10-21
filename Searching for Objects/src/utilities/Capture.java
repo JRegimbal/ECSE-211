@@ -1,5 +1,6 @@
 package utilities;
 
+import chassis.LCDInfo;
 import chassis.Lab5;
 import lejos.hardware.Sound;
 
@@ -20,8 +21,11 @@ public class Capture extends Thread {
 			} catch (InterruptedException e){ }
 		}
 		
+		chassis.LCDInfo.getLCD().clear();
+		chassis.LCDInfo.getLCD().drawString("Capturing", 0, 0);
+		
 		getBlock();
-		odo.travelTo(GOAL_ZONE[0], GOAL_ZONE[1]); //travel to scoring zone with block
+		Navigator.travelTo(GOAL_ZONE[0], GOAL_ZONE[1]); //travel to scoring zone with block
 		
 		//TODO implement capture code
 		odo.setMotorSpeeds(0, 0); //ensure motors are stopped
@@ -30,6 +34,7 @@ public class Capture extends Thread {
 		Sound.beep();
 		Sound.beep();
 		Sound.beep();
+		LCDInfo.getLCD().clear();
 	}
 	
 	private void getBlock() {

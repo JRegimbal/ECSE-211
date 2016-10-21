@@ -1,5 +1,6 @@
 package utilities;
 
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer extends Thread {
@@ -7,10 +8,8 @@ public class Odometer extends Thread {
 	public enum TURNDIR {CW, CCW};
 	public enum LINEDIR {Forward,Backward}
 
-	private static final double THETA_THRESHOLD = 0.04;
-	private static final double NAVIGATE_THRESHOLD = 0.5;
-	private static final int ROTATE_SPEED = 150;
-	private static final int NAVIGATE_SPEED = 200;
+	public static final int ROTATE_SPEED = 150;
+	public static final int NAVIGATE_SPEED = 200;
 	
 	private double x,y,theta;
 	private int leftMotorTachoCount,rightMotorTachoCount;
@@ -21,7 +20,8 @@ public class Odometer extends Thread {
 	private double oldltacho, oldrtacho;
 	
 	private double data;
-	private double trackLength, wheelRadius;
+	public double trackLength; 
+	public double wheelRadius;
 	private long odometerPeriod;
 
 	public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, long odometerPeriod, double wheelRadius, double track) {
@@ -37,6 +37,7 @@ public class Odometer extends Thread {
 		this.leftMotor.resetTachoCount();
 		this.rightMotor.resetTachoCount();
 		mutex = new Object();
+		setPosition(new double[] {0,0,0}, new boolean[] {true,true,true});
 	}
 
 	@Override
@@ -249,16 +250,17 @@ public class Odometer extends Thread {
 		return Math.sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1]-b[1])*(a[1]-b[1]));
 	}
 	
+	/*
 	public void turnTo(double theta) {
 		if(Math.abs(theta - getTheta()) > THETA_THRESHOLD) {
+			double adjustment = theta - getTheta();
+			if(Math.abs(adjustment) > Math.PI) adjustment -= Math.PI*2;
 			if(!(Math.abs(theta - getTheta()) < Math.PI)) {
 				if(theta - getTheta() < 0.0) theta = theta + Math.PI;
 				else theta = theta - Math.PI;
 			} 
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
-			leftMotor.rotate(convertAngle(wheelRadius,trackLength,(theta - getTheta()) * 180.0 / Math.PI), true);
-			rightMotor.rotate(-convertAngle(wheelRadius,trackLength,(theta - getTheta()) * 180.0 / Math.PI), false);
+			turnBy(adjustment);
+			Sound.beep();
 		}
 	}
 	
@@ -272,7 +274,7 @@ public class Odometer extends Thread {
 		while(euclideanDistance(new double [] {x, y}, new double [] {getX(), getY()}) > NAVIGATE_THRESHOLD) {			
 			double dx = x - getX();
 			double dy = y - getY();
-			double theta = Math.atan2(dx,dy);
+			double theta = Math.atan2(dy,dx);
 			turnTo(theta);
 			
 			leftMotor.setSpeed(NAVIGATE_SPEED);
@@ -292,6 +294,8 @@ public class Odometer extends Thread {
 	private int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
+	
+*/
 	
 }
 

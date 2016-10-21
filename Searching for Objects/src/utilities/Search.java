@@ -39,6 +39,9 @@ public class Search extends Thread {
 				Thread.sleep(300);
 			} catch (Exception e) {}
 		}
+		chassis.LCDInfo.getLCD().clear();
+		chassis.LCDInfo.getLCD().drawString("Searching", 0, 0);
+		
 		if(Lab5.demo == Lab5.DemoState.k_Part2) {
 			//PART 2
 			//TODO: Comb through track, check for detection
@@ -50,8 +53,10 @@ public class Search extends Thread {
 				lastDistanceDetected = FIELD_BOUNDS;
 				double thetaScanStart = odo.getTheta();
 				boolean objectFound;
+				odo.setMotorSpeeds(odo.ROTATE_SPEED, odo.ROTATE_SPEED);
+				odo.spin(Odometer.TURNDIR.CCW);
 				while(!(objectFound = isObjectDetected()) && odo.getTheta() < thetaScanStart + fieldToSearch) {	//check if there is an object at current heading or if area has been scanned
-					odo.turnBy(fieldIncrement);
+					Navigator.turnBy(-fieldIncrement);
 				}
 				if(objectFound) {	//go to object, check if it is a styrofoam block
 					odo.setMotorSpeeds(SEARCH_SPEED, SEARCH_SPEED);
@@ -61,18 +66,22 @@ public class Search extends Thread {
 					odo.forwardMotors();
 					if(isStyrofoamBlock()) {	//begin capture
 						blockFound = true;
-						blockLocation = new double[] {odo.getX(), odo.getY()};
+						//blockLocation = new double[] {odo.getX(), odo.getY()};
 						Sound.beep();
 					} else {
 						obstacleFound = true;
-						obstacleLocation = new double[] {odo.getX(), odo.getY()};
+						//obstacleLocation = new double[] {odo.getX(), odo.getY()};
 						Sound.twoBeeps();
 					}
 				} else {	//go to next scan point
-					scanPointNumber = (scanPointNumber+1) % scanPoints.length;
+					//scanPointNumber = (scanPointNumber+1) % scanPoints.length;
 				}
-				odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
-				odo.turnTo(scanPoints[scanPointNumber][2]);
+				chassis.LCDInfo.getLCD().drawString("Go to origin", 0, 3);
+				Navigator.travelTo(0, 0);
+				Navigator.turnTo(0);
+				chassis.LCDInfo.getLCD().clear(3);
+				//odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
+				//odo.turnTo(scanPoints[scanPointNumber][2]);
 			}
 			
 			//Styrofoam block found - begin capture
