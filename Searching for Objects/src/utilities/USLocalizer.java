@@ -18,14 +18,14 @@ public class USLocalizer extends Thread {
 	private LocalizationType locType;
 	private double lastTheta;
 	int step; //TODO not sure we need this
-	private float lastDistance;
+	private float minimumDistance;
 	
 	public USLocalizer(Odometer odo,  USSensor usSensor, LocalizationType locType) {
 		this.odo = odo;
 		this.usSensor = usSensor;
 		this.locType = locType;
 		step = 0;
-		lastDistance = 0;
+		minimumDistance = NO_WALL;
 	}
 	
 	public void doLocalization() {
@@ -54,6 +54,7 @@ public class USLocalizer extends Thread {
 			odo.getMotors()[1].setSpeed(0);
 			lastTheta = odo.getTheta();
 
+			minimumDistance = NO_WALL;
 			// keep rotating until the robot sees a wall, then latch the angle
 			while(!seesWall() || Math.abs(odo.getTheta() - lastTheta) < THETA_THRESHOLD) {
 				odo.getMotors()[0].setSpeed(ROTATION_SPEED);
@@ -94,11 +95,16 @@ public class USLocalizer extends Thread {
 			// angleA is clockwise from angleB, so assume the average of the
 			// angles to the right of angleB is 45 degrees past 'north'
 			double angle;
-			if(angleA - angleB < 0) angle = (Math.PI/4) - 0.5 * (angleA + angleB); //Calculate heading corretion as seen in tutorial
-			else angle = (5*Math.PI/4) - 0.5 * (angleA + angleB);
+			if(angleA - angleB < 0) angle = (Math.PI/2) - 0.5 * (angleA + angleB); //Calculate heading corretion as seen in tutorial
+			else angle = (3*Math.PI/2) - 0.5 * (angleA + angleB);
 			
 			angle += angleCorrection * Math.PI / 180.0; //Correct heading
 			
+			odo.moveCM(Odometer.LINEDIR.Forward, minimumDistance * Math.sin(Math.PI/4), true);
+			Navigator.turnBy(Math.PI/4);
+			try {
+				Thread.sleep(3000);
+			} catch (Exception e) {}
 			// update the odometer position (example to follow:)
 			odo.setPosition(new double [] {0.0, 0.0, angle + odo.getTheta()}, new boolean [] {true, true, true}); //Update odometer values
 		} else {
@@ -176,7 +182,9 @@ public class USLocalizer extends Thread {
 	}
 	
 	private boolean seesWall() {
-		return (usSensor.getFilteredDataBasic() < NO_WALL);
+		float sample = usSensor.getSampleAverage(10);
+		if(sample < minimumDistance) minimumDistance = sample;
+		return (sample < NO_WALL);
 	}
 	
 

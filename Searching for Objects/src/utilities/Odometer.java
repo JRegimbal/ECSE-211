@@ -31,13 +31,12 @@ public class Odometer extends Thread {
 		this.wheelRadius = wheelRadius;
 		this.odometerPeriod = odometerPeriod;
 		this.x = this.y = 0.0;
-		this.theta = 0.5 * Math.PI;
+		this.theta = 0.0;
 		this.leftMotorTachoCount = this.rightMotorTachoCount = 0;
 		this.oldltacho = this.oldrtacho = 0;
 		this.leftMotor.resetTachoCount();
 		this.rightMotor.resetTachoCount();
 		mutex = new Object();
-		setPosition(new double[] {0,0,0}, new boolean[] {true,true,true});
 	}
 
 	@Override
@@ -63,7 +62,8 @@ public class Odometer extends Thread {
 				 * Do not perform complex math
 				 * 
 				 */
-				theta = (theta + dTheta) % (2*Math.PI);	//radians - wrap around
+				theta += dTheta + 2*Math.PI;
+				theta %= 2*Math.PI;	//radians - wrap around
 				//if(theta < 0.0) theta += 2*Math.PI; //No negative angles
 				y += dPos*Math.sin(theta);
 				x += dPos*Math.cos(theta);
@@ -120,6 +120,7 @@ public class Odometer extends Thread {
 	}
 	
 	public void moveCM(LINEDIR dir, double distance, boolean stop) {
+		setMotorSpeeds(NAVIGATE_SPEED, NAVIGATE_SPEED);
 		if(dir == LINEDIR.Forward) forwardMotors();
 		else backwardMotors();
 		double startpos[] = new double[3];

@@ -54,7 +54,7 @@ public class Lab5 {
 			search.start();
 			capture.start();
 			lcd.resume();
-			//localizer.doLocalization();
+			localizer.doLocalization();
 			break;
 		case Button.ID_LEFT:
 			demo = DemoState.k_Part1;

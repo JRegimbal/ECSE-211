@@ -47,7 +47,8 @@ public class Search extends Thread {
 			int scanPointNumber = 0;
 			boolean blockFound=false, obstacleFound=false;
 			
-			while(!blockFound && !obstacleFound) {
+			//while(!blockFound && !obstacleFound) {
+			while(!blockFound || !obstacleFound) {	
 				lastDistanceDetected = FIELD_BOUNDS;
 				double thetaScanStart = odo.getTheta();
 				boolean objectFound;
@@ -71,7 +72,7 @@ public class Search extends Thread {
 						//obstacleLocation = new double[] {odo.getX(), odo.getY()};
 						Sound.twoBeeps();
 					}
-					odo.moveCM(LINEDIR.Backward, 4, true);
+					odo.moveCM(LINEDIR.Backward, 8, true);
 				} else {	//go to next scan point
 					//scanPointNumber = (scanPointNumber+1) % scanPoints.length;
 				}
