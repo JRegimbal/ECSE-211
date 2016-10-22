@@ -18,29 +18,36 @@ public class Lab5 {
 	private static final double TRACK = 16.50; //cm
 	//Resources (motors, sensors)
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+	private static final EV3LargeRegulatedMotor leftArmMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	private static final EV3LargeRegulatedMotor rightArmMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 	private static final Port colorPort = LocalEV3.get().getPort("S2");
 	private static TextLCD textLCD = LocalEV3.get().getTextLCD();
 	
 	public static RobotState state = RobotState.k_Disabled;
+	public static RobotState lastState = RobotState.k_Disabled;
 	public static DemoState demo = DemoState.k_Default;
 	
-	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled};
+	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled, k_Avoiding};
 	public enum DemoState {k_Part1, k_Part2, k_Default};
+	
+	public static USSensor usSensor;
+	
+	public static LCDInfo lcd;
 	
 	public static void main(String[] args) {
 		state = RobotState.k_Setup;
 		//Setup sensors
-		USSensor usSensor = new USSensor(usPort);
+		usSensor = new USSensor(usPort);
 		
 		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
-		LCDInfo lcd = new LCDInfo(odo, textLCD, true);	//do not start on creation
-		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.FALLING_EDGE);
+		lcd = new LCDInfo(odo, textLCD, true);	//do not start on creation
+		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.RISING_EDGE);
 		Search search = new Search(odo, colorSensor, usSensor);
-		Capture capture = new Capture(odo);
+		Capture capture = new Capture(odo,leftArmMotor,rightArmMotor);
 		
 		utilities.Navigator.setOdometer(odo);
 		
@@ -51,15 +58,21 @@ public class Lab5 {
 			demo = DemoState.k_Part2;
 			state = RobotState.k_Search;
 			odo.start();	//start threads
-			search.start();
-			capture.start();
-			lcd.resume();
 			localizer.doLocalization();
+			capture.start();
+			search.start();
+			lcd.resume();
 			break;
 		case Button.ID_LEFT:
 			demo = DemoState.k_Part1;
 			state = RobotState.k_Search;
 			search.start();
+			break;
+		case Button.ID_ENTER:
+			odo.start();
+			lcd.resume();
+			leftMotor.flt();
+			rightMotor.flt();
 			break;
 		default:
 			//invalid input

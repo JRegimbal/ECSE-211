@@ -31,7 +31,7 @@ public class Odometer extends Thread {
 		this.wheelRadius = wheelRadius;
 		this.odometerPeriod = odometerPeriod;
 		this.x = this.y = 0.0;
-		this.theta = 0.0;
+		this.theta = 0.5 * Math.PI;
 		this.leftMotorTachoCount = this.rightMotorTachoCount = 0;
 		this.oldltacho = this.oldrtacho = 0;
 		this.leftMotor.resetTachoCount();
@@ -115,8 +115,13 @@ public class Odometer extends Thread {
 		}
 		else {
 			leftMotor.backward();
-			rightMotor.backward();
+			rightMotor.forward();
 		}
+	}
+	
+	public void stopMotors() {
+		setMotorSpeed(0);
+		forwardMotors();
 	}
 	
 	public void moveCM(LINEDIR dir, double distance, boolean stop) {
@@ -247,7 +252,7 @@ public class Odometer extends Thread {
 		this.data = data;
 	}
 	
-	public double euclideanDistance(double[] a, double[] b) {
+	public static double euclideanDistance(double[] a, double[] b) {
 		return Math.sqrt((a[0] - b[0])*(a[0] - b[0]) + (a[1]-b[1])*(a[1]-b[1]));
 	}
 	

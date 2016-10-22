@@ -11,13 +11,13 @@ public class ColorSensor {
 	
 	public ColorSensor(Port colorPort) {
 		this.colorValue = new EV3ColorSensor(colorPort);
-		this.colorSample = colorValue.getColorIDMode();
+		this.colorSample = colorValue.getMode("RGB");
 		this.colorData = new float[colorSample.sampleSize()];
 	}
 	
-	public float getColor() {
+	public float[] getColor() {
 		colorSample.fetchSample(colorData, 0);
-		return colorData[0];
+		return colorData;
 	}
 	
 }
