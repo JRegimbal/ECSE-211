@@ -35,32 +35,6 @@ public class USLocalizer extends Thread {
 		this.start();
 	}
 	
-	private void localize() {
-		float minDistance = usSensor.getFilteredDataBasic();
-		float distance;
-		int count = 0;
-		double theta = (float) Math.PI;
-		odo.setMotorSpeed(ROTATION_SPEED);
-		odo.spin(TURNDIR.CCW);
-		while(odo.getTheta() < (11/6)*Math.PI) {
-			Sound.beep();
-			if((distance = usSensor.getFilteredDataBasic()) < minDistance) {
-				minDistance = distance;
-				theta = odo.getTheta();
-				count++;
-			}
-		}
-		odo.setMotorSpeed(0);
-		odo.forwardMotors();
-		odo.setX(-GRID_SIZE + minDistance);
-		odo.setY(-GRID_SIZE + minDistance);
-		Navigator.turnTo(theta);
-		if(count == 1) odo.setTheta(-Math.PI/2);
-		else odo.setTheta(-Math.PI);
-		Navigator.travelTo(0, 0);
-		Navigator.turnTo(0);
-	}
-	
 	@Override
 	public void run() {
 		double [] pos = new double [3];

@@ -15,7 +15,7 @@ public class Lab5 {
 	//Constants (measurements, frequencies, etc)
 	private static final long ODOMETER_PERIOD = 25;
 	private static final double WHEEL_RADIUS = 2.141; //cm
-	private static final double TRACK = 16.50; //cm
+	private static final double TRACK = 17.0; //cm (16.50 previously)
 	//Resources (motors, sensors)
 	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 	private static final EV3LargeRegulatedMotor leftArmMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
@@ -49,13 +49,13 @@ public class Lab5 {
 		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
-		lcd = new LCDInfo(odo, textLCD, true);	//do not start on creation
+		lcd = new LCDInfo(odo, textLCD, false);	//do not start on creation
 		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.RISING_EDGE);
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo,leftArmMotor,rightArmMotor);
 		
 		utilities.Navigator.setOdometer(odo);
-		
+		textLCD.clear();
 		textLCD.drawString("<-Part 1 Part 2->", 0, 0);
 		int input = Button.waitForAnyPress();
 		switch(input) {

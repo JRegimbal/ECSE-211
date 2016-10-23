@@ -6,8 +6,6 @@ import lejos.hardware.Sound;
 import lejos.robotics.Color;
 import utilities.Odometer.LINEDIR;
 
-import java.lang.reflect.Array;
-
 import chassis.ColorSensor;
 
 public class Search extends Thread {
@@ -92,12 +90,12 @@ public class Search extends Thread {
 				
 				if(objectFound) {	//go to object, check if it is a styrofoam block
 					Sound.beep();
-					double distance = usSensor.getFilteredDataBasic(); //Get distance to detected object
+					double distance = usSensor.getSampleAverage(US_SAMPLES); //Get distance to detected object
 					double heading = odo.getTheta();
 					odo.setMotorSpeed(70);
 					odo.forwardMotors();
-					while(usSensor.getFilteredDataBasic() > 6) {
-						while(usSensor.getFilteredDataBasic() > distance) {
+					while(usSensor.getSampleAverage(US_SAMPLES) > 6) {
+						while(usSensor.getSampleAverage(US_SAMPLES) > distance) {
 							if(Math.abs(odo.getTheta() - heading) > Math.PI/4) {
 								odo.moveCM(Odometer.LINEDIR.Forward, 0.5, true);
 								dir = -dir;
