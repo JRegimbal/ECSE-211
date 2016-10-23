@@ -48,8 +48,8 @@ public class Capture extends Thread {
 	private void descendArms() {
 		leftArm.setSpeed(ARM_SPEED);
 		rightArm.setSpeed(ARM_SPEED);
-		this.leftArm.rotate(90,true);
-		this.rightArm.rotate(90,false);
+		this.leftArm.rotate(90 + Lab5.RESTING_ARM_POSITION,true);
+		this.rightArm.rotate(90 + Lab5.RESTING_ARM_POSITION,false);
 	}
 	
 	private void ascendArms() {

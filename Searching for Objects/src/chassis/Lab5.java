@@ -36,10 +36,15 @@ public class Lab5 {
 	
 	public static LCDInfo lcd;
 	
+	public static final int RESTING_ARM_POSITION	= 30;
+	
 	public static void main(String[] args) {
 		state = RobotState.k_Setup;
 		//Setup sensors
 		usSensor = new USSensor(usPort);
+		
+		leftArmMotor.rotate(-RESTING_ARM_POSITION);
+		rightArmMotor.rotate(-RESTING_ARM_POSITION);
 		
 		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads

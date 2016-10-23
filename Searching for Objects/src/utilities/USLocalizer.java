@@ -199,7 +199,6 @@ public class USLocalizer extends Thread {
 			}
 			step = 0;
 			angleB = (odo.getTheta() < 0.0) ? odo.getTheta() + 2*Math.PI : odo.getTheta(); //Remove negative angles
-			Sound.beep();
 			odo.getMotors()[0].stop();
 			odo.getMotors()[1].stop();
 			
@@ -213,7 +212,8 @@ public class USLocalizer extends Thread {
 			odo.setPosition(new double [] {minimumDistance - 30.48, minimumDistance - 30.48, angle + odo.getTheta()}, new boolean [] {true, true, true}); //Update odometer values
 			Navigation nav = new Navigation(odo);
 			nav.travelTo(0,0);
-			nav.turnTo(0, true);
+			nav.turnTo(Math.PI/2, true);
+			Sound.beepSequenceUp();
 			//Navigator.turnTo(0);
 		}
 		try {

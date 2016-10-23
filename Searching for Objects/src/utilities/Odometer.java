@@ -9,7 +9,7 @@ public class Odometer extends Thread {
 	public enum LINEDIR {Forward,Backward}
 
 	public static final int ROTATE_SPEED = 150;
-	public static final int NAVIGATE_SPEED = 200;
+	public static final int NAVIGATE_SPEED = 100;
 	
 	private double x,y,theta;
 	private int leftMotorTachoCount,rightMotorTachoCount;
