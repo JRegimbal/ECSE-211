@@ -12,11 +12,13 @@ public class Capture extends Thread {
 	
 	private EV3LargeRegulatedMotor leftArm;
 	private EV3LargeRegulatedMotor rightArm;
+	private Navigation nav;
 	
 	public Capture(Odometer odo, EV3LargeRegulatedMotor leftArm, EV3LargeRegulatedMotor rightArm) {
 		this.odo = odo;
 		this.leftArm = leftArm;
 		this.rightArm = rightArm;
+		this.nav = new Navigation(this.odo);
 	}
 	
 	@Override
@@ -27,13 +29,13 @@ public class Capture extends Thread {
 				Thread.sleep(300);
 			} catch (InterruptedException e){ }
 		}
-		Navigator.turnBy(Math.PI);
+		nav.turnBy(Math.PI);
 		odo.moveCM(Odometer.LINEDIR.Backward, 3, true);
 		
 		getBlock();
 		Navigation nav = new Navigation(odo); //travel to scoring zone with block
 		nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17); 
-		Navigator.turnBy(Math.PI);
+		nav.turnBy(Math.PI);
 		
 		//TODO implement capture code
 		odo.setMotorSpeeds(0, 0); //ensure motors are stopped

@@ -101,15 +101,16 @@ public class Navigation {
 
 		double error = angle - this.odometer.getTheta();
 		
-		if((Math.abs(error)) > Math.PI) {
-			if(error < 0) error += 2*Math.PI;
-			else error -= 2*Math.PI;
-		}
-
 		while (Math.abs(error) > DEG_ERR * Math.PI / 180.0) {
-
+			
 			error = angle - this.odometer.getTheta();
-
+			
+			if((Math.abs(error)) > Math.PI) {
+				if(error < 0) error += 2*Math.PI;
+				else error -= 2*Math.PI;
+			}
+			
+			
 			if (error < -Math.PI) {
 				this.setSpeeds(-SLOW, SLOW);
 				//odometer.getMotors()[0].forward();
@@ -134,9 +135,24 @@ public class Navigation {
 		}
 	}
 	
+	public void turnBy(double theta) {
+		odometer.setMotorSpeeds(Odometer.ROTATE_SPEED, Odometer.ROTATE_SPEED);
+		odometer.getMotors()[0].rotate(convertAngle(odometer.wheelRadius,odometer.trackLength,theta * 180.0 / Math.PI), true);
+		odometer.getMotors()[1].rotate(-convertAngle(odometer.wheelRadius,odometer.trackLength,theta * 180.0 / Math.PI), false);
+	}
+	
+	private static int convertDistance(double radius, double distance) {
+		return (int)(distance * 180.0 / (Math.PI * radius));
+	}
+
+	private static int convertAngle(double radius, double width, double angle) {
+		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	}
+	
 	/*
 	 * Go foward a set distance in cm
 	 */
+	
 	public void goForward(double distance) {
 		this.travelTo(Math.cos(Math.toRadians(this.odometer.getTheta())) * distance, Math.cos(Math.toRadians(this.odometer.getTheta())) * distance);
 

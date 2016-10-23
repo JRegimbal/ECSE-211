@@ -18,18 +18,14 @@ public class Search extends Thread {
 	private final float DISTANCE_THRESHOLD = 25; //cm
 	private final double fieldToSearch = Math.PI/2;
 	private final double fieldIncrement = 5*Math.PI/180; //5-degree increments
-	private final float[][] scanPoints = new float[][] {{0, 0, 0}, {0, 60, (float)Math.PI/2}};
 	private final float[][] corners = new float[][] {{0,0},{0,60.96f},{60.96f,60.96f},{60.96f,0.0f}};
 	private int corner;
 	private int dir;
-	private final int SEARCH_SPEED = 200;
-	private final float BLOCK_COLOR = Color.BLUE;
 	private final static float BLOCK_DISTANCE = 5.0f; //distance to detect block type in cm
 	public static double[] blockLocation;
 	public static double[] obstacleLocation;
-	
-	private int scanDir;
-	
+	private Navigation nav;
+		
 	public static final float[] STYROFOAM_COLOR = new float[] {0.0f,1.0f,1.0f};
 	
 	public Search(Odometer odo, ColorSensor colorSensor, USSensor usSensor) {
@@ -38,7 +34,7 @@ public class Search extends Thread {
 		this.usSensor = usSensor;
 		this.corner = 0;
 		this.dir = 1;
-		scanDir = -1;
+		nav = new Navigation(odo);
 	}
 	@Override
 	public void run() {
@@ -53,13 +49,11 @@ public class Search extends Thread {
 			//PART 2
 			//TODO: Comb through track, check for detection
 			//sweep track for obstacles from position (0,0) starting at 0-radians
-			int scanPointNumber = 0;
-			boolean blockFound=false, obstacleFound=false;
+			boolean blockFound=false;
 			
 			while(!blockFound) {
 			//while(!blockFound || !obstacleFound) {	
 				lastDistanceDetected = FIELD_BOUNDS;
-				obstacleFound = false;
 				boolean objectFound = false;
 				odo.setMotorSpeeds(odo.ROTATE_SPEED, odo.ROTATE_SPEED);
 				//odo.spin(Odometer.TURNDIR.CCW);
@@ -69,23 +63,17 @@ public class Search extends Thread {
 					dir = -dir;
 					corner += dir;
 					corner %= 4;
-					Navigation nav = new Navigation(odo);
 					nav.travelTo(corners[corner][0], corners[corner][1]);		
 					int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
 					nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
 				}
-				
-				//On even corners, scan clockwise
-				if(corner %2 != 0) scanDir = 1;
-				else scanDir = -1;
-				
-				double thetaScanStart = odo.getTheta();
+								
 				double targetAngle = odo.getTheta() - dir*fieldToSearch;
 				//if(targetAngle < 0.0) targetAngle += 360.0;
 				if(targetAngle > 360.0) targetAngle -= 360.0;
 				
 				while(!(objectFound = isObjectDetected()) && Math.abs(odo.getTheta() - targetAngle) > Math.PI/30) {	//check if there is an object at current heading or if area has been scanned
-					Navigator.turnBy(dir * fieldIncrement);
+					nav.turnBy(dir * fieldIncrement);
 				}
 				
 				if(objectFound) {	//go to object, check if it is a styrofoam block
@@ -107,13 +95,6 @@ public class Search extends Thread {
 						odo.forwardMotors();
 					}
 					odo.stopMotors();
-					/*
-					odo.moveCM(Odometer.LINEDIR.Forward, distance - 10, true); //Move in front of object
-					odo.setMotorSpeed(100);
-					if(dir == 1) odo.spin(Odometer.TURNDIR.CW);
-					else odo.spin(Odometer.TURNDIR.CCW);
-					while(usSensor.getFilteredDataBasic() > 15); //Turn until you see object again
-					*/
 					Sound.beep();
 					odo.stopMotors();
 					odo.setMotorSpeeds(60, 60);
@@ -128,13 +109,11 @@ public class Search extends Thread {
 						//Lab5.state = Lab5.RobotState.k_Capture;
 						//continue;
 					} else {
-						obstacleFound = true;
 						//obstacleLocation = new double[] {odo.getX(), odo.getY()};
 						//Sound.beepSequence();
 					}
 					odo.moveCM(LINEDIR.Backward, 13, true); //Move backward, to avoid spinning into obstacle
 					if(!blockFound) { //If the obstacle wasn't a styrofoam block, go to next corner
-						Navigation nav = new Navigation(odo);
 						nav.travelTo(corners[corner][0], corners[corner][1]);
 						corner += dir;
 						corner %= 4;
@@ -146,19 +125,13 @@ public class Search extends Thread {
 				} else {	//go to next corner
 					Sound.twoBeeps();
 					Sound.twoBeeps();
-					Navigation nav = new Navigation(odo);
 					corner += dir;
 					corner %= 4;
 					nav.travelTo(corners[corner][0], corners[corner][1]);
-					int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
-					nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
+					//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
+					//nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
+					nav.turnBy(-Math.PI/2);
 				}
-				chassis.LCDInfo.displayMessage("Go to origin.");
-				//Navigator.travelTo(0, 0);
-				//Navigator.turnTo(0);
-				chassis.LCDInfo.displayMessage("");
-				//odo.travelTo(scanPoints[scanPointNumber][0], scanPoints[scanPointNumber][1]);	//travel to scan point
-				//odo.turnTo(scanPoints[scanPointNumber][2]);
 			}
 			
 			//Styrofoam block found - begin capture
@@ -174,7 +147,6 @@ public class Search extends Thread {
 						Lab5.lcd.setLine2("Block");
 						Sound.beep();
 					} else {
-						float[] color = colorSensor.getColor();
 						Lab5.lcd.setLine2("Not a block");
 						Sound.twoBeeps();
 					}

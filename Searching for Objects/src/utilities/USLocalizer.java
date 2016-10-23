@@ -21,6 +21,7 @@ public class USLocalizer extends Thread {
 	private double lastTheta;
 	int step; //TODO not sure we need this
 	private double minimumDistance;
+	private Navigation nav;
 	
 	public USLocalizer(Odometer odo,  USSensor usSensor, LocalizationType locType) {
 		this.odo = odo;
@@ -28,6 +29,7 @@ public class USLocalizer extends Thread {
 		this.locType = locType;
 		step = 0;
 		minimumDistance = NO_WALL;
+		nav = new Navigation(this.odo);
 	}
 	
 	public void doLocalization() {
@@ -112,8 +114,8 @@ public class USLocalizer extends Thread {
 			} catch (Exception e) {}
 			// update the odometer position (example to follow:)
 			odo.setPosition(new double [] {minimumDistance - 30.48, minimumDistance - 30.48, angle + odo.getTheta()}, new boolean [] {true, true, true}); //Update odometer values
-			Navigator.travelTo(0, 0);
-			Navigator.turnTo(0);
+			nav.travelTo(0, 0);
+			nav.turnTo(Math.PI/2, true);
 		} else {
 			/*
 			 * The robot should turn until it sees the wall, then look for the

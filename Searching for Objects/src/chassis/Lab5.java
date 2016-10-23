@@ -54,7 +54,6 @@ public class Lab5 {
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo,leftArmMotor,rightArmMotor);
 		
-		utilities.Navigator.setOdometer(odo);
 		textLCD.clear();
 		textLCD.drawString("<-Part 1 Part 2->", 0, 0);
 		int input = Button.waitForAnyPress();
