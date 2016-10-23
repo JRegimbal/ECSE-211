@@ -1,5 +1,7 @@
 package chassis;
 
+import java.util.Arrays;
+
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
@@ -22,15 +24,14 @@ public class USSensor {
 		return (usData[0] * 100.0f >= FIELD_BOUNDS) ? FIELD_BOUNDS : usData[0] * 100.0f; //Cap data at NO_WALL, scale data by 100.
 	}
 	
-	public float getSampleAverage(int samples) {
-		float average = 0;
+	public float getMedianSample(int samples) {
+		float[] distSamples = new float[samples];
 		
 		for(int i = 0; i < samples; i++) {
-			average += getFilteredDataBasic();
+			distSamples[i] = getFilteredDataBasic();
 		}
-		
-		average /= samples;
-		return average;
+		Arrays.sort(distSamples);
+		return (samples%2==0 ? (distSamples[samples/2]+distSamples[samples/2 + 1])/2 : distSamples[samples/2]);
 	}
 
 }

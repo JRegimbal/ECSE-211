@@ -19,7 +19,7 @@ public class LCDInfo implements TimerListener{
 	
 	public LCDInfo(Odometer odo, TextLCD LCD, boolean start) {
 		this.odo = odo;
-		this.LCD = LCD;
+		LCDInfo.LCD = LCD;
 		this.lcdTimer = new Timer(LCD_REFRESH, this);
 		
 		// initialise the arrays for displaying data
