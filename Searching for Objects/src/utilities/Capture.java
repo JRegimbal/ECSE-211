@@ -35,11 +35,28 @@ public class Capture extends Thread {
 		getBlock();
 		Navigation nav = new Navigation(odo); //travel to scoring zone with block
 		nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17); 
-		nav.turnBy(Math.PI);
+		
+		while(Navigation.PathBlocked) {
+			odo.stopMotors();
+			//If it can (without going out of bounds), turn clockwise and move 20cm
+			if(inBounds(odo.getX() + 20*Math.cos(odo.getTheta() - Math.PI/2),odo.getY() - Math.sin(odo.getTheta() - Math.PI/2),60,60)) {
+				nav.turnBy(Math.PI/2);
+				odo.moveCM(Odometer.LINEDIR.Forward,20,true);
+			}
+			//Otherwise turn counterclockwise and move 20cm
+			else {
+				nav.turnBy(Math.PI/2);
+				odo.moveCM(Odometer.LINEDIR.Forward, 20, true);
+			}
+			nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17); 
+			nav.turnBy(Math.PI);
+		}
 		
 		//TODO implement capture code
 		odo.setMotorSpeeds(0, 0); //ensure motors are stopped
 		odo.forwardMotors();
+		nav.turnBy(Math.PI);
+
 		Lab5.state = Lab5.RobotState.k_Disabled;
 		ascendArms();
 		Sound.beep();
@@ -65,5 +82,9 @@ public class Capture extends Thread {
 		//TODO CATCH BLOCK, avoid the obstacle if it lies in the path
 		Sound.beep();
 		descendArms();
+	}
+	
+	private boolean inBounds(double x,double y, double width, double height) {
+		return (x < width) && (y < height) && x > 0 && y > 0;
 	}
 }

@@ -85,7 +85,7 @@ public class Navigation {
 				minAng += 360.0;
 			this.turnTo(minAng * Math.PI / 180.0, false);
 			this.setSpeeds(FAST, FAST);
-			if(Lab5.usSensor.getFilteredDataBasic() < 4) {
+			if(Lab5.usSensor.getFilteredDataBasic() < 10) {
 				Navigation.PathBlocked = true;
 				break;
 			}

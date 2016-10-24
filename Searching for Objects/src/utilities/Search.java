@@ -1,11 +1,12 @@
 package utilities;
 
+import com.jcraft.jsch.jce.Random;
+
+import chassis.ColorSensor;
 import chassis.Lab5;
 import chassis.USSensor;
 import lejos.hardware.Sound;
 import utilities.Odometer.LINEDIR;
-
-import chassis.ColorSensor;
 
 public class Search extends Thread {
 	private static final int US_SAMPLES = 10;
@@ -19,7 +20,7 @@ public class Search extends Thread {
 	private final float[][] corners = new float[][] {{0,0},{0,60.96f},{60.96f,60.96f},{60.96f,0.0f}};
 	private int corner;
 	private int dir;
-	private final static float BLOCK_DISTANCE = 5.0f; //distance to detect block type in cm
+	private final static float BLOCK_DISTANCE = 4.0f; //distance to detect block type in cm
 	public static double[] blockLocation;
 	public static double[] obstacleLocation;
 	private final int APPROACH_SPIN_SPEED = 75;
@@ -43,12 +44,44 @@ public class Search extends Thread {
 				Thread.sleep(300);
 			} catch (Exception e) {}
 		}
-
+		
+		boolean found = false;
+		
 		if(Lab5.demo == Lab5.DemoState.k_Part2) {
+			int dir = 1;
+			isStyrofoamBlock(); //Initialize rgb mode
+			
+			while(!found) {
+				odo.setMotorSpeed(APPROACH_SPIN_SPEED);
+				odo.forwardMotors();
+				while(usSensor.getMedianSample(US_SAMPLES) > BLOCK_DISTANCE && (odo.getX() < 58 && odo.getY() < 58));
+				odo.stopMotors();
+				odo.moveCM(LINEDIR.Backward, 13, true);
+				if(odo.getX() >= 55 || odo.getY() >= 55) {
+					nav.turnBy(Math.pow(-1, dir) * Math.PI/2);
+					dir++;
+					Sound.beepSequence();
+				}
+				else if(usSensor.getMedianSample(US_SAMPLES) <= BLOCK_DISTANCE && isStyrofoamBlock()) {
+					//TODO Capture
+					found = true;
+					Sound.beep();
+					Lab5.state = Lab5.RobotState.k_Capture;
+				}
+				else {
+					Sound.twoBeeps();
+					nav.turnBy(Math.PI/2);
+				}
+			}
+		}
+
+		else if(Lab5.demo == Lab5.DemoState.k_Part2) { //Temporary, in case we want to switch back to this method
 			//PART 2
 			//TODO: Comb through track, check for detection
 			//sweep track for obstacles from position (0,0) starting at 0-radians
 			boolean blockFound=false;
+			
+			isStyrofoamBlock(); //Initialize rgb mode
 			
 			while(!blockFound) {
 			//while(!blockFound || !obstacleFound) {	
