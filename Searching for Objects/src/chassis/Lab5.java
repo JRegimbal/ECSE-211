@@ -44,21 +44,22 @@ public class Lab5 {
 		//Setup sensors
 		usSensor = new USSensor(usPort);
 		
-		leftArmMotor.rotate(-RESTING_ARM_POSITION);
-		rightArmMotor.rotate(-RESTING_ARM_POSITION);
+		//leftArmMotor.rotate(-RESTING_ARM_POSITION);
+		//rightArmMotor.rotate(-RESTING_ARM_POSITION);
 		
 		ColorSensor colorSensor = new ColorSensor(colorPort);
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
-		lcd = new LCDInfo(odo, textLCD, true);	//start on creation
+		lcd = new LCDInfo(odo, textLCD, false);	//start on creation
 		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.RISING_EDGE, US_TO_CENTER);
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo,leftArmMotor,rightArmMotor);
 		
 		textLCD.clear();
-		lcd.setLine1("<-Part 1 Part 2->");
+		textLCD.drawString("<-Part 1 Part 2->", 0, 5);
 		int input = Button.waitForAnyPress();
-		lcd.setLine1("");	//clear option display
+		textLCD.clear(5);	//clear option display
+		lcd.resume();
 		
 		switch(input) {
 		case Button.ID_RIGHT:
