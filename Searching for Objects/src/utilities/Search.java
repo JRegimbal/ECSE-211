@@ -77,11 +77,18 @@ public class Search extends Thread {
 					Thread.sleep(500);
 				} catch(Exception e) {} //we're living dangerously
 				while(!(objectFound = isObjectDetected()) && Math.abs(Navigation.minimalAngle(targetAngle, odo.getTheta())) > Math.PI/60);	//check if there is an object at current heading or if area has been scanned
-					
-				odo.stopMotors();
-				
+				double angleA = 0, angleB = 0;			
 				if(objectFound) {	//go to object, check if it is a styrofoam block
 					Sound.beep();
+					angleA = odo.getTheta();
+					while(isObjectDetected() && Math.abs(Navigation.minimalAngle(targetAngle, odo.getTheta())) > Math.PI/60);
+					angleB = odo.getTheta();
+					
+					odo.stopMotors();
+					
+					double middleAngle = (angleA+angleB)/2;
+					nav.turnTo(middleAngle, true);
+					
 					double distance = usSensor.getMedianSample(US_SAMPLES); //Get distance to detected object
 					double heading = odo.getTheta();
 					odo.setMotorSpeed(70);
@@ -128,6 +135,7 @@ public class Search extends Thread {
 						nav.turnBy(dir*Math.PI/2);
 					}
 				} else {	//go to next corner
+					odo.stopMotors();
 					Sound.twoBeeps();
 					Sound.twoBeeps();
 					corner += dir;
