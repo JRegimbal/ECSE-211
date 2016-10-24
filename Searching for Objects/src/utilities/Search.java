@@ -56,8 +56,9 @@ public class Search extends Thread {
 				odo.forwardMotors();
 				while(usSensor.getMedianSample(US_SAMPLES) > BLOCK_DISTANCE && (odo.getX() < 58 && odo.getY() < 58));
 				odo.stopMotors();
-				odo.moveCM(LINEDIR.Backward, 13, true);
+				
 				if(odo.getX() >= 55 || odo.getY() >= 55) {
+					odo.moveCM(LINEDIR.Backward, 13, true);
 					nav.turnBy(Math.pow(-1, dir) * Math.PI/2);
 					dir++;
 					Sound.beepSequence();
@@ -66,10 +67,12 @@ public class Search extends Thread {
 					//TODO Capture
 					found = true;
 					Sound.beep();
+					odo.moveCM(LINEDIR.Backward, 13, true);
 					Lab5.state = Lab5.RobotState.k_Capture;
 				}
 				else {
 					Sound.twoBeeps();
+					odo.moveCM(LINEDIR.Backward, 13, true);
 					nav.turnBy(Math.PI/2);
 				}
 			}
