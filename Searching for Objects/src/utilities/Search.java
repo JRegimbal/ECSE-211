@@ -80,8 +80,9 @@ public class Search extends Thread {
 				double angleA = 0, angleB = 0;			
 				if(objectFound) {	//go to object, check if it is a styrofoam block
 					Sound.beep();
+					double tempDistance = usSensor.getMedianSample(US_SAMPLES);
 					angleA = odo.getTheta();
-					while(isObjectDetected() && Math.abs(Navigation.minimalAngle(targetAngle, odo.getTheta())) > Math.PI/60);
+					while(Math.abs(usSensor.getMedianSample(US_SAMPLES) - tempDistance) < 10);
 					angleB = odo.getTheta();
 					
 					odo.stopMotors();

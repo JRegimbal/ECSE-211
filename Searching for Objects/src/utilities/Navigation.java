@@ -136,7 +136,6 @@ public class Navigation {
 	}
 	
 	public void turnBy(double theta) {
-		Lab5.state = Lab5.RobotState.k_Disabled;
 		odometer.setMotorSpeeds(Odometer.ROTATE_SPEED, Odometer.ROTATE_SPEED);
 		odometer.getMotors()[0].rotate(convertAngle(odometer.wheelRadius,odometer.trackLength,theta * 180.0 / Math.PI), true);
 		odometer.getMotors()[1].rotate(-convertAngle(odometer.wheelRadius,odometer.trackLength,theta * 180.0 / Math.PI), false);

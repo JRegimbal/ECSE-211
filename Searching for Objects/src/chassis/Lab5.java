@@ -58,6 +58,8 @@ public class Lab5 {
 		textLCD.clear();
 		lcd.setLine1("<-Part 1 Part 2->");
 		int input = Button.waitForAnyPress();
+		lcd.setLine1("");	//clear option display
+		
 		switch(input) {
 		case Button.ID_RIGHT:
 			demo = DemoState.k_Part2;
