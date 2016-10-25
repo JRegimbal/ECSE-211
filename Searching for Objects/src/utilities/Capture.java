@@ -33,7 +33,7 @@ public class Capture extends Thread {
 		odo.moveCM(Odometer.LINEDIR.Backward, 3, true);
 		
 		getBlock();
-		Navigation nav = new Navigation(odo); //travel to scoring zone with block
+		nav.turnBy(-Math.PI); //keeps us from needing a full circle around the center
 		nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17); 
 		
 		while(Navigation.PathBlocked) {

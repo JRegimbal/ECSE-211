@@ -14,8 +14,7 @@ public class Search extends Thread {
 	private USSensor usSensor;
 	private ColorSensor colorSensor;
 	private final float FIELD_BOUNDS = 65; //cm
-	private float lastDistanceDetected;
-	private final float DISTANCE_THRESHOLD = 25; //cm
+	private final float DISTANCE_THRESHOLD = 60; //cm
 	private final double fieldToSearch = Math.PI/2;
 	private final float[][] corners = new float[][] {{0,0},{0,60.96f},{60.96f,60.96f},{60.96f,0.0f}};
 	private int corner;
@@ -25,6 +24,8 @@ public class Search extends Thread {
 	public static double[] obstacleLocation;
 	private final int APPROACH_SPIN_SPEED = 75;
 	private Navigation nav;
+	private boolean sweepMethod = true;
+	private static double SHIFT_DISTANCE = 3.00;
 		
 	public static final float[] STYROFOAM_COLOR = new float[] {0.0f,1.0f,1.0f};
 	
@@ -47,7 +48,7 @@ public class Search extends Thread {
 		
 		boolean found = false;
 		
-		if(Lab5.demo == Lab5.DemoState.k_Part2) {
+		if(Lab5.demo == Lab5.DemoState.k_Part2 && !sweepMethod) {
 			int dir = 1;
 			isStyrofoamBlock(); //Initialize rgb mode
 			
@@ -78,7 +79,11 @@ public class Search extends Thread {
 			}
 		}
 
-		else if(Lab5.demo == Lab5.DemoState.k_Part2) { //Temporary, in case we want to switch back to this method
+	/*
+	 * Sweep	
+	 */
+		
+		else if(Lab5.demo == Lab5.DemoState.k_Part2 && sweepMethod) { //Temporary, in case we want to switch back to this method
 			//PART 2
 			//TODO: Comb through track, check for detection
 			//sweep track for obstacles from position (0,0) starting at 0-radians
@@ -88,13 +93,22 @@ public class Search extends Thread {
 			
 			while(!blockFound) {
 			//while(!blockFound || !obstacleFound) {	
-				lastDistanceDetected = FIELD_BOUNDS;
 				boolean objectFound = false;
 				odo.setMotorSpeeds(Odometer.ROTATE_SPEED, Odometer.ROTATE_SPEED);
 				//odo.spin(Odometer.TURNDIR.CCW);
 				
 				//If last travelTo was interrupted by an obstacle, go back to previous corner and switch directions
 				if(Navigation.PathBlocked) {
+					odo.setMotorSpeed(60);
+					odo.forwardMotors();
+					for(double distance = usSensor.getFilteredDataBasic(); distance > BLOCK_DISTANCE; distance = usSensor.getFilteredDataBasic());
+					odo.stopMotors();
+					if(isStyrofoamBlock()) {
+						odo.moveCM(LINEDIR.Backward, 13, true);
+						blockFound = true;
+						break;
+					}
+					odo.moveCM(LINEDIR.Backward, 13, true);
 					dir = -dir;
 					corner += dir;
 					corner %= 4;
@@ -117,9 +131,10 @@ public class Search extends Thread {
 					Sound.beep();
 					odo.stopMotors();
 					
-					nav.turnBy(dir*Math.PI/10);
-					
 					double distance = usSensor.getMedianSample(US_SAMPLES); //Get distance to detected object
+					double headingShift = Math.asin(SHIFT_DISTANCE/(distance + 5));
+					distance = usSensor.getMedianSample(US_SAMPLES);
+					nav.turnBy(dir*headingShift);
 					double heading = odo.getTheta();
 					
 					odo.setMotorSpeed(70);
@@ -174,7 +189,7 @@ public class Search extends Thread {
 					nav.travelTo(corners[corner][0], corners[corner][1]);
 					//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
 					//nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
-					nav.turnBy(dir*Math.PI/2);
+					if(!Navigation.PathBlocked) nav.turnBy(dir*Math.PI/2);
 				}
 			}
 			
@@ -209,8 +224,7 @@ public class Search extends Thread {
 	
 	private boolean isObjectDetected() {
 		float currentDistance = usSensor.getMedianSample(US_SAMPLES);
-		boolean isObject = (lastDistanceDetected - currentDistance > DISTANCE_THRESHOLD) && (currentDistance <= 45);
-		lastDistanceDetected = currentDistance;
+		boolean isObject = (/*lastDistanceDetected - currentDistance > DISTANCE_THRESHOLD) && (*/ currentDistance <= DISTANCE_THRESHOLD);
 		return isObject;
 	}
 	

@@ -6,7 +6,7 @@ import lejos.hardware.Sound;
 
 public class USLocalizer extends Thread {
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };
-	private static final float NO_WALL = 45.0f;	//Minimum distance for which the US sensor reading should be interpreted as no wall detected
+	private static final float NO_WALL = 50.0f;	//Minimum distance for which the US sensor reading should be interpreted as no wall detected
 	private static final double THETA_THRESHOLD = Math.PI / 6.0; //Minimum angle between two walls
 	public static int ROTATION_SPEED = 60;
 	
