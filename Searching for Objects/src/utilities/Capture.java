@@ -84,7 +84,7 @@ public class Capture extends Thread {
 		descendArms();
 	}
 	
-	private boolean inBounds(double x,double y, double width, double height) {
+	public static boolean inBounds(double x,double y, double width, double height) {
 		return (x < width) && (y < height) && x > 0 && y > 0;
 	}
 }

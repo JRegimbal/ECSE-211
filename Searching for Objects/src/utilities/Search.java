@@ -25,6 +25,8 @@ public class Search extends Thread {
 	public static double[] obstacleLocation;
 	private final int APPROACH_SPIN_SPEED = 75;
 	private Navigation nav;
+	
+	private boolean method1;
 		
 	public static final float[] STYROFOAM_COLOR = new float[] {0.0f,1.0f,1.0f};
 	
@@ -35,6 +37,7 @@ public class Search extends Thread {
 		this.corner = 0;
 		this.dir = 1;
 		nav = new Navigation(odo);
+		method1 = true;
 	}
 	@Override
 	public void run() {
@@ -47,7 +50,7 @@ public class Search extends Thread {
 		
 		boolean found = false;
 		
-		if(Lab5.demo == Lab5.DemoState.k_Part2) {
+		if(Lab5.demo == Lab5.DemoState.k_Part2 && !method1) {
 			int dir = 1;
 			isStyrofoamBlock(); //Initialize rgb mode
 			
@@ -117,7 +120,7 @@ public class Search extends Thread {
 					Sound.beep();
 					odo.stopMotors();
 					
-					nav.turnBy(dir*Math.PI/10);
+					//nav.turnBy(dir*Math.PI/45);
 					
 					double distance = usSensor.getMedianSample(US_SAMPLES); //Get distance to detected object
 					double heading = odo.getTheta();
@@ -157,15 +160,18 @@ public class Search extends Thread {
 					}
 					odo.moveCM(LINEDIR.Backward, 13, true); //Move backward, to avoid spinning into obstacle
 					if(!blockFound) { //If the obstacle wasn't a styrofoam block, go to next corner
+						/*
 						nav.travelTo(corners[corner][0], corners[corner][1]);
 						corner += dir;
 						corner %= 4;
 						Sound.twoBeeps();
 						nav.travelTo(corners[corner][0], corners[corner][1]);
 						//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
+						 */
 						nav.turnBy(dir*Math.PI/2);
 					}
 				} else {	//go to next corner
+					/*
 					odo.stopMotors();
 					Sound.twoBeeps();
 					Sound.twoBeeps();
@@ -175,6 +181,13 @@ public class Search extends Thread {
 					//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
 					//nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
 					nav.turnBy(dir*Math.PI/2);
+					*/
+					nav.turnBy(dir*Math.PI/2);
+					odo.setMotorSpeed(APPROACH_SPIN_SPEED);
+					odo.forwardMotors();
+					while(usSensor.getMedianSample(US_SAMPLES) < 10 && !Capture.inBounds(odo.getX(), odo.getY(), Lab5.FIELD_BOUNDARY, Lab5.FIELD_BOUNDARY));
+					odo.stopMotors();
+					odo.moveCM(Odometer.LINEDIR.Backward, 5, true);
 				}
 			}
 			

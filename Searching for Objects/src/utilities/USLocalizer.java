@@ -176,7 +176,7 @@ public class USLocalizer extends Thread {
 			else angle = (5*Math.PI/4) - 0.5 * (angleA + angleB);
 			
 			// update the odometer position (example to follow:)
-			odo.setPosition(new double [] {minimumDistance - 30.48 + distanceUSSensor, minimumDistance - 30.48 + distanceUSSensor,
+			odo.setPosition(new double [] {minimumDistance - Lab5.GRID_SIZE + distanceUSSensor, minimumDistance - Lab5.GRID_SIZE + distanceUSSensor,
 					angle + odo.getTheta()}, new boolean [] {true, true, true}); //Update odometer values
 			Navigation nav = new Navigation(odo);
 			nav.travelTo(0,0);

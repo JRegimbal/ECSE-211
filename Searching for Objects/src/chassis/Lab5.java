@@ -39,6 +39,9 @@ public class Lab5 {
 	
 	public static final int RESTING_ARM_POSITION	= 30;
 	
+	public static final double GRID_SIZE		= 30.48;
+	public static final double FIELD_BOUNDARY	= 58;
+	
 	public static void main(String[] args) {
 		state = RobotState.k_Setup;
 		//Setup sensors
