@@ -28,10 +28,10 @@ public class USSensor {
 		float[] distSamples = new float[samples];
 		
 		for(int i = 0; i < samples; i++) {
-			distSamples[i] = getFilteredDataBasic();
+			distSamples[i] = getFilteredDataBasic(); //Take several measurements
 		}
-		Arrays.sort(distSamples);
-		return (samples%2==0 ? (distSamples[samples/2]+distSamples[samples/2 + 1])/2 : distSamples[samples/2]);
+		Arrays.sort(distSamples); //Sort the measurements in increasing order
+		return (samples%2==0 ? (distSamples[samples/2]+distSamples[samples/2 + 1])/2 : distSamples[samples/2]); //Return the median of the samples to reduce noise
 	}
 
 }

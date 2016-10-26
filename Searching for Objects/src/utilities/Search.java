@@ -1,7 +1,5 @@
 package utilities;
 
-import com.jcraft.jsch.jce.Random;
-
 import chassis.ColorSensor;
 import chassis.Lab5;
 import chassis.USSensor;
@@ -9,11 +7,10 @@ import lejos.hardware.Sound;
 import utilities.Odometer.LINEDIR;
 
 public class Search extends Thread {
-	private static final int US_SAMPLES = 10;
+	private static final int US_SAMPLES = 6;
 	private Odometer odo;
 	private USSensor usSensor;
 	private ColorSensor colorSensor;
-	private final float FIELD_BOUNDS = 65; //cm
 	private final float DISTANCE_THRESHOLD = 60; //cm
 	private final double fieldToSearch = Math.PI/2;
 	private final float[][] corners = new float[][] {{0,0},{0,60.96f},{60.96f,60.96f},{60.96f,0.0f}};
@@ -22,7 +19,7 @@ public class Search extends Thread {
 	private final static float BLOCK_DISTANCE = 4.0f; //distance to detect block type in cm
 	public static double[] blockLocation;
 	public static double[] obstacleLocation;
-	private final int APPROACH_SPIN_SPEED = 75;
+	private final int APPROACH_SPIN_SPEED = 90;
 	private Navigation nav;
 	private boolean sweepMethod = true;
 	private static double SHIFT_DISTANCE = 3.00;
@@ -58,22 +55,22 @@ public class Search extends Thread {
 				while(usSensor.getMedianSample(US_SAMPLES) > BLOCK_DISTANCE && (odo.getX() < 58 && odo.getY() < 58));
 				odo.stopMotors();
 				
-				if(odo.getX() >= 55 || odo.getY() >= 55) {
-					odo.moveCM(LINEDIR.Backward, 13, true);
-					nav.turnBy(Math.pow(-1, dir) * Math.PI/2);
-					dir++;
+				if(odo.getX() >= 55 || odo.getY() >= 55) { //If approaching boundary...
+					odo.moveCM(LINEDIR.Backward, 13, true); //Back up
+					nav.turnBy(Math.pow(-1, dir) * Math.PI/2); //Turn in alternating directions compared to previous boundary condition
+					dir++; //Increment to alternate spin direction for next time
 					Sound.beepSequence();
 				}
-				else if(usSensor.getMedianSample(US_SAMPLES) <= BLOCK_DISTANCE && isStyrofoamBlock()) {
-					//TODO Capture
+				else if(usSensor.getMedianSample(US_SAMPLES) <= BLOCK_DISTANCE && isStyrofoamBlock()) { //If found styrofoam block...
+					//Capture
 					found = true;
 					Sound.beep();
-					odo.moveCM(LINEDIR.Backward, 13, true);
-					Lab5.state = Lab5.RobotState.k_Capture;
+					odo.moveCM(LINEDIR.Backward, 13, true); //Back up to avoid spinning collisions.
+					Lab5.state = Lab5.RobotState.k_Capture; //Switch to capture mode.
 				}
 				else {
-					Sound.twoBeeps();
-					odo.moveCM(LINEDIR.Backward, 13, true);
+					Sound.twoBeeps(); //No block found.
+					odo.moveCM(LINEDIR.Backward, 13, true); //Back up and rotate.
 					nav.turnBy(Math.PI/2);
 				}
 			}
@@ -85,64 +82,70 @@ public class Search extends Thread {
 		
 		else if(Lab5.demo == Lab5.DemoState.k_Part2 && sweepMethod) { //Temporary, in case we want to switch back to this method
 			//PART 2
-			//TODO: Comb through track, check for detection
+			//Comb through track, check for detection
 			//sweep track for obstacles from position (0,0) starting at 0-radians
 			boolean blockFound=false;
 			
 			isStyrofoamBlock(); //Initialize rgb mode
 			
 			while(!blockFound) {
-			//while(!blockFound || !obstacleFound) {	
 				boolean objectFound = false;
 				odo.setMotorSpeeds(Odometer.ROTATE_SPEED, Odometer.ROTATE_SPEED);
-				//odo.spin(Odometer.TURNDIR.CCW);
 				
 				//If last travelTo was interrupted by an obstacle, go back to previous corner and switch directions
 				if(Navigation.PathBlocked) {
 					odo.setMotorSpeed(60);
 					odo.forwardMotors();
-					for(double distance = usSensor.getFilteredDataBasic(); distance > BLOCK_DISTANCE; distance = usSensor.getFilteredDataBasic());
+					for(double distance = usSensor.getFilteredDataBasic(); distance > BLOCK_DISTANCE; distance = usSensor.getFilteredDataBasic()); //Approach block slowly
 					odo.stopMotors();
 					if(isStyrofoamBlock()) {
-						odo.moveCM(LINEDIR.Backward, 13, true);
+						//If styrofoam...
+						odo.moveCM(LINEDIR.Backward, 13, true); //Back up
 						blockFound = true;
-						break;
+						break; //Break out of loop
 					}
-					odo.moveCM(LINEDIR.Backward, 13, true);
-					dir = -dir;
+					//Obstacle is not styrofoam...
+					odo.moveCM(LINEDIR.Backward, 13, true); //Back up
+					dir = -dir; //Switch overall contour direction
 					corner += dir;
 					corner %= 4;
 					nav.travelTo(corners[corner][0], corners[corner][1]);		
-					int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
-					nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
+					int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4; //Make sure modulo isn't negative
+					nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true); //Turn to next corner
+					corner = nextCorner;
 				}
 								
-				double targetAngle = odo.getTheta() - dir*fieldToSearch;
-				//if(targetAngle < 0.0) targetAngle += 360.0;
-				if(targetAngle > 2*Math.PI) targetAngle -= 2*Math.PI;
+				double targetAngle = odo.getTheta() - dir*fieldToSearch; //Get bound on angle to search through
+				if(targetAngle > 2*Math.PI) targetAngle -= 2*Math.PI; //Wrap around
 				else if (targetAngle < 0) targetAngle += 2*Math.PI;
 				odo.setMotorSpeed(70);
-				odo.spin(dir == 1 ? Odometer.TURNDIR.CW : Odometer.TURNDIR.CCW);
+				odo.spin(dir == 1 ? Odometer.TURNDIR.CW : Odometer.TURNDIR.CCW); //Start spinning and scanning
 				try{
 					Thread.sleep(500);
 				} catch(Exception e) {} //we're living dangerously
 				while(!(objectFound = isObjectDetected()) && Math.abs(Navigation.minimalAngle(targetAngle, odo.getTheta())) > Math.PI/60);	//check if there is an object at current heading or if area has been scanned
 				if(objectFound) {	//go to object, check if it is a styrofoam block
-					Sound.beep();
+//					Sound.beep();
 					odo.stopMotors();
 					
 					double distance = usSensor.getMedianSample(US_SAMPLES); //Get distance to detected object
-					double headingShift = Math.asin(SHIFT_DISTANCE/(distance + 5));
-					distance = usSensor.getMedianSample(US_SAMPLES);
+					double [] initialPosition = new double[3];
+					boolean somethingFound = true;
+					
+					odo.getPosition(initialPosition);
+					
+					double headingShift = Math.atan(SHIFT_DISTANCE/(distance + 5)); //Point toward middle of object
+					distance = usSensor.getMedianSample(US_SAMPLES); //Get updated distance to object
 					nav.turnBy(dir*headingShift);
 					double heading = odo.getTheta();
 					
 					odo.setMotorSpeed(70);
 					odo.forwardMotors();
-					int notDir = dir;	//because fuck descriptive naming TODO don't swear
-					while(usSensor.getMedianSample(US_SAMPLES) > 6) {
-						while(usSensor.getMedianSample(US_SAMPLES) > distance) {
+					int notDir = dir; //Direction of object detection refining
+					while(usSensor.getMedianSample(US_SAMPLES) > 6 && somethingFound) { //While not close enough to the object
+						while(usSensor.getMedianSample(US_SAMPLES) > distance) { //While detected distance to object is greater than originally, rotate
 							if(Math.abs(odo.getTheta() - heading) > Math.PI/4) {
+								//If the rotation overshot the object, move forward a little and switch scan direction
 								odo.moveCM(Odometer.LINEDIR.Forward, 0.5, true);
 								notDir = -notDir;
 							}
@@ -150,25 +153,25 @@ public class Search extends Thread {
 							if(notDir == 1) odo.spin(Odometer.TURNDIR.CW);
 							else odo.spin(Odometer.TURNDIR.CCW);
 						}
+						if(odo.euclideanDistance(initialPosition, new double[] {odo.getX(), odo.getY(), odo.getTheta()}) > distance)
+							somethingFound = false;
 						odo.forwardMotors();
 					}
 					odo.stopMotors();
-					Sound.beep();
-					odo.stopMotors();
-					odo.setMotorSpeeds(60, 60);
-					odo.forwardMotors();
-					while(usSensor.getMedianSample(US_SAMPLES) > BLOCK_DISTANCE); //wait until close enough to determine if it's a styrofoam block
-					odo.setMotorSpeeds(0, 0);
-					odo.forwardMotors();
-					if(isStyrofoamBlock()) {	//begin capture
-						blockFound = true;
-						//blockLocation = new double[] {odo.getX(), odo.getY()};
-						Sound.beepSequenceUp();
-						//Lab5.state = Lab5.RobotState.k_Capture;
-						//continue;
-					} else {
-						//obstacleLocation = new double[] {odo.getX(), odo.getY()};
-						//Sound.beepSequence();
+					if(somethingFound) {	
+						Sound.beep();
+						odo.stopMotors();
+						odo.setMotorSpeeds(60, 60);
+						odo.forwardMotors();
+						while(usSensor.getMedianSample(US_SAMPLES) > BLOCK_DISTANCE); //wait until close enough to determine if it's a styrofoam block
+						odo.setMotorSpeeds(0, 0);
+						odo.forwardMotors();
+						if(isStyrofoamBlock()) {	//begin capture
+							blockFound = true;
+							Sound.beep();
+						} else {
+							Sound.twoBeeps();
+						}
 					}
 					odo.moveCM(LINEDIR.Backward, 13, true); //Move backward, to avoid spinning into obstacle
 					if(!blockFound) { //If the obstacle wasn't a styrofoam block, go to next corner
@@ -176,9 +179,9 @@ public class Search extends Thread {
 						corner += dir;
 						corner %= 4;
 						Sound.twoBeeps();
-						nav.travelTo(corners[corner][0], corners[corner][1]);
-						//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
-						nav.turnBy(dir*Math.PI/2);
+						int nextCorner = (corner < 0) ? corner + 4 : (corner) % 4; //Make sure modulo isn't negative
+						nav.travelTo(corners[nextCorner][0], corners[nextCorner][1]);
+						corner = nextCorner;
 					}
 				} else {	//go to next corner
 					odo.stopMotors();
@@ -186,10 +189,9 @@ public class Search extends Thread {
 					Sound.twoBeeps();
 					corner += dir;
 					corner %= 4;
-					nav.travelTo(corners[corner][0], corners[corner][1]);
-					//int nextCorner = (corner + dir < 0) ? corner + dir + 4 : (corner + dir) % 4;
-					//nav.turnTo(Math.atan2(corners[nextCorner][1], corners[nextCorner][0]), true);
-					if(!Navigation.PathBlocked) nav.turnBy(dir*Math.PI/2);
+					int nextCorner = (corner < 0) ? corner + 4 : (corner) % 4; //Make sure modulo isn't negative
+					nav.travelTo(corners[nextCorner][0], corners[nextCorner][1]);
+					corner = nextCorner;
 				}
 			}
 			

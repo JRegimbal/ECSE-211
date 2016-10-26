@@ -30,7 +30,7 @@ public class Lab5 {
 	public static RobotState lastState = RobotState.k_Disabled;
 	public static DemoState demo = DemoState.k_Default;
 	
-	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled, k_Avoiding};
+	public enum RobotState {k_Setup, k_Localization, k_Search, k_Capture, k_Disabled};
 	public enum DemoState {k_Part1, k_Part2, k_Default};
 	
 	public static USSensor usSensor;
@@ -51,7 +51,7 @@ public class Lab5 {
 		//Setup threads
 		Odometer odo = new Odometer(leftMotor, rightMotor, ODOMETER_PERIOD, WHEEL_RADIUS, TRACK);
 		lcd = new LCDInfo(odo, textLCD, false);	//start on creation
-		USLocalizer localizer = new USLocalizer(odo, usSensor, USLocalizer.LocalizationType.RISING_EDGE, US_TO_CENTER);
+		USLocalizer localizer = new USLocalizer(odo, usSensor, US_TO_CENTER);
 		Search search = new Search(odo, colorSensor, usSensor);
 		Capture capture = new Capture(odo,leftArmMotor,rightArmMotor);
 		
@@ -89,21 +89,7 @@ public class Lab5 {
 		}
 		//Wait for escape to exit
 		while(Button.waitForAnyPress() != Button.ID_ESCAPE);
-		/*if(state == RobotState.k_Disabled) {	//execution has normally exited
-			try {
-				odo.join();
-				search.join();
-				capture.join();
-				localizer.join();
-			} catch (Exception e) {}
-		} else {								//cancelled while still running
-			try {
-				odo.interrupt();
-				search.interrupt();
-				capture.interrupt();
-				localizer.interrupt();
-			} catch (Exception e) {}
-		}*/
+
 		odo.interrupt();;
 		search.interrupt();
 		capture.interrupt();

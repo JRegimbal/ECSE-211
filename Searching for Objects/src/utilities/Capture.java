@@ -29,12 +29,12 @@ public class Capture extends Thread {
 				Thread.sleep(300);
 			} catch (InterruptedException e){ }
 		}
-		nav.turnBy(Math.PI);
-		odo.moveCM(Odometer.LINEDIR.Backward, 3, true);
+		nav.turnBy(Math.PI); //Turn 180 degrees so claw faces object
+		odo.moveCM(Odometer.LINEDIR.Backward, 3, true); //Back up towards object
 		
 		getBlock();
 		nav.turnBy(-Math.PI); //keeps us from needing a full circle around the center
-		nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17); 
+		nav.travelTo(GOAL_ZONE[0] - 17, GOAL_ZONE[1] - 17);  //Go to the goal zone
 		
 		while(Navigation.PathBlocked) {
 			odo.stopMotors();
@@ -52,10 +52,9 @@ public class Capture extends Thread {
 			nav.turnBy(Math.PI);
 		}
 		
-		//TODO implement capture code
 		odo.setMotorSpeeds(0, 0); //ensure motors are stopped
 		odo.forwardMotors();
-		nav.turnBy(Math.PI);
+		nav.turnBy(Math.PI); //So that the block lands in the goal zone
 
 		Lab5.state = Lab5.RobotState.k_Disabled;
 		ascendArms();
@@ -79,8 +78,6 @@ public class Capture extends Thread {
 	}
 	
 	private void getBlock() {
-		//TODO CATCH BLOCK, avoid the obstacle if it lies in the path
-		Sound.beep();
 		descendArms();
 	}
 	

@@ -63,9 +63,6 @@ public class LCDInfo implements TimerListener{
 		case k_Setup:
 			stateString = "Setup";
 			break;
-		case k_Avoiding:
-			stateString = "Avoiding";
-			break;
 		default:
 			stateString = "";
 			break;
