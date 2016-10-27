@@ -1,0 +1,87 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{gensymb}
+\usepackage{geometry}
+
+\geometry{margin=2cm}
+
+\title{Lab 5 - Searching For Objects}
+\author{Harley Wiltzer (260690006)\\Juliette Regimbal (260657238)}
+\date{October 28, 2016}
+
+\begin{document}
+\maketitle
+\section{Data/Analysis}
+\subsection{Perform at least 10 trials of object recognition using an object other than the
+Styrofoam block and note the number of false positives.}
+After exposing the robot to 10 different non-Styrofoam objects, only one false positive was
+observed. Thus, the success rate for identifying when an object is not the appropriate block was
+observed to be 90\%.
+\subsection{Repeat the above step, but using the Styrofoam block each time, noting the total number
+of false negatives.}
+After exposing the robot to the Styrofoam block ten times, the robot successfully identified that it
+was a Styrofoam block each time. Thus, no false negatives were observed and the apparent rate it
+which the robot can detect a Styrofoam block was 100\%.
+\subsection{Run through the search program at least 5 times, recording the average time taken to
+	localize, to find a block, and then to travel to the destination. Also estimate the localization
+and final destination errors for each trial.}
+\subsubsection{Localization}
+After 5 trials, the average time taken for the robot to localize was 24.7 seconds. This falls within
+the acceptable range for the competition. However, significant error was observed. The average error
+in displacement from localization (measured as euclidean distance) was approximately 1.34cm, and the
+average error in heading was observed to be approximately 7.0\degree.
+\subsubsection{Finding a block}
+Throughout the five trials, the robot took on average 11.56 seconds to find a block (and identify
+that it's a Styrofoam block) that was situated approximately in the center of the board, oriented
+orthogonally to the coordinate axes. Once again, the robot successfully identified that the block
+was a Styrofoam block 100\% of the time.
+\subsubsection{Arriving at the final destination}
+After finding the Styrofoam block (positioned and oriented as described above), the robot took, on
+average, 13.32 seconds to position the block in the target destination. Unfortunately, there was
+significant error in the block's final position. This error ranged from 6.3cm to 14.4cm, averaging
+at approximately 11.0cm.
+
+\section{Observations and Conclusions}
+\subsection{What differences, if any, were observed in the behavior/performance of your earlier code
+when combined in a larger system? Explain any discepancies}.
+Odometry and localization suffered painfully upon their integration to the larger system. This was
+mainly due to the lack of a color sensor for those purposes. Since only one color sensor is
+available and needed to be used for analyzing objects, it could not be used to detect gridlines
+without sacrificing a lot of time to implement its own motor and control. As a consequence, the
+odometry had no sensory feedback, and this led the error in odometry to accrue to a large extent.
+This was observed when the robot misplaced the Styrofoam block by an average of 11.0cm. Furthermore,
+the localization routine had to resort to using only the ultrasonic sensor, and couldn't use the
+color sensor to further improve its measurements. The ultrasonic sensor is susceptible to much more
+noise than the color sensor, so its readings are not as accurate. To diminish this effect, a median
+filter was implemented for the ultrasonic readings, however the ultrasonic sensor still could not
+measure distances as accurately as the light sensor did in Lab 4. Thus, larger errors in heading and
+position after localization were observed.
+\subsection{How reliable was your object detection? What factors influence the reliability of object
+	detection? Where would you expect your code to break down? What steps can you take to make
+detection more robust?}
+In the conditions under which the robot was tested, th object detection was extremely reliable. As
+seen in \textbf{Data Analysis}, no false negatives occured, and false positives were observed very
+infrequently. The object detection implemented for this robot was based on the ratio of red to green
+color values, and was far from robust. The code would likely break down in conditions where ambient
+light is different from that in the lab. To make the detection more robust, ambient light can be
+taken into account to offer some prediction as to how the expected of the color of the Styrofoam
+block the be. Then, colors may be interpreted as three-dimensional vectors, and the classification
+of objects can be done by analyzing the euclidean distance between two colors. Furthermore, instead
+on relying solely on color, the object detection can also attempt to measure the dimensions of the
+block that it is detecting. Then, these dimensions may be compared with those of the Styrofoam
+block.
+\subsection{What aspect of this lab did you find most difficult? What aspect of this lab did you
+find most surprising or unexpected?}
+The most difficult parts of this lab were reliably searching for objects and reducing the likelihood
+of the robot crashing into obstacles. The searching algorithm was difficult to conceive, because due
+to the lack of a rotating ultrasonic sensor, the search algorithm had to ensure that the robot
+approaches the obstacles it detects at an appropriate angle. This was very difficult to code and
+test, because so many cases are possible. Furthermore, as the robot dragged the block from behind,
+its ``effective radius'' - that is to say, the furthest point of the robot from its center of
+rotation, was very large. Therefore, when the robot turned, it covered an enormous amount of area.
+It was very difficult to reduce the occurances of the robot hitting obstacles when it was turning
+for this reason. Surprisingly, the robot was exceptionally good at identifying obstacles. As
+mentioned previously, errors in obstacle identification were rare, which was unexpected given
+previous bad experiences with other sensors during this lab and previous experiments.
+\end{document}
