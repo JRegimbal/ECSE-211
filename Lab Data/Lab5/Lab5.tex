@@ -57,10 +57,11 @@ After 5 trials, the average time taken for the robot to localize was 24.7 second
 the acceptable range for the competition. However, significant error was observed. The average error
 in displacement from localization (measured as euclidean distance) was approximately 1.34cm, and the
 average error in heading was observed to be approximately 7.0\degree.
+\newpage
 \subsubsection{Finding a block}
 \begin{figure}[h!t]
 \begin{center}
-\caption{Search Statistics)}
+\caption{Search Statistics}
 \rowcolors{2}{lblue}{white}
 \begin{tabular}{| c | c |}
 \multicolumn{2}{c}{} \\ \hline
@@ -106,7 +107,7 @@ at approximately 11.0cm.
 
 \section{Observations and Conclusions}
 \subsection{What differences, if any, were observed in the behavior/performance of your earlier code
-when combined in a larger system? Explain any discepancies}.
+when combined in a larger system? Explain any discrepancies}.
 Odometry and localization suffered painfully upon their integration to the larger system. This was
 mainly due to the lack of a color sensor for those purposes. Since only one color sensor is
 available and needed to be used for analyzing objects, it could not be used to detect gridlines
@@ -123,7 +124,7 @@ position after localization were observed.
 	detection? Where would you expect your code to break down? What steps can you take to make
 detection more robust?}
 In the conditions under which the robot was tested, the object detection was extremely reliable. As
-seen in \textbf{Data Analysis}, no false negatives occured, and false positives were observed very
+seen in \textbf{Data Analysis}, no false negatives occurred, and false positives were observed very
 infrequently. The object detection implemented for this robot was based on the ratio of red to green
 color values, and was far from robust. The code would likely break down in conditions where ambient
 light is different from that in the lab. To make the detection more robust, ambient light can be
@@ -142,7 +143,7 @@ approaches the obstacles it detects at an appropriate angle. This was very diffi
 test because so many cases are possible. Furthermore, as the robot dragged the block from behind,
 its ``effective radius'' - that is to say, the furthest point of the robot from its center of
 rotation, was very large. Therefore, when the robot turned, it covered an enormous amount of area.
-It was very difficult to reduce the occurances of the robot hitting obstacles when it was turning
+It was very difficult to reduce the occurrences of the robot hitting obstacles when it was turning
 for this reason. Surprisingly, the robot was exceptionally good at identifying obstacles. As
 mentioned previously, errors in obstacle identification were rare, which was unexpected given
 previous bad experiences with other sensors during this lab and previous experiments.
